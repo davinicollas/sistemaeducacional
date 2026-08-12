@@ -1,0 +1,25 @@
+# Ignora tudo
+
+# Mantém pastas
+!*/
+
+# JavaScript
+!*.js
+
+# EJS
+!*.ejs
+
+# Arquivos importantes
+!package.json
+!package-lock.json
+!.gitignore
+!README.md
+
+
+node_modules/
+public/images
+
+# Ignorar ambiente
+.env
+.env.*
+
