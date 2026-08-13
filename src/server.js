@@ -21,6 +21,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const usuario = require('./routes/cadastro');
+
+
 // Rotas
 app.get('/', (req, res) => {
   res.send(`Servidor rodando usando a porta ${PORT}`);
@@ -33,6 +36,15 @@ app.get('/login', (req, res) => {
 app.get('/cadastro', (req, res) => {
   res.render('cadastro');
 });
+app.get('/privacidade', (req, res) => {
+  res.render('privacidade');
+});
+app.get('/termos', (req, res) => {
+  res.render('termos');
+});
+
+
+app.use(usuario);
 
 // Inicia o servidor
 const server = app.listen(PORT, '0.0.0.0', () => {

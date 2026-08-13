@@ -1,12 +1,312 @@
+<%- include('partials/header') %>
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
-</head>
-<body>
+<div class="cadastro-container">
+    <section class="cadastro-content">
+        <div class="logo">
+
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+
+                <path
+                    d="M2 9L12 4L22 9L12 14L2 9Z"
+                    fill="#4D3FE0"
+                />
+                <path
+                    d="M5 11V16C5 16 8 19 12 19C16 19 19 16 19 16V11"
+                    fill="#4D3FE0"
+                />
+
+                <path
+                    d="M22 9V15"
+                    stroke="#4D3FE0"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                />
+
+            </svg>
+
+            Sistema Educacional
+
+        </div>
+
+
+        <!-- Título -->
+
+        <h1 class="cadastro-title">
+            Crie sua conta!
+        </h1>
+
+        <p class="cadastro-subtitle">
+            Preencha seus dados para começar
+        </p>
+
+
+        <!-- Formulário -->
+
+        <form action="/cadastro" method="POST">
+
+            <!-- Nome + Telefone -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="nome"
+                    >
+                        Nome
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        class="form-input"
+                        placeholder="Seu nome"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="telefone"
+                    >
+                        Telefone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="telefone"
+                        name="telefone"
+                        class="form-input"
+                        placeholder="(00) 00000-0000"
+                        autocomplete="tel"
+                        maxlength="15"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- E-mail + Data de nascimento -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="email"
+                    >
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-input"
+                        placeholder="seu@email.com"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="dataNascimento"
+                    >
+                        Data de nascimento
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dataNascimento"
+                        name="dataNascimento"
+                        class="form-input"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Senha -->
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="senha"
+                >
+                    Senha
+                </label>
+
+                <div class="input-wrapper">
+
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        class="form-input password-input"
+                        placeholder="Crie uma senha"
+                        autocomplete="new-password"
+                        minlength="6"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        onclick="togglePassword()"
+                        aria-label="Mostrar senha"
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Termos -->
+
+            <div class="terms">
+
+                <input
+                    type="checkbox"
+                    id="termos"
+                    name="termos"
+                    required
+                >
+
+                <label for="termos">
+
+                    Concordo com os
+                    <a href="/termos">
+                        Termos de Uso
+                    </a>
+                    e a
+                    <a href="/privacidade">
+                        Política de Privacidade
+                    </a>.
+
+                </label>
+
+            </div>
+
+
+            <!-- Botão -->
+
+            <button
+                type="submit"
+                class="register-button"
+            >
+                Criar minha conta
+            </button>
+
+        </form>
+
+
+        <!-- Link para login -->
+
+        <div class="login-link">
+
+            Já possui uma conta?
+
+            <a href="/login">
+                Entrar
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         BANNER
+    =========================================== -->
+
+    <section class="cadastro-banner">
+
+        <div class="background-circle circle-1"></div>
+        <div class="background-circle circle-2"></div>
+
+        <div class="banner-content">
+
+            <div class="education-illustration">
+
+                <div class="cloud cloud-1"></div>
+                <div class="cloud cloud-2"></div>
+
+                <span class="star star-1">+</span>
+                <span class="star star-2">+</span>
+
+
+                <!-- Livros -->
+
+                <div class="books">
+
+                    <div class="book book-4"></div>
+                    <div class="book book-3"></div>
+                    <div class="book book-2"></div>
+                    <div class="book book-1"></div>
+
+                </div>
+
+
+                <!-- Chapéu de formatura -->
+
+                <div class="graduation-cap">
+
+                    <div class="cap-top"></div>
+                    <div class="cap-bottom"></div>
+                    <div class="cap-button"></div>
+                    <div class="tassel"></div>
+
+                </div>
+
+
+                <!-- Porta lápis -->
+
+                <div class="pencil-cup">
+
+                    <div class="pencil"></div>
+                    <div class="pencil"></div>
+                    <div class="pencil"></div>
+
+                </div>
+
+            </div>
+
+
+            <p class="banner-title">
+
+                Comece sua jornada
+                <br>
+
+                de aprendizado hoje.
+
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
 
 </body>
+
 </html>
