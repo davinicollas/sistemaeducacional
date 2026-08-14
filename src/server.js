@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const usuario = require('./routes/cadastro');
-
+const login = require('./routes/login');
 
 // Rotas
 app.get('/', (req, res) => {
@@ -45,6 +45,20 @@ app.get('/login', (req, res) => {
 app.get('/cadastro', (req, res) => {
   res.render('cadastro');
 });
+app.get('/calendario', (req, res) => {
+  res.render('calendario');
+});
+app.get('/alunos', (req, res) => {
+  res.render('alunos');
+});
+
+app.get('/professores', (req, res) => {
+  res.render('professores');
+});
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard');
+});
+
 app.get('/privacidade', (req, res) => {
   res.render('privacidade');
 });
@@ -54,6 +68,7 @@ app.get('/termos', (req, res) => {
 
 
 app.use(usuario);
+app.use(login);
 
 // Inicia o servidor
 const server = app.listen(PORT, '0.0.0.0', () => {

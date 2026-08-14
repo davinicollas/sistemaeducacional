@@ -1,0 +1,119 @@
+<%- include('partials/header') %>
+    <!-- Sidebar -->
+    <%- include('partials/menu') %>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+            <button class="icon-btn"><i class="fa-regular fa-calendar"></i></button>
+            <div class="user-profile"></div>
+        </header>
+
+        <!-- Agenda Section -->
+        <div class="agenda-container">
+            <h1 class="page-title">Agenda</h1>
+
+            <!-- Calendar Controls -->
+            <div class="calendar-header">
+                <div class="date-controls">
+                    <button class="btn-outline">
+                        <i class="fa-solid fa-chevron-left"></i> 
+                        Junho 2024 
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button class="btn-outline" style="padding: 8px 24px;">Hoje</button>
+                </div>
+                <button class="btn-primary">Novo evento</button>
+            </div>
+
+            <!-- Calendar -->
+            <div class="calendar-wrapper">
+                <div class="calendar-grid">
+                    <!-- Days Header -->
+                    <div class="day-name">Dom</div>
+                    <div class="day-name">Seg</div>
+                    <div class="day-name">Ter</div>
+                    <div class="day-name">Qua</div>
+                    <div class="day-name">Qui</div>
+                    <div class="day-name">Sex</div>
+                    <div class="day-name">Sáb</div>
+
+                    <!-- Row 1 -->
+                    <div class="calendar-cell muted"><div class="day-number">26</div></div>
+                    <div class="calendar-cell muted"><div class="day-number">27</div></div>
+                    <div class="calendar-cell muted"><div class="day-number">28</div></div>
+                    <div class="calendar-cell muted"><div class="day-number">29</div></div>
+                    <div class="calendar-cell muted"><div class="day-number">30</div></div>
+                    <div class="calendar-cell muted"><div class="day-number">31</div></div>
+                    <div class="calendar-cell"><div class="day-number">1</div></div>
+
+                    <!-- Row 2 -->
+                    <div class="calendar-cell"><div class="day-number">2</div></div>
+                    <div class="calendar-cell"><div class="day-number">3</div></div>
+                    <div class="calendar-cell"><div class="day-number">4</div></div>
+                    <div class="calendar-cell"><div class="day-number">5</div></div>
+                    <div class="calendar-cell"><div class="day-number">7</div></div>
+                    <div class="calendar-cell">
+                        <div class="day-number">8</div>
+                        <div class="event-pill event-purple">Reunião de pais</div>
+                    </div>
+                    <div class="calendar-cell"><div class="day-number">8</div></div>
+
+                    <!-- Row 3 -->
+                    <div class="calendar-cell"><div class="day-number">9</div></div>
+                    <div class="calendar-cell"><div class="day-number">10</div></div>
+                    <div class="calendar-cell"><div class="day-number">11</div></div>
+                    <div class="calendar-cell"><div class="day-number active">12</div></div>
+                    <div class="calendar-cell"><div class="day-number">14</div></div>
+                    <div class="calendar-cell">
+                        <div class="day-number">15</div>
+                        <div class="event-pill event-teal">Entrega de atividades</div>
+                    </div>
+                    <div class="calendar-cell"><div class="day-number">15</div></div>
+
+                    <!-- Row 4 -->
+                    <div class="calendar-cell"><div class="day-number">16</div></div>
+                    <div class="calendar-cell"><div class="day-number">17</div></div>
+                    <div class="calendar-cell"><div class="day-number">18</div></div>
+                    <div class="calendar-cell"><div class="day-number">19</div></div>
+                    <div class="calendar-cell"><div class="day-number">21</div></div>
+                    <div class="calendar-cell">
+                        <div class="day-number">22</div>
+                        <div class="event-pill event-pink">Prova bimestral<br>matemática</div>
+                    </div>
+                    <div class="calendar-cell"><div class="day-number">23</div></div>
+
+                    <!-- Row 5 -->
+                    <div class="calendar-cell" style="border-bottom: none;"><div class="day-number">23</div></div>
+                    <div class="calendar-cell" style="border-bottom: none;"><div class="day-number">24</div></div>
+                    <div class="calendar-cell" style="border-bottom: none;"><div class="day-number">25</div></div>
+                    <div class="calendar-cell" style="border-bottom: none;"><div class="day-number">26</div></div>
+                    <div class="calendar-cell" style="border-bottom: none;"><div class="day-number">28</div></div>
+                    <div class="calendar-cell" style="border-bottom: none;"><div class="day-number">29</div></div>
+                    <div class="calendar-cell" style="border-bottom: none;"><div class="day-number">30</div></div>
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <h2 class="section-subtitle">Próximos eventos</h2>
+            <div class="upcoming-grid">
+                <div class="event-card">
+                    <i class="fa-regular fa-calendar-check" style="color: var(--event-purple-text);"></i>
+                    <span class="event-card-title">Reunião de pais</span>
+                </div>
+                <div class="event-card">
+                    <i class="fa-solid fa-book" style="color: var(--event-teal-text);"></i>
+                    <span class="event-card-title">Entrega de atividades</span>
+                </div>
+                <div class="event-card">
+                    <i class="fa-solid fa-pen-ruler" style="color: var(--event-pink-text);"></i>
+                    <span class="event-card-title">Prova bimestral</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

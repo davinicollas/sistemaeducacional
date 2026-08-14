@@ -1,0 +1,145 @@
+<%- include('partials/header') %>
+    <!-- Sidebar -->
+    <%- include('partials/menu') %>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+            <button class="icon-btn"><i class="fa-regular fa-calendar"></i></button>
+            <div class="user-info">
+                <span>Olá, Ana!</span>
+                <div class="user-avatar"></div>
+            </div>
+        </header>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+            <h1 class="page-title">Dashboard</h1>
+
+            <!-- KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="icon-box purple"><i class="fa-regular fa-user"></i></div>
+                    <div class="kpi-title">Alunos</div>
+                    <div class="kpi-value">320</div>
+                    <div class="kpi-subtitle">Total de alunos</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="icon-box purple"><i class="fa-solid fa-user-tie"></i></div>
+                    <div class="kpi-title">Professores</div>
+                    <div class="kpi-value">28</div>
+                    <div class="kpi-subtitle">Total de professores</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="icon-box green"><i class="fa-solid fa-users-rectangle"></i></div>
+                    <div class="kpi-title">Turmas</div>
+                    <div class="kpi-value">18</div>
+                    <div class="kpi-subtitle">Total de turmas</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="icon-box orange"><i class="fa-solid fa-table-cells-large"></i></div>
+                    <div class="kpi-title">Disciplinas</div>
+                    <div class="kpi-value">24</div>
+                    <div class="kpi-subtitle">Total de disciplinas</div>
+                </div>
+            </div>
+
+            <!-- Charts and Notices -->
+            <div class="main-grid">
+                
+                <!-- Chart Section -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3 class="section-title">Frequência da semana</h3>
+                        <button class="dropdown-btn">Esta semana <i class="fa-solid fa-chevron-down"></i></button>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-axis-y">
+                            <span>65</span>
+                            <span>50</span>
+                            <span>20</span>
+                            <span>0</span>
+                        </div>
+                        
+                        <!-- Inline SVG for the Line Chart -->
+                        <svg width="100%" height="100%" viewBox="0 0 700 250" preserveAspectRatio="none" style="margin-left: 30px; width: calc(100% - 30px);">
+                            <defs>
+                                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#5a4bfa" stop-opacity="0.15" />
+                                    <stop offset="100%" stop-color="#5a4bfa" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                            
+                            <!-- Area Fill -->
+                            <path d="M 30 160 L 150 70 L 270 140 L 390 80 L 510 150 L 630 110 L 630 220 L 30 220 Z" fill="url(#chartGradient)" />
+                            
+                            <!-- Line -->
+                            <path d="M 30 160 L 150 70 L 270 140 L 390 80 L 510 150 L 630 110" fill="none" stroke="#5a4bfa" stroke-width="3" />
+                            
+                            <!-- Points -->
+                            <circle cx="30" cy="160" r="5" fill="#5a4bfa" stroke="#fff" stroke-width="2"/>
+                            <circle cx="150" cy="70" r="5" fill="#5a4bfa" stroke="#fff" stroke-width="2"/>
+                            <circle cx="270" cy="140" r="5" fill="#5a4bfa" stroke="#fff" stroke-width="2"/>
+                            <circle cx="390" cy="80" r="5" fill="#5a4bfa" stroke="#fff" stroke-width="2"/>
+                            <circle cx="510" cy="150" r="5" fill="#5a4bfa" stroke="#fff" stroke-width="2"/>
+                            <circle cx="630" cy="110" r="5" fill="#5a4bfa" stroke="#fff" stroke-width="2"/>
+
+                            <!-- X Axis Labels -->
+                            <text x="30" y="245" fill="#8c8c9e" font-size="12" font-family="Inter" text-anchor="middle">Seg</text>
+                            <text x="150" y="245" fill="#8c8c9e" font-size="12" font-family="Inter" text-anchor="middle">Ter</text>
+                            <text x="270" y="245" fill="#8c8c9e" font-size="12" font-family="Inter" text-anchor="middle">Qua</text>
+                            <text x="390" y="245" fill="#8c8c9e" font-size="12" font-family="Inter" text-anchor="middle">Qui</text>
+                            <text x="510" y="245" fill="#8c8c9e" font-size="12" font-family="Inter" text-anchor="middle">Sex</text>
+                            <text x="630" y="245" fill="#8c8c9e" font-size="12" font-family="Inter" text-anchor="middle">Sáb</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Notices Section -->
+                <div class="section-card">
+                    <h3 class="section-title" style="margin-bottom: 24px;">Avisos importantes</h3>
+                    
+                    <div class="notices-list">
+                        <div class="notice-item">
+                            <div class="notice-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="notice-content">
+                                <h4>Reunião de pais</h4>
+                                <p>20/06/2024 - 19:00</p>
+                            </div>
+                        </div>
+                        
+                        <div class="notice-item">
+                            <div class="notice-icon"><i class="fa-regular fa-calendar-check"></i></div>
+                            <div class="notice-content">
+                                <h4>Entrega de atividades</h4>
+                                <p>25/06/2024</p>
+                            </div>
+                        </div>
+
+                        <div class="notice-item">
+                            <div class="notice-icon"><i class="fa-regular fa-file-lines"></i></div>
+                            <div class="notice-content">
+                                <h4>Prova bimestral</h4>
+                                <p>01/07/2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Recent Activities (Bottom) -->
+            <div class="section-card">
+                <div class="activities-header">
+                    <h3 class="section-title">Atividades recentes</h3>
+                    <a href="#" class="link">Ver todas</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

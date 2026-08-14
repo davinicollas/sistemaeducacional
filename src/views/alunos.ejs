@@ -1,0 +1,103 @@
+<%- include('partials/header') %>
+    <!-- Sidebar -->
+    <%- include('partials/menu') %>
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Alunos</h1>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar aluno...">
+            </div>
+            <button class="btn-primary">Novo aluno</button>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Turma</th>
+                        <th>E-mail</th>
+                        <th>Telefone</th>
+                        <th style="text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ana Beatriz</td>
+                        <td>9º Ano A</td>
+                        <td>ana@email.com</td>
+                        <td>(11) 99999-9999</td>
+                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>Bruno Silva</td>
+                        <td>8º Ano B</td>
+                        <td>bruno@email.com</td>
+                        <td>(11) 98888-8888</td>
+                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>Carlos Eduardo</td>
+                        <td>1º Ano A</td>
+                        <td>carlos@email.com</td>
+                        <td>(11) 97777-7777</td>
+                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>Daniela Lima</td>
+                        <td>9º Ano B</td>
+                        <td>daniela@email.com</td>
+                        <td>(11) 96666-6666</td>
+                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>Eduardo Santos</td>
+                        <td>2º Ano A</td>
+                        <td>eduardo@email.com</td>
+                        <td>(11) 95555-5555</td>
+                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>Fernanda Costa</td>
+                        <td>3º Ano B</td>
+                        <td>fernanda@email.com</td>
+                        <td>(11) 94444-4444</td>
+                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>Gabriel Martins</td>
+                        <td>1º Ano B</td>
+                        <td>gabriel@email.com</td>
+                        <td>(11) 93333-3333</td>
+                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>Isabela Almeida</td>
+                        <td>8º Ano A</td>
+                        <td>isabela@email.com</td>
+                        <td>(11) 92222-2222</td>
+                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">4</button>
+            <button class="page-btn">5</button>
+            <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </main>
+
+</body>
+</html>
