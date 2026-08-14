@@ -35,7 +35,7 @@ const login = require('./routes/login');
 
 // Rotas
 app.get('/', (req, res) => {
-  res.send(`Servidor rodando usando a porta ${PORT}`);
+   res.render('index');
 });
 
 app.get('/login', (req, res) => {
