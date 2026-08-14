@@ -1,62 +1,75 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
-const Usuario = require("../model/usuario");
+const db = require("../../database/mysql");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const Usuario = require("../model/usuario");
+
 
 router.get("/login", (req, res) => {
-    res.render("login", {
-        erro: null
-    });
+
+    res.render("login");
+
 });
 
 router.post("/login", async (req, res) => {
-    const email = String(req.body.email || "").trim().toLowerCase();
-    const senha = String(req.body.senha || "");
 
-    try {
-        if (!email || !senha) {
-            return res.render("login", {
-                erro: "Preencha e-mail e senha."
-            });
-        }
+    const { email, senha } = req.body;
 
-        if (!emailRegex.test(email)) {
-            return res.render("login", {
-                erro: "Informe um e-mail válido."
-            });
-        }
 
-        const usuario = await Usuario.getUsuario(email);
+    const usuario = await Usuario.getUsuario(email);
 
-        if (!usuario) {
-            return res.render("login", {
-                erro: "Usuário não encontrado."
-            });
-        }
+    if (!usuario) {
 
-        const senhaValida = await bcrypt.compare(senha, usuario.senha);
-
-        if (!senhaValida) {
-            return res.render("login", {
-                erro: "Senha inválida."
-            });
-        }
-
-        req.session.usuario = {
-            id: usuario.id,
-            nome: usuario.nome,
-            email: usuario.email
-        };
-
-        return res.redirect("/");
-    } catch (err) {
-        console.error(err);
         return res.render("login", {
-            erro: "Erro ao realizar login."
+
+            erro: "Email ou senha inválidos."
+
         });
+
     }
+
+    //const usuario = usuarios[0];
+    const senhaCorreta = await bcrypt.compare(
+
+        senha,
+
+        usuario.senha
+
+    );
+
+    if (!senhaCorreta) {
+
+        return res.render("login", {
+
+            erro: "Email ou senha inválidos."
+
+        });
+
+    }
+
+    req.session.usuario = {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email
+    };
+
+    res.redirect("/dashboard");
+
+});
+
+
+router.get("/logout", (req, res) => {
+
+     req.session.destroy(err => {
+        if (err) {
+            return res.redirect("/");
+        }
+
+        res.clearCookie(process.env.SESSION_NAME || "sistema_session");
+        res.redirect("/login");
+    });
+
 });
 
 module.exports = router;

@@ -29,23 +29,6 @@ router.post("/cadastro", async (req, res) => {
             });
         }
 
-        if (nome.length < 2) {
-            return res.render("cadastro", {
-                erro: "O nome deve ter pelo menos 2 caracteres."
-            });
-        }
-
-        if (!emailRegex.test(email)) {
-            return res.render("cadastro", {
-                erro: "Informe um e-mail válido."
-            });
-        }
-
-        if (senha.length < 8) {
-            return res.render("cadastro", {
-                erro: "A senha deve ter pelo menos 8 caracteres."
-            });
-        }
 
         if (telefone && !telefoneRegex.test(telefone.replace(/\D/g, ""))) {
             return res.render("cadastro", {
@@ -66,11 +49,14 @@ router.post("/cadastro", async (req, res) => {
             "INSERT INTO usuarios (nome, email, senha, telefone, data_nascimento, termos) VALUES (?, ?, ?, ?, ?, ?)",
             [nome, email, senhaHash, telefone || "", dataNascimento || null, termo]
         );
-        console.log('-> resultado INSERT:', insertResult && insertResult.affectedRows ? { affectedRows: insertResult.affectedRows, insertId: insertResult.insertId } : insertResult);
 
-        const usuarioInserido = await Usuario.getUsuario(email);
+        req.session.usuario = {
+            id: insertResult.insertId,
+            nome: nome,
+            email: email
+        };
 
-        return res.redirect("/");
+        return res.redirect("/dashboard");
     } catch (err) {
         console.error(err);
         return res.render("cadastro", {
