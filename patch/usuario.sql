@@ -2,13 +2,14 @@ CREATE TABLE usuarios (
     id INT AUTO_INCREMENT,
     telefone VARCHAR(20) NOT NULL,
     nome VARCHAR(255) NOT NULL,
-    idCargo INT NOT NULL,
-    data_nascimento DATE NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    idCargo INT DEFAULT NULL,
+    data_nascimento DATE DEFAULT NULL,
     excluido INT  NOT NULL DEFAULT 0,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     senha VARCHAR(255) NOT NULL,
     avatar VARCHAR(255) NULL,
-    autorizacaoTermosPrivacidade INT NOT NULL DEFAULT 0,
+    termos INT NOT NULL DEFAULT 0,
     atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
