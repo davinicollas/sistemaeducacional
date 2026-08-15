@@ -56,6 +56,10 @@ app.get('/login', (req, res) => {
   res.render('login');
 });
 
+app.get('/configuracao', (req, res) => {
+  res.render('configuracao');
+});
+
 app.get('/cadastro', (req, res) => {
   res.render('cadastro');
 });

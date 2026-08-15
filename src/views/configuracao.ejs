@@ -1,0 +1,102 @@
+<%- include('partials/header') %>
+    <!-- Sidebar -->
+    <%- include('partials/menu') %>
+        <div class="content container-fluid">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <h2 class="fw-bold">
+                        <i class="bi bi-gear-fill"></i>
+                        Configurações
+                    </h2>
+
+                    <p class="text-white mb-0">
+                        Personalize o comportamento da Inteligência Artificial.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <form action="/configuracoes" method="POST">
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="col-md-3 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Temperatura
+
+                        </label>
+                        <input type="number" class="form-control" min="0" max="2" step="0.1" name="temperature" value="">
+                    </div>
+
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+
+                    <div class="card-header bg-dark text-white">
+
+                        <h5 class="mb-0">
+                            💬 Configuração das Respostas
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="mb-3">
+
+                            <label class="form-label text-white">
+
+                                Idioma
+
+                            </label>
+
+                            <select class="form-select" name="idioma">
+
+                                <option value="pt-BR">
+                                    Português
+                                </option>
+
+                                <option value="en-US">
+                                    English
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-check form-switch">
+
+                            <input class="form-check-input" type="checkbox" id="emoji" name="emoji" value="1">>
+
+                            <label class="form-check-label text-white" for="emoji">
+
+                                Permitir uso de emojis
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="text-end">
+
+                    <button class="btn btn-success btn-lg">
+
+                        <i class="bi bi-floppy-fill"></i>
+
+                        Salvar Configurações
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>

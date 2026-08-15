@@ -1,18 +1,54 @@
+<%- include('header') %>
+
 <aside class="sidebar">
     <div class="logo">
-        <i class="fa-solid fa-graduation-cap"></i> Sistema Educacional- Gestão Inteligente
+        <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+        <span>Sistema Educacional <small>Gestão Inteligente</small></span>
     </div>
-    <ul class="nav-menu">
-        <li class="nav-item">Dashboard</li>
-        <li class="nav-item active">Agenda</li>
-        <li class="nav-item">Alunos</li>
-        <li class="nav-item">Professores</li>
-        <li class="nav-item">Turmas</li>
-        <li class="nav-item">Disciplinas</li>
-        <li class="nav-item">Notas</li>
-        <li class="nav-item">Frequência</li>
-        <li class="nav-item">Financeiro</li>
-        <li class="nav-item">Relatórios</li>
-        <li class="nav-item" style="margin-top: 20px;">Configurações</li>
-    </ul>
+    <nav class="nav-menu" aria-label="Menu Principal">
+        <a href="/" class="nav-item">
+            <i class="fa-solid fa-house" aria-hidden="true"></i> Dashboard
+        </a>
+        <a href="/agenda" class="nav-item">
+            <i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Agenda
+        </a>
+        <a href="/alunos" class="nav-item">
+            <i class="fa-solid fa-user-graduate" aria-hidden="true"></i> Alunos
+        </a>
+        <a href="/professores" class="nav-item">
+            <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> Professores
+        </a>
+        <a href="/turmas" class="nav-item">
+            <i class="fa-solid fa-users-rectangle" aria-hidden="true"></i> Turmas
+        </a>
+        <a href="/disciplinas" class="nav-item">
+            <i class="fa-solid fa-book" aria-hidden="true"></i> Disciplinas
+        </a>
+        <a href="/notas" class="nav-item">
+            <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notas
+        </a>
+        <a href="/frequencia" class="nav-item">
+            <i class="fa-solid fa-clipboard-user" aria-hidden="true"></i> Frequência
+        </a>
+        <a href="/financeiro" class="nav-item">
+            <i class="fa-solid fa-wallet" aria-hidden="true"></i> Financeiro
+        </a>
+        <a href="/relatorios" class="nav-item">
+            <i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Relatórios
+        </a>
+        
+        <div class="nav-divider"></div>
+        
+        <a href="/configuracoes" class="nav-item">
+            <i class="fa-solid fa-gear" aria-hidden="true"></i> Configurações
+        </a>
+        <div class="sidebar-submenu">
+            <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)">
+                <i class="bi bi-sliders"></i> Parametros
+            </button>
+            <div class="submenu-items">
+                <a href="/cargos"><i class="bi bi-grid-3x3-gap"></i> Cargo</a>
+            </div>
+        </div>
+    </nav>
 </aside>
