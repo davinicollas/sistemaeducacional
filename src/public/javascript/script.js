@@ -26,7 +26,18 @@ function loginMicrosoft() {
 
 function toggleSubmenu(button) {
     const submenu = button.closest('.sidebar-submenu');
-    submenu.classList.toggle('open');
+    const list = submenu.querySelector('.submenu-items');
+    const isOpen = submenu.classList.toggle('open');
+    // accessibility attributes
+    const expanded = isOpen ? 'true' : 'false';
+    button.setAttribute('aria-expanded', expanded);
+    if (list) {
+        if (isOpen) {
+            list.hidden = false;
+        } else {
+            list.hidden = true;
+        }
+    }
 }
 
 // ==========================================

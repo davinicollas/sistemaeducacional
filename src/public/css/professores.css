@@ -1,0 +1,5 @@
+/* Professores page styles (reuse table styles, can extend later) */
+/* For now reuse same table/pagination styles as alunos */
+@import url('./alunos.css');
+
+/* Professores-specific additions can go here */

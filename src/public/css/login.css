@@ -1,0 +1,503 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f6fa;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #20213a;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 1100px;
+    min-height: 650px;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    box-shadow: 0 15px 45px rgba(45, 45, 90, 0.12);
+}
+
+/* =========================
+    LADO ESQUERDO
+========================= */
+
+.login-content {
+    width: 50%;
+    padding: 45px 55px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 55px;
+    color: #4035d4;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.logo-icon {
+    width: 25px;
+    height: 25px;
+}
+
+.login-title {
+    font-size: 27px;
+    font-weight: 700;
+    margin-bottom: 7px;
+    color: #24243d;
+}
+
+.login-subtitle {
+    color: #88889c;
+    font-size: 13px;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #45455c;
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.form-input {
+    width: 100%;
+    height: 43px;
+    border: 1px solid #dedee8;
+    border-radius: 5px;
+    padding: 0 13px;
+    font-size: 12px;
+    outline: none;
+    transition: .2s;
+    color: #333;
+}
+
+.form-input:focus {
+    border-color: #5146e5;
+    box-shadow: 0 0 0 3px rgba(81, 70, 229, .08);
+}
+
+.form-input::placeholder {
+    color: #b4b4c1;
+}
+
+.password-input {
+    padding-right: 42px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: #9292a5;
+}
+
+.password-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.forgot-password {
+    font-size: 10px;
+    color: #5045d8;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.login-button {
+    width: 100%;
+    height: 43px;
+    border: 0;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #4b3ce0, #5c50e9);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+    box-shadow: 0 5px 12px rgba(77, 62, 224, .18);
+}
+
+.login-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 16px rgba(77, 62, 224, .25);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 25px 0 15px;
+    color: #aaaaba;
+    font-size: 11px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: #e6e6ee;
+}
+
+.social-login {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.social-button {
+    height: 40px;
+    border: 1px solid #dedee8;
+    background: white;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 11px;
+    color: #424257;
+    transition: .2s;
+}
+
+.social-button:hover {
+    background: #f8f8fc;
+    border-color: #cfcfe0;
+}
+
+.social-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* =========================
+    LADO DIREITO
+========================= */
+
+.login-banner {
+    width: 50%;
+    background: linear-gradient(145deg,
+            #7168ef 0%,
+            #5449db 55%,
+            #4338c7 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.background-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .05);
+}
+
+.circle-1 {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    right: -80px;
+}
+
+.circle-2 {
+    width: 220px;
+    height: 220px;
+    bottom: -100px;
+    left: -80px;
+}
+
+.banner-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+    max-width: 390px;
+}
+
+/* =========================
+    ILUSTRAÇÃO
+========================= */
+
+.education-illustration {
+    width: 310px;
+    height: 270px;
+    margin: 0 auto 35px;
+    position: relative;
+}
+
+.cloud {
+    position: absolute;
+    width: 65px;
+    height: 25px;
+    background: rgba(255, 255, 255, .9);
+    border-radius: 30px;
+}
+
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, .9);
+    border-radius: 50%;
+}
+
+.cloud::before {
+    width: 30px;
+    height: 30px;
+    left: 10px;
+    top: -13px;
+}
+
+.cloud::after {
+    width: 23px;
+    height: 23px;
+    right: 8px;
+    top: -8px;
+}
+
+.cloud-1 {
+    top: 15px;
+    left: 25px;
+}
+
+.cloud-2 {
+    top: 70px;
+    right: 5px;
+    transform: scale(.8);
+}
+
+.star {
+    position: absolute;
+    color: white;
+    font-size: 16px;
+    opacity: .9;
+}
+
+.star-1 {
+    top: 45px;
+    right: 50px;
+}
+
+.star-2 {
+    top: 105px;
+    left: 15px;
+}
+
+.books {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 230px;
+}
+
+.book {
+    height: 32px;
+    border-radius: 3px;
+    position: relative;
+    margin: 0 auto 3px;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, .18);
+}
+
+.book-1 {
+    width: 205px;
+    background: #8e7df2;
+}
+
+.book-2 {
+    width: 225px;
+    background: #ffffff;
+}
+
+.book-3 {
+    width: 195px;
+    background: #e7e3ff;
+}
+
+.book-4 {
+    width: 180px;
+    background: #7564e9;
+}
+
+/* Chapéu de formatura */
+
+.graduation-cap {
+    position: absolute;
+    width: 160px;
+    height: 70px;
+    left: 50%;
+    top: 88px;
+    transform: translateX(-50%);
+}
+
+.cap-top {
+    position: absolute;
+    width: 160px;
+    height: 55px;
+    background: #17182c;
+    transform: perspective(180px) rotateX(30deg) rotateZ(-2deg);
+    clip-path: polygon(50% 0%, 100% 40%, 50% 100%, 0% 40%);
+    filter: drop-shadow(0 7px 4px rgba(0, 0, 0, .25));
+}
+
+.cap-bottom {
+    position: absolute;
+    width: 75px;
+    height: 35px;
+    background: #202139;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0 0 8px 8px;
+}
+
+.cap-button {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    background: #090a17;
+    border-radius: 50%;
+    top: 25px;
+    left: 75px;
+    z-index: 3;
+}
+
+.tassel {
+    position: absolute;
+    width: 55px;
+    height: 3px;
+    background: #111223;
+    top: 30px;
+    left: 80px;
+    transform: rotate(25deg);
+    transform-origin: left;
+}
+
+.tassel::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 25px;
+    background: #111223;
+    right: -4px;
+    top: 0;
+    border-radius: 0 0 4px 4px;
+}
+
+/* Lápis */
+
+.pencil-cup {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    width: 45px;
+    height: 50px;
+    background: #5746c9;
+    border-radius: 4px 4px 15px 15px;
+}
+
+.pencil {
+    position: absolute;
+    width: 6px;
+    height: 70px;
+    background: #f2cf52;
+    bottom: 38px;
+    left: 10px;
+    transform: rotate(-18deg);
+    border-radius: 2px;
+}
+
+.pencil:nth-child(2) {
+    left: 23px;
+    transform: rotate(5deg);
+    background: #f39b6d;
+}
+
+.pencil:nth-child(3) {
+    left: 32px;
+    transform: rotate(18deg);
+    background: #72b5ef;
+}
+
+.banner-title {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.5;
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+/* =========================
+    RESPONSIVO
+========================= */
+
+@media (max-width: 850px) {
+    .login-container {
+        max-width: 520px;
+        min-height: auto;
+    }
+
+    .login-content {
+        width: 100%;
+        padding: 40px;
+    }
+
+    .login-banner {
+        display: none;
+    }
+
+    .logo {
+        margin-bottom: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+
+    .login-container {
+        border-radius: 12px;
+    }
+
+    .login-content {
+        padding: 30px 25px;
+    }
+
+    .login-title {
+        font-size: 24px;
+    }
+}

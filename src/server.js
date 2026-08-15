@@ -22,7 +22,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
 const sessionStore = new MySQLStore({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -32,20 +31,24 @@ const sessionStore = new MySQLStore({
 });
 
 app.use(session({
-    name: process.env.SESSION_NAME ,
-    secret: process.env.SESSION_SECRET,
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    rolling: true,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 dias
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV || false
-    }
+  name: process.env.SESSION_NAME || 'sistema_session',
+  secret: process.env.SESSION_SECRET || 'dev_secret_change_me',
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 dias
+    httpOnly: true,
+    sameSite: "lax",
+    // Apenas cookies seguros em produção (HTTPS)
+    secure: process.env.NODE_ENV === 'production'
+  }
 }));
-
+app.use((req, res, next) => {
+    res.locals.usuario = req.session.usuario || null;
+    next();
+});
 
 // Rotas
 app.get('/', (req, res) => {
@@ -83,6 +86,8 @@ app.get('/privacidade', (req, res) => {
 app.get('/termos', (req, res) => {
   res.render('termos');
 });
+
+
 
 
 app.use(usuario);

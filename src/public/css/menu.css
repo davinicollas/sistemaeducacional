@@ -1,0 +1,45 @@
+
+/* Sidebar submenu styles */
+.sidebar-submenu {
+    padding: 6px 0 12px;
+}
+.sidebar-submenu .submenu-toggle {
+    width: 100%;
+    background: none;
+    border: 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 500;
+}
+.sidebar-submenu .submenu-toggle:hover {
+    background-color: #f8f9fa;
+}
+.sidebar-submenu .submenu-caret {
+    transition: transform 0.2s ease;
+}
+.sidebar-submenu.open .submenu-caret {
+    transform: rotate(180deg);
+}
+.submenu-items {
+    list-style: none;
+    margin: 8px 0 0 0;
+    padding: 0 4px 0 8px;
+}
+.submenu-items li a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+.submenu-items li a:hover {
+    background-color: #f8f9fa;
+    color: var(--text-main);
+}

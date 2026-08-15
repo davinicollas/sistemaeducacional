@@ -1,0 +1,72 @@
+/* Agenda styles extracted from configuracao.css */
+.agenda-container {
+    padding: 0 40px 40px;
+    max-width: 1200px;
+}
+
+/* Calendar Controls */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.date-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-outline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    background: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    gap: 16px;
+}
+
+.btn-outline:hover { background: #f0f0f0; }
+
+.btn-primary { background-color: var(--primary); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; }
+
+/* Calendar Grid */
+.calendar-wrapper { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; margin-bottom: 40px; }
+
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+
+.day-name { padding: 16px; text-align: center; font-size: 12px; font-weight: 600; color: var(--text-main); border-bottom: 1px solid var(--border-color); }
+
+.calendar-cell { min-height: 100px; padding: 10px; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 4px; }
+
+.calendar-cell:nth-child(7n) { border-right: none; }
+
+.calendar-cell.muted .day-number { color: var(--text-muted); opacity: 0.5; }
+
+.day-number { font-size: 14px; text-align: center; margin-bottom: 8px; font-weight: 500; }
+
+.day-number.active { background-color: var(--primary); color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 8px; }
+
+/* Events Pills */
+.event-pill { font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.event-purple { background: var(--event-purple-bg); color: var(--event-purple-text); }
+.event-teal { background: var(--event-teal-bg); color: var(--event-teal-text); }
+.event-pink { background: var(--event-pink-bg); color: var(--event-pink-text); }
+
+/* Upcoming Events */
+.section-subtitle { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+.upcoming-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+.event-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 12px; }
+
+.event-card i { font-size: 20px; color: var(--primary); }
+
+.event-card-title { font-size: 14px; font-weight: 600; }

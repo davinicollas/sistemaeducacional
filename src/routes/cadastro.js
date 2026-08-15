@@ -49,11 +49,12 @@ router.post("/cadastro", async (req, res) => {
             "INSERT INTO usuarios (nome, email, senha, telefone, data_nascimento, termos) VALUES (?, ?, ?, ?, ?, ?)",
             [nome, email, senhaHash, telefone || "", dataNascimento || null, termo]
         );
-
+        
+        const usuarioInserido = await Usuario.getUsuario(email);
         req.session.usuario = {
-            id: insertResult.insertId,
-            nome: nome,
-            email: email
+            id: usuarioInserido.insertId,
+            nome: usuarioInserido.nome,
+            email: usuarioInserido.email
         };
 
         return res.redirect("/dashboard");

@@ -3,10 +3,10 @@
 <aside class="sidebar">
     <div class="logo">
         <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
-        <span>Sistema Educacional <small>Gestão Inteligente</small></span>
+        <span style="text-align:center;">Sistema Educacional <small>Gestão Inteligente</small></span>
     </div>
     <nav class="nav-menu" aria-label="Menu Principal">
-        <a href="/" class="nav-item">
+        <a href="/dashboard" class="nav-item">
             <i class="fa-solid fa-house" aria-hidden="true"></i> Dashboard
         </a>
         <a href="/agenda" class="nav-item">
@@ -38,17 +38,21 @@
         </a>
         
         <div class="nav-divider"></div>
-        
-        <a href="/configuracoes" class="nav-item">
-            <i class="fa-solid fa-gear" aria-hidden="true"></i> Configurações
-        </a>
         <div class="sidebar-submenu">
-            <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)">
-                <i class="bi bi-sliders"></i> Parametros
+            <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)" aria-expanded="false" aria-controls="submenu-parametros">
+                <i class="bi bi-sliders"></i> Parametros <i class="bi bi-chevron-down submenu-caret" aria-hidden="true"></i>
             </button>
-            <div class="submenu-items">
-                <a href="/cargos"><i class="bi bi-grid-3x3-gap"></i> Cargo</a>
-            </div>
+            <ul class="submenu-items" id="submenu-parametros" hidden>
+                <li><a href="/cargos"><i class="bi bi-grid-3x3-gap"></i> Cargo</a></li>
+            </ul>
+        </div>
+         <div class="sidebar-submenu">
+            <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)" aria-expanded="false" aria-controls="submenu-configuracoes">
+                <i class="bi bi-sliders"></i> Configurações <i class="bi bi-chevron-down submenu-caret" aria-hidden="true"></i>
+            </button>
+            <ul class="submenu-items" id="submenu-configuracoes" hidden>
+                <li><a href="/configuracao"><i class="bi bi-grid-3x3-gap"></i> Permissões</a></li>
+            </ul>
         </div>
     </nav>
 </aside>

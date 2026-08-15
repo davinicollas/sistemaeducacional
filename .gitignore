@@ -10,6 +10,8 @@
 # EJS
 !*.ejs
 
+!*.css
+
 # Arquivos importantes
 !.gitignore
 !README.md
@@ -17,7 +19,7 @@
 !package-lock.json
 
 node_modules/
-public/images
+
 
 # Ignorar ambiente
 .env

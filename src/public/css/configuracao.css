@@ -1,0 +1,334 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f6fa;
+    color: #20213a;
+    min-height: 100vh;
+}
+
+.config-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 35px 25px 60px;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    font-size: 30px;
+    font-weight: 700;
+    color: #20213a;
+    margin-bottom: 7px;
+}
+
+.page-header p {
+    color: #7b7f95;
+    font-size: 15px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.config-card {
+    background: #ffffff;
+    border: 1px solid #e7e8ef;
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 4px 18px rgba(32, 33, 58, 0.04);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 23px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eeeeF3;
+}
+
+.card-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 10px;
+    background: #f0f2ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.card-header h2 {
+    font-size: 18px;
+    color: #20213a;
+    margin-bottom: 4px;
+}
+
+.card-header p {
+    font-size: 13px;
+    color: #8a8da0;
+}
+
+
+/* =========================
+   FORM GRID
+========================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #41435a;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    height: 45px;
+    border: 1px solid #dfe1e9;
+    border-radius: 8px;
+    padding: 0 13px;
+    font-size: 14px;
+    color: #292b40;
+    background: #fff;
+    outline: none;
+    transition: 0.2s;
+}
+
+.form-group input::placeholder {
+    color: #b1b4c1;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #5967e8;
+    box-shadow: 0 0 0 3px rgba(89, 103, 232, 0.10);
+}
+
+.form-group small {
+    font-size: 11px;
+    color: #9295a6;
+    line-height: 1.4;
+}
+
+
+/* =========================
+   CAMPOS ESPECIAIS
+========================= */
+
+.small-field {
+    max-width: 250px;
+}
+
+.large-field {
+    grid-column: span 1;
+}
+
+
+/* =========================
+   FILE
+========================= */
+
+.file-input {
+    position: relative;
+}
+
+.file-input input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.file-label {
+    height: 45px;
+    border: 1px dashed #cfd2df;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #686b80;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.file-label:hover {
+    border-color: #5967e8;
+    background: #f8f9ff;
+    color: #5967e8;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn-primary,
+.btn-secondary {
+    height: 43px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: #5967e8;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #4857d7;
+}
+
+.btn-secondary {
+    background: #ffffff;
+    color: #55586e;
+    border: 1px solid #dfe1e9;
+}
+
+.btn-secondary:hover {
+    background: #f7f7fa;
+}
+
+
+/* =========================
+   MOBILE ACTIONS
+========================= */
+
+.mobile-actions {
+    display: none;
+}
+
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 768px) {
+
+    .config-container {
+        padding: 25px 15px 40px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .page-header h1 {
+        font-size: 25px;
+    }
+
+    .header-actions {
+        display: none;
+    }
+
+    .config-card {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 17px;
+    }
+
+    .small-field,
+    .large-field {
+        max-width: none;
+        grid-column: auto;
+    }
+
+    .mobile-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .mobile-actions button {
+        flex: 1;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .config-container {
+        padding: 20px 12px 30px;
+    }
+
+    .config-card {
+        padding: 17px;
+    }
+
+    .card-header {
+        margin-bottom: 20px;
+        padding-bottom: 18px;
+    }
+
+    .card-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+    }
+
+    .card-header h2 {
+        font-size: 16px;
+    }
+
+    .card-header p {
+        font-size: 12px;
+    }
+
+    .page-header h1 {
+        font-size: 23px;
+    }
+
+    .page-header p {
+        font-size: 13px;
+    }
+
+}

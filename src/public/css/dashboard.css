@@ -1,0 +1,644 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar Simplificada (Para focar no Dashboard) */
+.sidebar {
+    width: 260px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+}
+
+.logo {
+    padding: 0 24px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 16px;
+}
+
+.nav-item {
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+}
+
+.nav-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.nav-item.active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* Top Header */
+.top-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 24px 40px;
+    gap: 20px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-image: url('https://i.pravatar.cc/150?img=47');
+    background-size: cover;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    padding: 0 40px 40px;
+    max-width: 1200px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+/* KPI Cards Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.kpi-card {
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+
+.icon-box.purple {
+    background-color: var(--icon-purple-bg);
+    color: var(--icon-purple-text);
+}
+
+.icon-box.green {
+    background-color: var(--icon-green-bg);
+    color: var(--icon-green-text);
+}
+
+.icon-box.orange {
+    background-color: var(--icon-orange-bg);
+    color: var(--icon-orange-text);
+}
+
+.kpi-title {
+    font-size: 14px;
+    color: var(--text-main);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.kpi-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Main Grid (Chart + Notices) */
+.main-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.section-card {
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.dropdown-btn {
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Chart Area (SVG) */
+.chart-container {
+    width: 100%;
+    height: 250px;
+    position: relative;
+}
+
+.chart-axis-y {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding-bottom: 30px;
+    /* space for x axis */
+}
+
+/* Notices List */
+.notices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.notice-item {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.notice-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.notice-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background-color: var(--icon-purple-bg);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.notice-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-main);
+}
+
+.notice-content p {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Recent Activities */
+.activities-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.activities-header .link {
+    font-size: 14px;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+/* =========================================
+   LAYOUT
+========================================= */
+
+.dashboard-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    width: 260px;
+
+    flex-shrink: 0;
+
+    background: var(--sidebar-bg);
+
+    border-right: 1px solid var(--border-color);
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 24px 0;
+}
+
+.sidebar-logo {
+    padding: 0 24px;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    color: var(--primary);
+
+    margin-bottom: 40px;
+}
+
+.nav-menu {
+    list-style: none;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    padding: 0 16px;
+}
+
+.nav-item {
+    padding: 12px 16px;
+
+    border-radius: 8px;
+
+    color: var(--text-muted);
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: .2s;
+}
+
+.nav-item:hover {
+    background: #f8f9fa;
+}
+
+.nav-item.active {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.nav-item i {
+    width: 20px;
+    text-align: center;
+}
+
+/* =========================================
+   MAIN
+========================================= */
+
+.main-content {
+    flex: 1;
+
+    min-width: 0;
+
+    overflow-y: auto;
+
+    background: var(--bg-color);
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.top-header {
+    display: flex;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 24px 40px;
+}
+
+.icon-btn {
+    border: none;
+    background: transparent;
+
+    color: var(--text-muted);
+
+    font-size: 18px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 50%;
+
+    background: #ddd;
+}
+
+/* =========================================
+   DASHBOARD
+========================================= */
+
+.dashboard-container {
+    padding: 0 40px 40px;
+
+    max-width: 1300px;
+}
+
+.kpi-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 24px;
+
+    margin-bottom: 24px;
+}
+
+.kpi-card {
+    background: white;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 12px;
+
+    padding: 24px;
+}
+
+.icon-box {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 16px;
+}
+
+.icon-box.purple {
+    background: var(--primary-light);
+    color: #7c3aed;
+}
+
+.icon-box.green {
+    background: #e6fcf5;
+    color: var(--success);
+}
+
+.icon-box.orange {
+    background: #fff4e6;
+    color: var(--warning);
+}
+
+.kpi-title {
+    font-size: 14px;
+    font-weight: 600;
+
+    margin-bottom: 8px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+
+    margin-bottom: 4px;
+}
+
+.kpi-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* =========================================
+   GRID PRINCIPAL
+========================================= */
+
+.main-grid {
+    display: grid;
+
+    grid-template-columns: 2fr 1fr;
+
+    gap: 24px;
+
+    margin-bottom: 24px;
+}
+
+.section-card {
+    background: white;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 12px;
+
+    padding: 24px;
+}
+
+.section-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* =========================================
+   AVISOS
+========================================= */
+
+.notices-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.notice-item {
+    display: flex;
+
+    gap: 16px;
+
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid var(--border-color);
+}
+
+.notice-item:last-child {
+    border-bottom: none;
+}
+
+.notice-icon {
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notice-content h4 {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.notice-content p {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* =========================================
+   RESPONSIVO
+========================================= */
+
+@media (max-width: 1000px) {
+
+    .sidebar {
+        width: 220px;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .top-header {
+        padding: 20px;
+    }
+
+    .dashboard-container {
+        padding: 0 20px 30px;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}
