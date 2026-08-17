@@ -3,23 +3,26 @@
     const router = express.Router();
 
     const configuracoes = require("../model/configuracoes");
+    const estados = require("../model/estados");
 
     router.get("/configuracoes", async (req,res)=>{
 
 
         const conf = await configuracoes.getConfig();
+        const estado = await estados.getEstados();
         
 
         res.render("configuracoes",{
 
-            config: conf || {}
+            conf: conf,
+            estado: estado
 
         });
 
     });
 
     router.post("/configuracoes", async(req,res)=>{
-        console.log(req);
+        console.log(req.body);
         const {
             nome,
             nome_fantasia,

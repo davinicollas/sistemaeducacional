@@ -1,13 +1,13 @@
 const db = require("../../database/mysql");
 
-async function getConfig() {
+async function getEstados() {
 
     const [rows] = await db.query(
-        "SELECT * FROM configuracoes"
+        "SELECT * FROM params_estados"
     );
-    return rows[0];
+    return rows;
 }
 
 module.exports = {
-    getConfig
+    getEstados
 };

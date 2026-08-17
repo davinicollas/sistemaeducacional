@@ -10,6 +10,8 @@ const MySQLStore = require("express-mysql-session")(session);
 
 const usuario = require('./routes/cadastro');
 const login = require('./routes/login');
+const configuracoes = require('./routes/configuracoes');
+const estados = require('./routes/estados');
 
 const authMid = require("./middleware/auth");
 
@@ -21,7 +23,8 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve arquivos estáticos a partir da pasta `public` na raiz do projeto
+app.use(express.static(path.join(__dirname, '..', 'public')));
 const sessionStore = new MySQLStore({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -59,10 +62,6 @@ app.get('/login', (req, res) => {
   res.render('login');
 });
 
-app.get('/configuracao', (req, res) => {
-  res.render('configuracao');
-});
-
 app.get('/cadastro', (req, res) => {
   res.render('cadastro');
 });
@@ -79,7 +78,6 @@ app.get('/professores', (req, res) => {
 app.get('/dashboard', (req, res) => {
   res.render('dashboard');
 });
-
 app.get('/privacidade', (req, res) => {
   res.render('privacidade');
 });
@@ -92,6 +90,8 @@ app.get('/termos', (req, res) => {
 
 app.use(usuario);
 app.use(login);
+app.use(configuracoes); 
+app.use(estados);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {

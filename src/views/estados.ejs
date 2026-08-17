@@ -1,0 +1,77 @@
+<%- include('partials/header') %>
+    <%- include('partials/menu') %>
+<%
+    filtros = typeof filtros !== 'undefined' ? filtros : {};
+    pagination = typeof pagination !== 'undefined' ? pagination : {};
+    uf = typeof uf !== 'undefined' ? uf : null;
+    estados = typeof estados !== 'undefined' ? estados : [];
+%>
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="page-title">Estados</h1>
+        </div>
+    </div>
+
+         <%- include('partials/filtros', {
+                action: '/estados',
+                filtros,
+                fields: [
+                    { name: 'busca', label: 'Descrição', placeholder: 'Buscar por palavra', col: 'col-md-6' }
+                ],
+                storeEstado: uf
+        }) %>
+    <form action="/estados" method="POST">
+        <div class="mb-3 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-info" id="btn-add-row" onclick="addEstadoRow()"><i class="bi bi-plus-lg"></i> Adicionar linha</button>
+            <button type="submit" class="btn btn-success"><i class="bi bi-floppy-fill"></i> Salvar grade</button>
+        </div>
+        <div class="card shadow border-0 mb-4">
+            <div class="card-header bg-primary  d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">💬Estados</h5>
+                <small class="text-white-50">Página <%= pagination?.page || 1 %> de <%= pagination?.totalPages || 1 %></small>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table  table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 45%">Descrição</th>
+                                <th style="width: 25%">UF</th>
+                                <th style="width: 10%">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="grid-palavras">
+                            <% const itens = Array.isArray(estados) ? estados : [estados]; %>
+                            <% itens.forEach((item) => { %>
+                                <tr data-id="<%= item.id || '' %>">
+                                    <td>
+                                        <input type="hidden" name="itens[][id]" value="<%= item.id || '' %>">
+                                        <input type="text" class="form-control" name="itens[][descricao]" value="<%= item.descricao || '' %>" placeholder="Ex: São Paulo">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="itens[][uf]" value="<%= item.uf || '' %>" placeholder="Ex: SP">
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="removeEstadoRow(this)"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <small class="text-muted">
+                    Preencha uma linha por palavra. Linhas vazias serão ignoradas ao salvar.
+                </small>
+                <div id="to-delete"></div>
+            </div>
+        </div>
+        <%- 
+            include('partials/paginations', {
+            pagination,
+            filtros,
+            rota: '/estados',
+            query: `busca=${encodeURIComponent(filtros?.busca || '')}`
+        }) %>
+    </form>
+</main>

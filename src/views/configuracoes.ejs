@@ -1,11 +1,13 @@
 <%- include('partials/header') %>
     <%- include('partials/menu') %>
+<%
+    config = typeof conf !== 'undefined' ? conf : {};
+    estado = typeof estado !== 'undefined' ? estado : {};
+%>
 
 <div class="config-container">
-
     <!-- CABEÇALHO -->
     <div class="page-header">
-
         <div>
             <h1>Configurações</h1>
             <p>Gerencie as informações e configurações da instituição.</p>
@@ -46,7 +48,8 @@
                         type="text"
                         id="nome"
                         name="nome"
-                        placeholder="Ex.: Escola Estadual Central"
+                        placeholder="Ex.: Escola Estadual Central",
+                        value="<%= config.nome || '' %>"
                         required
                     >
                 </div>
@@ -58,6 +61,7 @@
                         id="nome_fantasia"
                         name="nome_fantasia"
                         placeholder="Ex.: Colégio Central"
+                        value="<%= config.nome_fantasia || '' %>"
                         required
                     >
                 </div>
@@ -70,6 +74,7 @@
                         name="cnpj"
                         placeholder="00.000.000/0000-00"
                         maxlength="18"
+                        value="<%= config.cnpj || '' %>"
                         required
                     >
                 </div>
@@ -81,6 +86,7 @@
                         id="email"
                         name="email"
                         placeholder="contato@escola.com.br"
+                        value="<%= config.email || '' %>"
                         required
                     >
                 </div>
@@ -92,6 +98,7 @@
                         id="telefone"
                         name="telefone"
                         placeholder="(31) 3333-3333"
+                        value="<%= config.telefone || '' %>"
                         required
                     >
                 </div>
@@ -102,6 +109,7 @@
                         type="text"
                         id="whatsapp"
                         name="whatsapp"
+                        value="<%= config.whatsapp || '' %>"
                         placeholder="(31) 99999-9999"
                     >
                 </div>
@@ -112,6 +120,8 @@
                         type="url"
                         id="site"
                         name="site"
+                        value="<%= config.site || '' %>"
+
                         placeholder="https://www.escola.com.br"
                     >
                 </div>
@@ -124,6 +134,8 @@
                             type="file"
                             id="logo"
                             name="logo"
+                            value="<%= config.logo || '' %>"
+
                             accept="image/png,image/jpeg,image/webp"
                         >
 
@@ -163,6 +175,8 @@
                         name="cep"
                         placeholder="00000-000"
                         maxlength="9"
+                        value="<%= config.cep || '' %>"
+
                         required
                     >
                 </div>
@@ -173,6 +187,7 @@
                         type="text"
                         id="rua"
                         name="rua"
+                        value="<%= config.rua || '' %>"
                         placeholder="Nome da rua"
                         required
                     >
@@ -184,6 +199,7 @@
                         type="text"
                         id="numero"
                         name="numero"
+                        value="<%= config.numero || '' %>"
                         placeholder="123"
                         required
                     >
@@ -195,6 +211,7 @@
                         type="text"
                         id="complemento"
                         name="complemento"
+                        value="<%= config.complemento || '' %>"
                         placeholder="Sala, bloco, etc."
                     >
                 </div>
@@ -205,6 +222,7 @@
                         type="text"
                         id="bairro"
                         name="bairro"
+                        value="<%= config.bairro || '' %>"
                         placeholder="Centro"
                         required
                     >
@@ -216,6 +234,7 @@
                         type="text"
                         id="cidade"
                         name="cidade"
+                        value="<%= config.cidade || '' %>"
                         placeholder="Belo Horizonte"
                         required
                     >
@@ -223,36 +242,17 @@
 
                 <div class="form-group">
                     <label for="estado">Estado *</label>
-
-                    <select id="estado" name="estado" required>
+                    <select class="form-select" id="estado" name="idEstado" required>
+                        <% const tiposLista = Array.isArray(estado) ? estado : (estado ? [estado] : []); %>
                         <option value="">Selecione</option>
-                        <option value="AC">Acre</option>
-                        <option value="AL">Alagoas</option>
-                        <option value="AP">Amapá</option>
-                        <option value="AM">Amazonas</option>
-                        <option value="BA">Bahia</option>
-                        <option value="CE">Ceará</option>
-                        <option value="DF">Distrito Federal</option>
-                        <option value="ES">Espírito Santo</option>
-                        <option value="GO">Goiás</option>
-                        <option value="MA">Maranhão</option>
-                        <option value="MT">Mato Grosso</option>
-                        <option value="MS">Mato Grosso do Sul</option>
-                        <option value="MG">Minas Gerais</option>
-                        <option value="PA">Pará</option>
-                        <option value="PB">Paraíba</option>
-                        <option value="PR">Paraná</option>
-                        <option value="PE">Pernambuco</option>
-                        <option value="PI">Piauí</option>
-                        <option value="RJ">Rio de Janeiro</option>
-                        <option value="RN">Rio Grande do Norte</option>
-                        <option value="RS">Rio Grande do Sul</option>
-                        <option value="RO">Rondônia</option>
-                        <option value="RR">Roraima</option>
-                        <option value="SC">Santa Catarina</option>
-                        <option value="SP">São Paulo</option>
-                        <option value="SE">Sergipe</option>
-                        <option value="TO">Tocantins</option>
+                        <% tiposLista.forEach(({ id, uf, descricao }) => { %>
+                            <option 
+                                value="<%= id %>"
+                                <%= config.idEstado === id ? 'selected' : '' %>
+                            >
+                                <%= descricao %>
+                            </option>
+                        <% }) %>
                     </select>
 
                 </div>
@@ -283,7 +283,7 @@
                         type="number"
                         id="ano_letivo_atual"
                         name="ano_letivo_atual"
-                        value="2026"
+                        value="<%= config.ano_letivo_atual || '2026' %>"
                         min="2000"
                         max="2100"
                         required
@@ -297,6 +297,7 @@
                         type="date"
                         id="data_inicio"
                         name="data_inicio"
+                        value="<%= config.data_inicio ? new Date(config.data_inicio).toISOString().split('T')[0] : '' %>"
                         required
                     >
                 </div>
@@ -308,6 +309,7 @@
                         type="date"
                         id="data_fim"
                         name="data_fim"
+                        value="<%= config.data_fim ? new Date(config.data_fim).toISOString().split('T')[0] : '' %>"
                         required
                     >
                 </div>
@@ -320,6 +322,7 @@
                         id="media_minima"
                         name="media_minima"
                         placeholder="6.00"
+                        value="<%= config.media_minima || '' %>"
                         min="0"
                         step="0.01"
                         required
@@ -336,6 +339,7 @@
                         placeholder="75.00"
                         min="0"
                         max="100"
+                        value="<%= config.frequencia_minima || '' %>"
                         step="0.01"
                         required
                     >
@@ -348,8 +352,8 @@
                         type="number"
                         id="nota_maxima"
                         name="nota_maxima"
-                        value="10"
                         min="1"
+                        value="<%= config.nota_maxima || '10' %>"
                         step="0.01"
                         required
                     >
@@ -384,6 +388,7 @@
                         id="horario_funcionamento"
                         name="horario_funcionamento"
                         placeholder="07:00 às 18:00"
+                        value="<%= config.horario_funcionamento || '' %>"
                         required
                     >
                 </div>
@@ -396,27 +401,27 @@
                         name="fuso_horario"
                         required
                     >
-                        <option value="America/Sao_Paulo">
+                        <option value="America/Sao_Paulo" <%= config.fuso_horario === 'America/Sao_Paulo' ? 'selected' : '' %>>
                             America/Sao_Paulo
                         </option>
 
-                        <option value="America/Manaus">
+                        <option value="America/Manaus" <%= config.fuso_horario === 'America/Manaus' ? 'selected' : '' %>>
                             America/Manaus
                         </option>
 
-                        <option value="America/Belem">
+                        <option value="America/Belem" <%= config.fuso_horario === 'America/Belem' ? 'selected' : '' %>>
                             America/Belem
                         </option>
 
-                        <option value="America/Fortaleza">
+                        <option value="America/Fortaleza" <%= config.fuso_horario === 'America/Fortaleza' ? 'selected' : '' %>>
                             America/Fortaleza
                         </option>
 
-                        <option value="America/Recife">
+                        <option value="America/Recife" <%= config.fuso_horario === 'America/Recife' ? 'selected' : '' %>>
                             America/Recife
                         </option>
 
-                        <option value="America/Rio_Branco">
+                        <option value="America/Rio_Branco" <%= config.fuso_horario === 'America/Rio_Branco' ? 'selected' : '' %>>
                             America/Rio_Branco
                         </option>
                     </select>
@@ -427,15 +432,15 @@
 
                     <select id="moeda" name="moeda" required>
 
-                        <option value="BRL">
+                        <option value="BRL" <%= config.moeda === 'BRL' ? 'selected' : '' %>>
                             BRL - Real brasileiro
                         </option>
 
-                        <option value="USD">
+                        <option value="USD" <%= config.moeda === 'USD' ? 'selected' : '' %>>
                             USD - Dólar americano
                         </option>
 
-                        <option value="EUR">
+                        <option value="EUR" <%= config.moeda === 'EUR' ? 'selected' : '' %>>
                             EUR - Euro
                         </option>
 
@@ -450,9 +455,9 @@
                         name="tema_sistema"
                         required
                     >
-                        <option value="claro">Claro</option>
-                        <option value="escuro">Escuro</option>
-                        <option value="automatico">Automático</option>
+                        <option value="claro" <%= config.tema_sistema === 'claro' ? 'selected' : '' %>>Claro</option>
+                        <option value="escuro" <%= config.tema_sistema === 'escuro' ? 'selected' : '' %>>Escuro</option>
+                        <option value="automatico" <%= config.tema_sistema === 'automatico' ? 'selected' : '' %>>Automático</option>
                     </select>
                 </div>
 
