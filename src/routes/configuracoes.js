@@ -1,0 +1,111 @@
+    const express = require("express");
+    const db = require("../../database/mysql");
+    const router = express.Router();
+
+    const configuracoes = require("../model/configuracoes");
+
+    router.get("/configuracoes", async (req,res)=>{
+
+
+        const conf = await configuracoes.getConfig();
+        
+
+        res.render("configuracoes",{
+
+            config: conf || {}
+
+        });
+
+    });
+
+    router.post("/configuracoes", async(req,res)=>{
+        console.log(req);
+        const {
+            nome,
+            nome_fantasia,
+            cnpj,
+            logo,
+            telefone,
+            whatsapp,
+            email,
+            site,
+            ano_letivo_atual,
+            horario_funcionamento,
+            fuso_horario,
+            moeda,
+            cep,
+            rua, numero, complemento, bairro, cidade, idEstado, data_inicio, data_fim,media_minima,frequencia_minima,nota_maxima,tema_sistema,idEscola
+        } = req.body;
+
+
+        
+        await db.query(
+
+            `INSERT INTO configuracoes
+            (idEscola,nome,nome_fantasia,cnpj,logo,telefone,whatsapp,email,site,ano_letivo_atual,horario_funcionamento,fuso_horario,moeda,cep,rua,numero,complemento,bairro,cidade,idEstado,data_inicio,data_fim,media_minima,frequencia_minima,nota_maxima,tema_sistema)
+
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+
+            ON DUPLICATE KEY UPDATE
+
+            nome=VALUES(nome),
+            nome_fantasia=VALUES(nome_fantasia),
+            cnpj=VALUES(cnpj),
+            logo=VALUES(logo),
+            telefone=VALUES(telefone),
+            whatsapp=VALUES(whatsapp),
+            email=VALUES(email),
+            site=VALUES(site),
+            ano_letivo_atual=VALUES(ano_letivo_atual),
+            horario_funcionamento=VALUES(horario_funcionamento),
+            fuso_horario=VALUES(fuso_horario),
+            moeda=VALUES(moeda),
+            cep=VALUES(cep),
+            rua=VALUES(rua),
+            numero=VALUES(numero),
+            complemento=VALUES(complemento),
+            bairro=VALUES(bairro),
+            cidade=VALUES(cidade),
+            idEstado=VALUES(idEstado),
+            data_inicio=VALUES(data_inicio),
+            data_fim=VALUES(data_fim),
+            media_minima=VALUES(media_minima),
+            frequencia_minima=VALUES(frequencia_minima),
+            nota_maxima=VALUES(nota_maxima),
+            tema_sistema=VALUES(tema_sistema)`,
+            [
+            idEscola,
+            nome,
+            nome_fantasia,
+            cnpj,
+            logo,
+            telefone,
+            whatsapp,
+            email,
+            site,
+            ano_letivo_atual,
+            horario_funcionamento,
+            fuso_horario,
+            moeda,
+            cep,
+            rua,
+            numero,
+            complemento,
+            bairro,
+            cidade,
+            idEstado,
+            data_inicio,
+            data_fim,
+            media_minima,
+            frequencia_minima,
+            nota_maxima,
+            tema_sistema
+            ]
+
+        );
+
+        res.redirect("/configuracoes");
+
+    });
+
+    module.exports = router;
