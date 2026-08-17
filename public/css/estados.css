@@ -1,0 +1,49 @@
+/* Styles específicos para a tela de Estados */
+
+.content .card {
+  background-color: rgba(255,255,255,0.03);
+}
+
+.card-header.bg-primary {
+  background: linear-gradient(90deg, #0d6efd 0%, #0b5ed7 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+#grid-palavras input.form-control {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.table.table-dark th,
+.table.table-dark td {
+  vertical-align: middle;
+}
+
+.table.table-dark thead th {
+  color: #e9eef8;
+  font-weight: 600;
+}
+
+.pagination .page-link {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.card .text-white-50 {
+  color: rgba(255,255,255,0.7) !important;
+}
+
+@media (max-width: 767px) {
+  #grid-palavras input.form-control {
+    font-size: 14px;
+  }
+  .card-header small {
+    display: block;
+    margin-top: 6px;
+  }
+}
