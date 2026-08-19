@@ -11,6 +11,7 @@
 !*.ejs
 
 !*.css
+projeto/
 
 # Arquivos importantes
 !.gitignore
