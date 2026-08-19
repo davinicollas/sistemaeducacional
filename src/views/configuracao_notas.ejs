@@ -4,21 +4,21 @@
 <div class="config-container">
   <div class="page-header">
     <div>
-      <h1>Calendário</h1>
-      <p>Visualização e configuração do calendário acadêmico.</p>
+      <h1>Configuração de Notas</h1>
+      <p>Parâmetros de avaliação e notas.</p>
     </div>
   </div>
 
   <section class="config-card">
     <div class="card-header">
-      <div class="card-icon">📅</div>
+      <div class="card-icon">🧾</div>
       <div>
-        <h2>Eventos</h2>
-        <p>Placeholder: gerenciar feriados e eventos.</p>
+        <h2>Escalas e regras</h2>
+        <p>Placeholder: configurar escalas de notas.</p>
       </div>
     </div>
     <div class="card-body">
-      <form action="/calendario" method="POST">
+      <form action="/configuracao_notas" method="POST">
         <% Object.keys(settings || {}).forEach(function(k){ %>
           <div class="form-group">
             <label><%= k %></label>

@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+
+<div class="config-container">
+  <div class="page-header">
+    <div>
+      <h1>Aparência</h1>
+      <p>Configurações visuais e temas da plataforma.</p>
+    </div>
+  </div>
+
+  <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">🎨</div>
+      <div>
+        <h2>Personalização</h2>
+        <p>Placeholder: ajuste cores, logo e estilos.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <form action="/aparencia" method="POST">
+        <div class="form-grid">
+          <% Object.keys(settings || {}).forEach(function(k){ %>
+            <div class="form-group">
+              <label><%= k %></label>
+              <input type="text" name="settings[<%= k %>]" value="<%= settings[k] %>" />
+            </div>
+          <% }); %>
+
+          <div class="form-group">
+            <label>Novo campo</label>
+            <input type="text" name="newKey" placeholder="chave" />
+            <input type="text" name="newValue" placeholder="valor" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

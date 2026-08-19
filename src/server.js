@@ -86,7 +86,28 @@ app.get('/termos', (req, res) => {
   res.render('termos');
 });
 
+app.get('/aparencia', (req, res) => {
+  res.render('aparencia');
+});
 
+app.get('/configuracao_notas', (req, res) => {
+  res.render('configuracao_notas');
+});
+
+app.get('/configuracoes_academicas', (req, res) => {
+  res.render('configuracoes_academicas');
+});
+
+app.get('/documentos', (req, res) => {
+  res.render('documentos');
+});
+
+app.get('/financeiro', (req, res) => {
+  res.render('financeiro');
+});
+app.get('/notificacoes', (req, res) => {
+  res.render('notificacoes');
+});
 
 
 app.use(usuario);

@@ -4,21 +4,21 @@
 <div class="config-container">
   <div class="page-header">
     <div>
-      <h1>Calendário</h1>
-      <p>Visualização e configuração do calendário acadêmico.</p>
+      <h1>Financeiro</h1>
+      <p>Gestão financeira e relatórios.</p>
     </div>
   </div>
 
   <section class="config-card">
     <div class="card-header">
-      <div class="card-icon">📅</div>
+      <div class="card-icon">💰</div>
       <div>
-        <h2>Eventos</h2>
-        <p>Placeholder: gerenciar feriados e eventos.</p>
+        <h2>Contas</h2>
+        <p>Placeholder: fluxo financeiro e cobranças.</p>
       </div>
     </div>
     <div class="card-body">
-      <form action="/calendario" method="POST">
+      <form action="/financeiro" method="POST">
         <% Object.keys(settings || {}).forEach(function(k){ %>
           <div class="form-group">
             <label><%= k %></label>
