@@ -45,18 +45,18 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Permissão</th>
+                            <th style="text-align:center; padding: 5px;">Permissão</th>
                             <% (roles || []).forEach(function(role){ %>
-                                <th><%= role.name %></th>
+                                <th style="text-align:center;padding: 5px;"><%= role.name %></th>
                             <% }); %>
                         </tr>
                     </thead>
                     <tbody>
                         <% (permissions || []).forEach(function(perm){ %>
                             <tr>
-                                <td><%= perm.name %></td>
+                                <td style="text-align:center;"><%= perm.name %></td>
                                 <% (roles || []).forEach(function(role){ %>
-                                    <td class="center">
+                                    <td style="text-align:center; padding: 5px;">
                                         <input type="checkbox" name="matrix[<%= role.name %>][<%= perm.name %>]" id="chk-<%= role.name.replace(/[^a-zA-Z0-9]/g,'') %>-<%= perm.name.replace(/[^a-zA-Z0-9]/g,'') %>" <%= (matrix && matrix[role.name] && matrix[role.name][perm.name]) ? 'checked' : '' %> />
                                     </td>
                                 <% }); %>

@@ -1,12 +1,12 @@
 const db = require('../../database/mysql.js');
 
 async function getRoles() {
-    const [rows] = await db.query('SELECT id, name FROM roles ORDER BY id');
+    const [rows] = await db.query('SELECT id, name FROM roles WHERE excluido < 1 ORDER BY id');
     return rows.map(r => ({ id: r.id, name: r.name }));
 }
 
 async function getPermissions() {
-    const [rows] = await db.query('SELECT id, name FROM permissions ORDER BY id');
+    const [rows] = await db.query('SELECT id, name FROM permissions WHERE excluido < 1 ORDER BY id');
     return rows.map(p => ({ id: p.id, name: p.name }));
 }
 
@@ -14,8 +14,8 @@ async function getMatrix() {
     const [rows] = await db.query(`
         SELECT r.name AS role, p.name AS permission, rp.access
         FROM role_permissions rp
-        JOIN roles r ON r.id = rp.role_id
-        JOIN permissions p ON p.id = rp.permission_id
+        INNER JOIN roles r ON r.id = rp.role_id
+        INNER JOIN permissions p ON p.id = rp.permission_id
     `);
 
     const matrix = {};
@@ -32,8 +32,8 @@ async function saveMatrix(matrix) {
     try {
         await conn.beginTransaction();
 
-        const [rolesRows] = await conn.query('SELECT id, name FROM roles');
-        const [permRows] = await conn.query('SELECT id, name FROM permissions');
+        const [rolesRows] = await conn.query('SELECT id, name FROM roles WHERE excluido < 1');
+        const [permRows] = await conn.query('SELECT id, name FROM permissions WHERE excluido < 1');
 
         const roleByName = {};
         for (const r of rolesRows) roleByName[r.name] = r.id;
