@@ -1,0 +1,74 @@
+<%- include('partials/header') %>
+    <%- include('partials/menu') %>
+
+<div class="config-container">
+    <div class="page-header">
+        <div>
+            <h1>Usuários e Permissões</h1>
+            <p>Gerencie papéis e suas permissões na plataforma.</p>
+        </div>
+        <div class="header-actions">
+            <a href="/dashboard" class="btn-secondary">Cancelar</a>
+            <button type="submit" form="formUsuarioPermissoes" class="btn-primary">Salvar alterações</button>
+        </div>
+    </div>
+
+    <% if (typeof erro !== 'undefined' && erro) { %>
+        <div class="alert alert-error"><%= erro %></div>
+    <% } %>
+
+    <div class="permissions-actions">
+        <form action="/usuariosPermissoes/role" method="POST" class="inline-form">
+            <input type="text" name="name" placeholder="Novo papel (ex: Coordenador)" required />
+            <button type="submit" class="btn-secondary">Adicionar papel</button>
+        </form>
+
+        <form action="/usuariosPermissoes/permission" method="POST" class="inline-form">
+            <input type="text" name="name" placeholder="Nova permissão (ex: Exportar)" required />
+            <button type="submit" class="btn-secondary">Adicionar permissão</button>
+        </form>
+    </div>
+
+    <form id="formUsuarioPermissoes" action="/usuariosPermissoes" method="POST">
+        <section class="config-card">
+            <div class="card-header">
+                <div class="card-icon">👥</div>
+                <div>
+                    <h2>Papéis e permissões</h2>
+                    <p>Ative ou desative permissões para cada papel.</p>
+                </div>
+            </div>
+
+
+
+            <div class="permissions-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Permissão</th>
+                            <% (roles || []).forEach(function(role){ %>
+                                <th><%= role.name %></th>
+                            <% }); %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% (permissions || []).forEach(function(perm){ %>
+                            <tr>
+                                <td><%= perm.name %></td>
+                                <% (roles || []).forEach(function(role){ %>
+                                    <td class="center">
+                                        <input type="checkbox" name="matrix[<%= role.name %>][<%= perm.name %>]" id="chk-<%= role.name.replace(/[^a-zA-Z0-9]/g,'') %>-<%= perm.name.replace(/[^a-zA-Z0-9]/g,'') %>" <%= (matrix && matrix[role.name] && matrix[role.name][perm.name]) ? 'checked' : '' %> />
+                                    </td>
+                                <% }); %>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </form>
+
+</div>
+
+</body>
+</html>

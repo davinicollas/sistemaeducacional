@@ -12,6 +12,7 @@ const usuario = require('./routes/cadastro');
 const login = require('./routes/login');
 const configuracoes = require('./routes/configuracoes');
 const estados = require('./routes/estados');
+const usuarioPermissoes = require('./routes/usuarioPermissoes');
 
 const authMid = require("./middleware/auth");
 
@@ -92,6 +93,7 @@ app.use(usuario);
 app.use(login);
 app.use(configuracoes); 
 app.use(estados);
+app.use(usuarioPermissoes);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {
