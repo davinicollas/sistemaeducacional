@@ -314,47 +314,17 @@
                     >
                 </div>
 
-                <div class="form-group">
-                    <label for="media_minima">Média mínima *</label>
+                  <div class="form-group">
+                    <label for="horario_funcionamento">
+                        Horário de funcionamento *
+                    </label>
 
                     <input
-                        type="number"
-                        id="media_minima"
-                        name="media_minima"
-                        placeholder="6.00"
-                        value="<%= config.media_minima || '' %>"
-                        min="0"
-                        step="0.01"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="frequencia_minima">Frequência mínima (%) *</label>
-
-                    <input
-                        type="number"
-                        id="frequencia_minima"
-                        name="frequencia_minima"
-                        placeholder="75.00"
-                        min="0"
-                        max="100"
-                        value="<%= config.frequencia_minima || '' %>"
-                        step="0.01"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="nota_maxima">Nota máxima *</label>
-
-                    <input
-                        type="number"
-                        id="nota_maxima"
-                        name="nota_maxima"
-                        min="1"
-                        value="<%= config.nota_maxima || '10' %>"
-                        step="0.01"
+                        type="text"
+                        id="horario_funcionamento"
+                        name="horario_funcionamento"
+                        placeholder="07:00 às 18:00"
+                        value="<%= config.horario_funcionamento || '' %>"
                         required
                     >
                 </div>
@@ -377,21 +347,6 @@
             </div>
 
             <div class="form-grid">
-
-                <div class="form-group">
-                    <label for="horario_funcionamento">
-                        Horário de funcionamento *
-                    </label>
-
-                    <input
-                        type="text"
-                        id="horario_funcionamento"
-                        name="horario_funcionamento"
-                        placeholder="07:00 às 18:00"
-                        value="<%= config.horario_funcionamento || '' %>"
-                        required
-                    >
-                </div>
 
                 <div class="form-group">
                     <label for="fuso_horario">Fuso horário *</label>
@@ -444,20 +399,6 @@
                             EUR - Euro
                         </option>
 
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="tema_sistema">Tema do sistema *</label>
-
-                    <select
-                        id="tema_sistema"
-                        name="tema_sistema"
-                        required
-                    >
-                        <option value="claro" <%= config.tema_sistema === 'claro' ? 'selected' : '' %>>Claro</option>
-                        <option value="escuro" <%= config.tema_sistema === 'escuro' ? 'selected' : '' %>>Escuro</option>
-                        <option value="automatico" <%= config.tema_sistema === 'automatico' ? 'selected' : '' %>>Automático</option>
                     </select>
                 </div>
 
