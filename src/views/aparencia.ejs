@@ -1,6 +1,8 @@
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
-
+<%
+    aparencia = typeof aparencia !== 'undefined' ? aparencia : {};
+%>
 <div class="config-container">
   <div class="page-header">
     <div>
@@ -20,20 +22,69 @@
     <div class="card-body">
       <form action="/aparencia" method="POST">
         <div class="form-grid">
-          <% Object.keys(settings || {}).forEach(function(k){ %>
-            <div class="form-group">
-              <label><%= k %></label>
-              <input type="text" name="settings[<%= k %>]" value="<%= settings[k] %>" />
+           <div class="form-group">
+                <label for="tema_sistema">Tema *</label>
+                <select
+                    id="tema_sistema"
+                    name="tema_sistema"
+                    required>
+                    <option value="claro" <%= aparencia.tema_sistema === 'claro' ? 'selected' : '' %>>
+                        Claro
+                    </option>
+                    <option value="escuro" <%= aparencia.tema_sistema === 'escuro' ? 'selected' : '' %>>
+                        Escuro
+                    </option>
+                </select>
             </div>
-          <% }); %>
+            <div class="form-group">
+                <label for="cor_principal">Cor principal *</label>
 
-          <div class="form-group">
-            <label>Novo campo</label>
-            <input type="text" name="newKey" placeholder="chave" />
-            <input type="text" name="newValue" placeholder="valor" />
-          </div>
+                <select
+                    id="cor_principal"
+                    name="cor_principal"
+                    required
+                >
+                    <option value="#ff0000" <%= aparencia.cor_principal === '#ff0000' ? 'selected' : '' %>>
+                        Vermelho
+                    </option>
+
+                    <option value="#00ff00" <%= aparencia.cor_principal === '#00ff00' ? 'selected' : '' %>>
+                        Verde
+                    </option>
+
+                    <option value="#0000ff" <%= aparencia.cor_principal === '#0000ff' ? 'selected' : '' %>>
+                        Azul
+                    </option>
+
+                    <option value="#ffff00" <%= aparencia.cor_principal === '#ffff00' ? 'selected' : '' %>>
+                        Amarelo
+                    </option>
+
+                    <option value="#ff00ff" <%= aparencia.cor_principal === '#ff00ff' ? 'selected' : '' %>>
+                        Magenta
+                    </option>
+
+                    <option value="#00ffff" <%= aparencia.cor_principal === '#00ffff' ? 'selected' : '' %>>
+                        Ciano
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="menu_lateral">Menu lateral *</label>
+                <select
+                    id="menu_lateral"
+                    name="menu_lateral"
+                    required
+                >
+                    <option value="true" <%= aparencia.menu_lateral === true ? 'selected' : '' %>>
+                        Expandido
+                    </option>
+                    <option value="false" <%= aparencia.menu_lateral === false ? 'selected' : '' %>>
+                        Compacto
+                    </option>
+                </select>
+            </div>
         </div>
-
         <div class="form-actions">
           <button type="submit" class="btn-primary">Salvar</button>
         </div>

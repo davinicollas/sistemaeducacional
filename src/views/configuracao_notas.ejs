@@ -1,6 +1,8 @@
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
-
+<%
+    configuracao_notas = typeof configuracao_notas !== 'undefined' ? configuracao_notas : {};
+%>
 <div class="config-container">
   <div class="page-header">
     <div>
@@ -8,7 +10,6 @@
       <p>Parâmetros de avaliação e notas.</p>
     </div>
   </div>
-
   <section class="config-card">
     <div class="card-header">
       <div class="card-icon">🧾</div>
@@ -17,21 +18,68 @@
         <p>Placeholder: configurar escalas de notas.</p>
       </div>
     </div>
-    <div class="card-body">
+     <div class="card-body">
       <form action="/configuracao_notas" method="POST">
-        <% Object.keys(settings || {}).forEach(function(k){ %>
-          <div class="form-group">
-            <label><%= k %></label>
-            <input type="text" name="settings[<%= k %>]" value="<%= settings[k] %>" />
-          </div>
-        <% }); %>
+        <div class="form-grid">
+           <div class="form-group">
+                <label for="tipo">Tipo *</label>
+                <select
+                    id="tipo"
+                    name="tipo"
+                    required>
+                    <option value="bimestre" <%= configuracao_notas.tipo === 'bimestre' ? 'selected' : '' %>>
+                        Bimestre
+                    </option>
+                    <option value="trimestre" <%= configuracao_notas.tipo === 'trimestre' ? 'selected' : '' %>>
+                        Trimestre
+                    </option>
+                    <option value="semestre" <%= configuracao_notas.tipo === 'semestre' ? 'selected' : '' %>>
+                        Semestre
+                    </option>
+                </select>
 
-        <div class="form-group">
-          <label>Novo campo</label>
-          <input type="text" name="newKey" placeholder="chave" />
-          <input type="text" name="newValue" placeholder="valor" />
+                <label for="nota_minima">Nota mínima *</label>
+                <input
+                    type="number"
+                    id="nota_minima"
+                    name="nota_minima"
+                    value="<%= configuracao_notas.nota_minima %>"
+                    required
+                />
+            </div>
+            <div class="form-group">
+                <label for="nota_maxima">Nota máxima *</label>
+                 <input
+                    type="number"
+                    id="nota_maxima"
+                    name="nota_maxima"
+                    value="<%= configuracao_notas.nota_maxima %>"
+                    required
+                />
+                <label for="nota_recuperacao">Nota de recuperação *</label>
+                <input
+                    type="number"
+                    id="nota_recuperacao"
+                    name="nota_recuperacao"
+                    value="<%= configuracao_notas.nota_recuperacao %>"
+                    required
+                />
+            </div>
+             <div class="form-group"> 
+               <label for="recuperacao">Recuperação *</label>
+                <select
+                    id="recuperacao"
+                    name="recuperacao"
+                    required>
+                    <option value="1" <%= configuracao_notas.recuperacao ? 'selected' : '' %>>
+                        Sim
+                    </option>
+                    <option value="0" <%= !configuracao_notas.recuperacao ? 'selected' : '' %>>
+                        Não
+                    </option>
+                </select>
         </div>
-
+        </div>
         <div class="form-actions">
           <button type="submit" class="btn-primary">Salvar</button>
         </div>

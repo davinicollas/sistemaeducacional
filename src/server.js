@@ -13,6 +13,8 @@ const login = require('./routes/login');
 const configuracoes = require('./routes/configuracoes');
 const estados = require('./routes/estados');
 const usuarioPermissoes = require('./routes/usuarioPermissoes');
+const aparencia = require('./routes/aparencia');
+const configuracao_notas = require('./routes/configuracao_notas');
 
 const authMid = require("./middleware/auth");
 
@@ -86,13 +88,6 @@ app.get('/termos', (req, res) => {
   res.render('termos');
 });
 
-app.get('/aparencia', (req, res) => {
-  res.render('aparencia');
-});
-
-app.get('/configuracao_notas', (req, res) => {
-  res.render('configuracao_notas');
-});
 
 app.get('/configuracoes_academicas', (req, res) => {
   res.render('configuracoes_academicas');
@@ -115,6 +110,8 @@ app.use(login);
 app.use(configuracoes); 
 app.use(estados);
 app.use(usuarioPermissoes);
+app.use(aparencia);
+app.use(configuracao_notas);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {
