@@ -319,3 +319,75 @@
     }
 
 }
+
+/* Series grid and modal styling */
+.series-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+}
+.series-table thead th {
+    background: #fafbfe;
+    font-weight: 700;
+    color: #33334a;
+    text-align: left;
+}
+.series-table tbody tr:nth-child(odd) {
+    background: #ffffff;
+}
+.series-table tbody tr:nth-child(even) {
+    background: #fbfbfd;
+}
+.series-table td, .series-table th {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f1f6;
+}
+.series-nome, .series-abreviacao, .series-codigo {
+    font-size: 14px;
+    color: #20213a;
+}
+.series-actions { white-space: nowrap; }
+.series-new-btn { margin-bottom: 20px; }
+
+/* Modal */
+#series-modal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 21, 40, 0.45);
+    z-index: 9999;
+}
+#series-modal.open { display: flex; }
+.modal-panel {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    width: 480px;
+    max-width: 92%;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 45px rgba(20, 21, 40, 0.2);
+    transform: translateY(-8px);
+    opacity: 0;
+    transition: all 160ms ease;
+}
+#series-modal.open .modal-panel { transform: translateY(0); opacity: 1; }
+.modal-panel h3 { font-size: 18px; color: #20213a; margin-bottom: 16px; }
+.modal-panel .form-group { margin-bottom: 14px; }
+.modal-panel input, .modal-panel select, .modal-panel textarea { box-sizing: border-box; }
+.modal-panel .actions { display:flex; justify-content:flex-end; gap:8px; margin-top:12px }
+
+/* Responsive modal adjustments */
+@media (max-width: 600px) {
+  .modal-panel { width: 94%; padding:12px }
+  .modal-panel input, .modal-panel textarea { height:38px }
+}
+
+/* Buttons */
+.btn-primary { background:#5b5eef; border-radius:8px; padding:8px 14px; }
+.btn-secondary { background:#f6f7fb; border:1px solid #e6e7f2; padding:8px 12px }
+
+/* Empty state */
+.series-empty { padding:18px; text-align:center; color:#7b7f95 }

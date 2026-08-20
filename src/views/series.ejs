@@ -1,0 +1,341 @@
+
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%
+    series = typeof series !== 'undefined' ? series : {};
+    let seriesList = Array.isArray(series.series) ? series.series : [];
+%>
+
+<div class="config-container">
+  <div class="page-header">
+    <div>
+      <h1>Configurações Acadêmicas</h1>
+      <p>Cadastre e gerencie as séries escolares.</p>
+    </div>
+  </div>
+
+  <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">📚</div>
+      <div>
+        <h2>Séries</h2>
+        <p>Nome, abreviação e demais parâmetros acadêmicos de cada série.</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form id="series-form" action="/series" method="POST">
+        <table class="series-table">
+          <thead>
+            <tr>
+              <th>Nome da série</th>
+              <th>Abreviação</th>
+              <th style="width:160px"></th>
+            </tr>
+          </thead>
+          <tbody id="series-tbody">
+            <% seriesList.forEach(function (s, idx) { %>
+              <tr data-index="<%= idx %>" class="series-row">
+                <td><span class="series-nome"><%= s.nome || '' %></span></td>
+                <td><span class="series-abreviacao"><%= s.abreviacao || '' %></span></td>
+                <td class="series-actions">
+                  <button type="button" class="btn-secondary" onclick="openSeriesModal(<%= idx %>)">Editar</button>
+                  <button type="button" class="btn-secondary" onclick="removeSeriesRow(this)">Excluir</button>
+                </td>
+                <td class="hidden-values" style="display:none">
+                  <input type="hidden" name="series[<%= idx %>][id]" value="<%= s.id || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][nome]" value="<%= s.nome || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][abreviacao]" value="<%= s.abreviacao || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][etapa_ensino]" value="<%= s.etapa_ensino || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][nivel_ensino]" value="<%= s.nivel_ensino || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][ano_serie]" value="<%= s.ano_serie || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][codigo]" value="<%= s.codigo || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][turnos]" value="<%= (s.turnos || []).join(',') %>" />
+                  <input type="hidden" name="series[<%= idx %>][idade_minima]" value="<%= s.idade_minima || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][idade_maxima]" value="<%= s.idade_maxima || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][carga_horaria]" value="<%= s.carga_horaria || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][aulas_semanais]" value="<%= s.aulas_semanais || '' %>" />
+                  <input type="hidden" name="series[<%= idx %>][status]" value="<%= s.status || '1' %>" />
+                  <input type="hidden" name="series[<%= idx %>][descricao]" value="<%= s.descricao || '' %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <% if (!seriesList.length) { %>
+          <p class="series-empty" id="series-empty">Nenhuma série cadastrada ainda.</p>
+        <% } %>
+        <div id="to-delete"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="button" class="btn-primary series-new-btn" onclick="openSeriesModal(null)">Novo</button>
+
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<script>
+  // ================= Modal de Série =================
+  function getOrCreateModal() {
+    let modal = document.getElementById('series-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'series-modal';
+    modal.innerHTML = `
+      <div class="modal-panel">
+        <h3>Série</h3>
+        <input type="hidden" id="modal-index" value="-1">
+        <input type="hidden" id="modal-id" value="">
+
+        <div class="form-group">
+          <label for="modal-nome">Nome da série *</label>
+          <input id="modal-nome" type="text" placeholder="Ex: 1º Ano do Ensino Fundamental" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-abreviacao">Abreviação</label>
+          <input id="modal-abreviacao" type="text" placeholder="Ex: 1º EF" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-etapa_ensino">Etapa de ensino *</label>
+          <select id="modal-etapa_ensino">
+            <option value="">Selecione</option>
+            <option value="Educação Infantil">Educação Infantil</option>
+            <option value="Ensino Fundamental">Ensino Fundamental</option>
+            <option value="Ensino Médio">Ensino Médio</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-nivel_ensino">Nível de ensino *</label>
+          <select id="modal-nivel_ensino">
+            <option value="">Selecione</option>
+            <option value="Infantil">Infantil</option>
+            <option value="Fundamental I">Fundamental I</option>
+            <option value="Fundamental II">Fundamental II</option>
+            <option value="Médio">Médio</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-ano_serie">Ano/Série</label>
+          <input id="modal-ano_serie" type="number" placeholder="Ex: 1" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-codigo">Código</label>
+          <input id="modal-codigo" type="text" placeholder="Ex: EF01" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-turnos">Turno permitido</label>
+          <select id="modal-turnos" multiple>
+            <option value="Manhã">Manhã</option>
+            <option value="Tarde">Tarde</option>
+            <option value="Noite">Noite</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-idade_minima">Idade mínima</label>
+          <input id="modal-idade_minima" type="number" placeholder="Ex: 6" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-idade_maxima">Idade máxima</label>
+          <input id="modal-idade_maxima" type="number" placeholder="Ex: 7" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-carga_horaria">Carga horária anual</label>
+          <input id="modal-carga_horaria" type="number" placeholder="Ex: 800" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-aulas_semanais">Número de aulas semanais</label>
+          <input id="modal-aulas_semanais" type="number" placeholder="Ex: 25" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-status">Status *</label>
+          <select id="modal-status">
+            <option value="1">Ativo</option>
+            <option value="0">Inativo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-descricao">Descrição</label>
+          <textarea id="modal-descricao" rows="3" placeholder="Informações da série"></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" onclick="closeSeriesModal()">Cancelar</button>
+          <button type="button" class="btn-primary" onclick="saveSeriesModal()">Salvar</button>
+        </div>
+      </div>
+    `;
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeSeriesModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openSeriesModal(index) {
+    const modal = getOrCreateModal();
+    const idxInput = modal.querySelector('#modal-index');
+
+    const fields = ['id', 'nome', 'abreviacao', 'etapa_ensino', 'nivel_ensino', 'ano_serie', 'codigo',
+      'idade_minima', 'idade_maxima', 'carga_horaria', 'aulas_semanais', 'status', 'descricao'];
+
+    if (index === null) {
+      idxInput.value = -1;
+      fields.forEach(f => { const el = modal.querySelector(`#modal-${f}`); if (el) el.value = ''; });
+      modal.querySelector('#modal-status').value = '1';
+      modal.querySelectorAll('#modal-turnos option').forEach(o => o.selected = false);
+    } else {
+      const row = document.querySelector(`#series-tbody tr[data-index="${index}"]`);
+      if (!row) return;
+      idxInput.value = index;
+      const getHidden = (name) => {
+        const el = row.querySelector(`input[name="series[${index}][${name}]"]`);
+        return el ? el.value : '';
+      };
+      fields.forEach(f => { const el = modal.querySelector(`#modal-${f}`); if (el) el.value = getHidden(f); });
+      const turnosVal = getHidden('turnos');
+      const parts = turnosVal ? turnosVal.split(',') : [];
+      modal.querySelectorAll('#modal-turnos option').forEach(o => o.selected = parts.indexOf(o.value) !== -1);
+    }
+
+    modal.classList.add('open');
+    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
+  }
+
+  function closeSeriesModal() {
+    const modal = document.getElementById('series-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+  }
+
+  function saveSeriesModal() {
+    const modal = document.getElementById('series-modal');
+    if (!modal) return;
+
+    const nome = modal.querySelector('#modal-nome').value.trim();
+    if (!nome) { modal.querySelector('#modal-nome').focus(); return; }
+
+    const values = {
+      id: modal.querySelector('#modal-id').value.trim(),
+      nome,
+      abreviacao: modal.querySelector('#modal-abreviacao').value.trim(),
+      etapa_ensino: modal.querySelector('#modal-etapa_ensino').value,
+      nivel_ensino: modal.querySelector('#modal-nivel_ensino').value,
+      ano_serie: modal.querySelector('#modal-ano_serie').value.trim(),
+      codigo: modal.querySelector('#modal-codigo').value.trim(),
+      turnos: Array.from(modal.querySelectorAll('#modal-turnos option')).filter(o => o.selected).map(o => o.value).join(','),
+      idade_minima: modal.querySelector('#modal-idade_minima').value.trim(),
+      idade_maxima: modal.querySelector('#modal-idade_maxima').value.trim(),
+      carga_horaria: modal.querySelector('#modal-carga_horaria').value.trim(),
+      aulas_semanais: modal.querySelector('#modal-aulas_semanais').value.trim(),
+      status: modal.querySelector('#modal-status').value,
+      descricao: modal.querySelector('#modal-descricao').value.trim()
+    };
+
+    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
+    const tbody = document.getElementById('series-tbody');
+
+    if (idx === -1) {
+      const newIdx = tbody.querySelectorAll('tr').length;
+      const tr = buildSeriesRow(newIdx, values);
+      tbody.appendChild(tr);
+      const empty = document.getElementById('series-empty');
+      if (empty) empty.remove();
+    } else {
+      const row = tbody.querySelector(`tr[data-index="${idx}"]`);
+      if (!row) return;
+      row.querySelector('.series-nome').textContent = values.nome;
+      row.querySelector('.series-abreviacao').textContent = values.abreviacao;
+      Object.keys(values).forEach(f => {
+        const el = row.querySelector(`input[name="series[${idx}][${f}]"]`);
+        if (el) el.value = values[f];
+      });
+    }
+
+    reindexSeries();
+    closeSeriesModal();
+  }
+
+  function buildSeriesRow(idx, values) {
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-index', idx);
+    tr.className = 'series-row';
+    tr.innerHTML = `
+      <td><span class="series-nome"></span></td>
+      <td><span class="series-abreviacao"></span></td>
+      <td class="series-actions">
+        <button type="button" class="btn-secondary" onclick="openSeriesModal(${idx})">Editar</button>
+        <button type="button" class="btn-secondary" onclick="removeSeriesRow(this)">Excluir</button>
+      </td>
+      <td class="hidden-values" style="display:none"></td>
+    `;
+    tr.querySelector('.series-nome').textContent = values.nome;
+    tr.querySelector('.series-abreviacao').textContent = values.abreviacao;
+    const hiddenCell = tr.querySelector('.hidden-values');
+    Object.keys(values).forEach(f => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = `series[${idx}][${f}]`;
+      input.value = values[f];
+      hiddenCell.appendChild(input);
+    });
+    return tr;
+  }
+
+  function removeSeriesRow(button) {
+    const tr = button.closest('tr');
+    if (!tr) return;
+    const idInput = tr.querySelector('input[name$="[id]"]');
+    const id = idInput ? idInput.value : '';
+    if (id) {
+      const container = document.getElementById('to-delete');
+      if (container) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'deleteIds[]';
+        input.value = id;
+        container.appendChild(input);
+      }
+    }
+    tr.remove();
+    reindexSeries();
+    const tbody = document.getElementById('series-tbody');
+    if (tbody && !tbody.querySelectorAll('tr').length) {
+      const table = document.querySelector('.series-table');
+      const p = document.createElement('p');
+      p.id = 'series-empty';
+      p.className = 'series-empty';
+      p.textContent = 'Nenhuma série cadastrada ainda.';
+      table.insertAdjacentElement('afterend', p);
+    }
+  }
+
+  function reindexSeries() {
+    const tbody = document.getElementById('series-tbody');
+    if (!tbody) return;
+    const fields = ['id', 'nome', 'abreviacao', 'etapa_ensino', 'nivel_ensino', 'ano_serie', 'codigo', 'turnos',
+      'idade_minima', 'idade_maxima', 'carga_horaria', 'aulas_semanais', 'status', 'descricao'];
+    tbody.querySelectorAll('tr').forEach(function (row, idx) {
+      row.setAttribute('data-index', idx);
+      fields.forEach(function (f) {
+        const el = row.querySelector(`input[name$="[${f}]"]`);
+        if (el) el.setAttribute('name', `series[${idx}][${f}]`);
+      });
+      const editBtn = row.querySelector('button[onclick^="openSeriesModal("]');
+      if (editBtn) editBtn.setAttribute('onclick', `openSeriesModal(${idx})`);
+    });
+  }
+</script>

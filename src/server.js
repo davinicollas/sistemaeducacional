@@ -15,6 +15,7 @@ const estados = require('./routes/estados');
 const usuarioPermissoes = require('./routes/usuarioPermissoes');
 const aparencia = require('./routes/aparencia');
 const configuracao_notas = require('./routes/configuracao_notas');
+const series = require('./routes/series');
 
 const authMid = require("./middleware/auth");
 
@@ -89,10 +90,6 @@ app.get('/termos', (req, res) => {
 });
 
 
-app.get('/configuracoes_academicas', (req, res) => {
-  res.render('configuracoes_academicas');
-});
-
 app.get('/documentos', (req, res) => {
   res.render('documentos');
 });
@@ -112,6 +109,7 @@ app.use(estados);
 app.use(usuarioPermissoes);
 app.use(aparencia);
 app.use(configuracao_notas);
+app.use(series);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {
