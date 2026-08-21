@@ -1,0 +1,297 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f6fa;
+    color: #20213a;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 28px;
+}
+
+.header p {
+    margin-top: 5px;
+    color: #777;
+}
+
+.btn-primary {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: #eee;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.filtros {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filtros select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.calendario {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+}
+
+.dias-semana,
+.dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.dias-semana div {
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    background: #f8f8fb;
+    border-bottom: 1px solid #eee;
+}
+
+.dia {
+    min-height: 110px;
+    padding: 10px;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+.numero {
+    font-weight: bold;
+}
+
+.dia:hover {
+    background: #fafaff;
+}
+
+.vazio {
+    background: #fafafa;
+}
+
+.evento {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    margin-top: 6px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 11px;
+    color: white;
+    background: #4f46e5;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.evento span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.evento button {
+    border: none;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    line-height: 1;
+    font-size: 13px;
+}
+
+.evento-aula { background: #2563eb; }
+.evento-feriado { background: #dc2626; }
+.evento-recesso { background: #ea580c; }
+.evento-evento { background: #4f46e5; }
+.evento-reuniao { background: #059669; }
+.evento-avaliacao { background: #7c3aed; }
+
+
+/* MODAL */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.ativo {
+    display: flex;
+}
+
+.modal-content {
+    width: 500px;
+    max-width: 95%;
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.modal-header button {
+    border: none;
+    background: none;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.legenda-container {
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.legenda-container h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #20213a;
+}
+
+.legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.evento {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 6px 12px;
+
+    background: #f8f9fa;
+    border-radius: 20px;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.evento::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.evento-aula {
+    color: #2563eb;
+}
+
+.evento-feriado {
+    color: #dc2626;
+}
+
+.evento-recesso {
+    color: #d97706;
+}
+
+.evento-evento {
+    color: #7c3aed;
+}
+
+.evento-reuniao {
+    color: #16a34a;
+}
+
+.evento-avaliacao {
+    color: #db2777;
+}
+
+.detalhes-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.detalhes-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detalhes-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #777;
+    text-transform: uppercase;
+}
+
+#detalhes-tipo {
+    align-self: flex-start;
+    text-transform: capitalize;
+}

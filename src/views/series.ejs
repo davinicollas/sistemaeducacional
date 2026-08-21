@@ -40,7 +40,7 @@
                 <td><span class="series-abreviacao"><%= s.abreviacao || '' %></span></td>
                 <td class="series-actions">
                   <button type="button" class="btn-secondary" onclick="openSeriesModal(<%= idx %>)">Editar</button>
-                  <button type="button" class="btn-secondary" onclick="removeSeriesRow(this)">Excluir</button>
+                  <button type="button" class="btn-secondary" onclick="excluirEvento(<%= s.id %>)">Excluir</button>
                 </td>
                 <td class="hidden-values" style="display:none">
                   <input type="hidden" name="series[<%= idx %>][id]" value="<%= s.id || '' %>" />
@@ -295,33 +295,13 @@
     return tr;
   }
 
-  function removeSeriesRow(button) {
-    const tr = button.closest('tr');
-    if (!tr) return;
-    const idInput = tr.querySelector('input[name$="[id]"]');
-    const id = idInput ? idInput.value : '';
-    if (id) {
-      const container = document.getElementById('to-delete');
-      if (container) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'deleteIds[]';
-        input.value = id;
-        container.appendChild(input);
-      }
-    }
-    tr.remove();
-    reindexSeries();
-    const tbody = document.getElementById('series-tbody');
-    if (tbody && !tbody.querySelectorAll('tr').length) {
-      const table = document.querySelector('.series-table');
-      const p = document.createElement('p');
-      p.id = 'series-empty';
-      p.className = 'series-empty';
-      p.textContent = 'Nenhuma série cadastrada ainda.';
-      table.insertAdjacentElement('afterend', p);
-    }
-  }
+  function excluirEvento(id) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/series/excluir/${id}`;
+    document.body.appendChild(form);
+    form.submit();
+}
 
   function reindexSeries() {
     const tbody = document.getElementById('series-tbody');

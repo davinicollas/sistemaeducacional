@@ -14,6 +14,17 @@ router.get("/series", async (req, res) => {
     }
 });
 
+router.post("/series/excluir/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        await db.query(`UPDATE params_series SET excluido = 1 WHERE id = ?`, [id]);
+        res.redirect("/series");
+    } catch (err) {
+        console.error(err);
+        res.redirect("/series");
+    }
+});
+
 router.post("/series", async (req, res) => {
     try {
         const raw = req.body.series || {};

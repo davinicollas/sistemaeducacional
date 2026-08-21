@@ -1,45 +1,363 @@
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
+<div class="container">
 
-<div class="config-container">
-  <div class="page-header">
-    <div>
-      <h1>Calendário</h1>
-      <p>Visualização e configuração do calendário acadêmico.</p>
-    </div>
-  </div>
-
-  <section class="config-card">
-    <div class="card-header">
-      <div class="card-icon">📅</div>
-      <div>
-        <h2>Eventos</h2>
-        <p>Placeholder: gerenciar feriados e eventos.</p>
-      </div>
-    </div>
-    <div class="card-body">
-      <form action="/calendario" method="POST">
-        <% Object.keys(settings || {}).forEach(function(k){ %>
-          <div class="form-group">
-            <label><%= k %></label>
-            <input type="text" name="settings[<%= k %>]" value="<%= settings[k] %>" />
-          </div>
-        <% }); %>
-
-        <div class="form-group">
-          <label>Novo campo</label>
-          <input type="text" name="newKey" placeholder="chave" />
-          <input type="text" name="newValue" placeholder="valor" />
+    <div class="header">
+        <div>
+            <h1>Calendário Escolar</h1>
+            <p>Gerencie os eventos e datas do calendário letivo.</p>
         </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Salvar</button>
-        </div>
-      </form>
+        <button class="btn-primary" onclick="abrirModal()">
+            + Novo evento
+        </button>
     </div>
-  </section>
+
+    <div class="filtros">
+
+        <select id="ano">
+            <option value="2026" <%= filtros && filtros.ano == 2026 ? 'selected' : '' %>>2026</option>
+            <option value="2027" <%= filtros && filtros.ano == 2027 ? 'selected' : '' %>>2027</option>
+        </select>
+
+        <select id="mes">
+            <option value="0" <%= filtros && filtros.mes == 0 ? 'selected' : '' %>>Janeiro</option>
+            <option value="1" <%= filtros && filtros.mes == 1 ? 'selected' : '' %>>Fevereiro</option>
+            <option value="2" <%= filtros && filtros.mes == 2 ? 'selected' : '' %>>Março</option>
+            <option value="3" <%= filtros && filtros.mes == 3 ? 'selected' : '' %>>Abril</option>
+            <option value="4" <%= filtros && filtros.mes == 4 ? 'selected' : '' %>>Maio</option>
+            <option value="5" <%= filtros && filtros.mes == 5 ? 'selected' : '' %>>Junho</option>
+            <option value="6" <%= filtros && filtros.mes == 6 ? 'selected' : '' %>>Julho</option>
+            <option value="7" <%= filtros && filtros.mes == 7 ? 'selected' : '' %>>Agosto</option>
+            <option value="8" <%= filtros && filtros.mes == 8 ? 'selected' : '' %>>Setembro</option>
+            <option value="9" <%= filtros && filtros.mes == 9 ? 'selected' : '' %>>Outubro</option>
+            <option value="10" <%= filtros && filtros.mes == 10 ? 'selected' : '' %>>Novembro</option>
+            <option value="11" <%= filtros && filtros.mes == 11 ? 'selected' : '' %>>Dezembro</option>
+        </select>
+
+    </div>
+
+    <div class="calendario">
+
+        <div class="dias-semana">
+            <div>Dom</div>
+            <div>Seg</div>
+            <div>Ter</div>
+            <div>Qua</div>
+            <div>Qui</div>
+            <div>Sex</div>
+            <div>Sáb</div>
+        </div>
+
+        <div id="dias" class="dias"></div>
+
+        <div class="legenda-container">
+            <h2>Legenda</h2>
+
+            <div class="legenda">
+                <div class="evento evento-aula">Aula</div>
+                <div class="evento evento-feriado">Feriado</div>
+                <div class="evento evento-recesso">Recesso</div>
+                <div class="evento evento-evento">Evento escolar</div>
+                <div class="evento evento-reuniao">Reunião</div>
+                <div class="evento evento-avaliacao">Avaliação</div>
+            </div>
+        </div>
+          
+    </div>
 
 </div>
+
+
+<!-- MODAL DETALHES DO EVENTO -->
+
+<div id="modal-detalhes" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2 id="detalhes-titulo">Evento</h2>
+
+            <button onclick="fecharDetalhesModal()">×</button>
+        </div>
+
+        <div class="detalhes-lista">
+            <div class="detalhes-item">
+                <span class="detalhes-label">Tipo</span>
+                <span id="detalhes-tipo" class="evento"></span>
+            </div>
+            <div class="detalhes-item">
+                <span class="detalhes-label">Data inicial</span>
+                <span id="detalhes-data-inicio"></span>
+            </div>
+            <div class="detalhes-item">
+                <span class="detalhes-label">Data final</span>
+                <span id="detalhes-data-fim"></span>
+            </div>
+            <div class="detalhes-item">
+                <span class="detalhes-label">Descrição</span>
+                <span id="detalhes-descricao"></span>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="fecharDetalhesModal()">
+                Fechar
+            </button>
+
+            <button
+                type="button"
+                class="btn-primary"
+                id="detalhes-excluir">
+                Excluir evento
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div id="modal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Novo evento</h2>
+
+            <button onclick="fecharModal()">×</button>
+        </div>
+
+        <form action="/calendario" method="POST">
+
+            <div class="form-group">
+                <label>Nome do evento</label>
+
+                <input
+                    type="text"
+                    name="titulo"
+                    placeholder="Ex: Reunião de pais"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Tipo</label>
+
+                <select name="tipo">
+                    <option value="aula">Aula</option>
+                    <option value="feriado">Feriado</option>
+                    <option value="recesso">Recesso</option>
+                    <option value="evento">Evento escolar</option>
+                    <option value="reuniao">Reunião</option>
+                    <option value="avaliacao">Avaliação</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label>Data inicial</label>
+
+                    <input
+                        type="date"
+                        name="data_inicio"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Data final</label>
+
+                    <input
+                        type="date"
+                        name="data_fim"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Descrição</label>
+
+                <textarea
+                    name="descricao"
+                    rows="4"
+                    placeholder="Descrição do evento..."
+                ></textarea>
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    onclick="fecharModal()">
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-primary">
+                    Salvar evento
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const dias = document.getElementById('dias');
+const ano = document.getElementById('ano');
+const mes = document.getElementById('mes');
+
+// Eventos carregados do servidor para o mês/ano selecionados
+const eventos = <%- JSON.stringify(evento || []).replace(/</g, '\\u003c') %>;
+
+// Datas vêm do servidor em ISO UTC; usar os componentes UTC evita que o fuso
+// horário do navegador desloque o dia (ex: meia-noite UTC virando o dia anterior).
+function paraDataLocalSemHora(str) {
+    const d = new Date(str);
+    return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()).getTime();
+}
+
+function eventosDoDia(anoSelecionado, mesSelecionado, dia) {
+    const dataAlvo = new Date(anoSelecionado, mesSelecionado, dia).getTime();
+
+    return eventos.filter(ev => {
+        const inicio = paraDataLocalSemHora(ev.data_inicio);
+        const fim = ev.data_fim ? paraDataLocalSemHora(ev.data_fim) : inicio;
+        return dataAlvo >= inicio && dataAlvo <= fim;
+    });
+}
+
+function excluirEvento(id) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/calendario/excluir/${id}`;
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function formatarData(str) {
+    if (!str) return '-';
+    const d = new Date(str);
+    return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()).toLocaleDateString('pt-BR');
+}
+
+function abrirDetalhesEvento(id) {
+    const ev = eventos.find(e => e.id === id);
+    if (!ev) return;
+
+    document.getElementById('detalhes-titulo').textContent = ev.titulo;
+
+    const tipoEl = document.getElementById('detalhes-tipo');
+    tipoEl.textContent = ev.tipo;
+    tipoEl.className = `evento evento-${ev.tipo}`;
+
+    document.getElementById('detalhes-data-inicio').textContent = formatarData(ev.data_inicio);
+    document.getElementById('detalhes-data-fim').textContent = formatarData(ev.data_fim);
+    document.getElementById('detalhes-descricao').textContent = ev.descricao || '-';
+
+    document.getElementById('detalhes-excluir').onclick = () => excluirEvento(ev.id);
+
+    document.getElementById('modal-detalhes').classList.add('ativo');
+}
+
+function fecharDetalhesModal() {
+    document.getElementById('modal-detalhes').classList.remove('ativo');
+}
+
+function gerarCalendario() {
+
+    dias.innerHTML = '';
+
+    const anoSelecionado = parseInt(ano.value);
+    const mesSelecionado = parseInt(mes.value);
+
+    const primeiroDia = new Date(
+        anoSelecionado,
+        mesSelecionado,
+        1
+    ).getDay();
+
+    const quantidadeDias = new Date(
+        anoSelecionado,
+        mesSelecionado + 1,
+        0
+    ).getDate();
+
+    // Espaços antes do primeiro dia
+    for (let i = 0; i < primeiroDia; i++) {
+
+        const vazio = document.createElement('div');
+
+        vazio.classList.add('dia', 'vazio');
+
+        dias.appendChild(vazio);
+    }
+
+    // Dias do mês
+    for (let dia = 1; dia <= quantidadeDias; dia++) {
+
+        const elemento = document.createElement('div');
+
+        elemento.classList.add('dia');
+
+        const eventosDia = eventosDoDia(anoSelecionado, mesSelecionado, dia);
+        const eventosHtml = eventosDia.map(ev => `
+            <div class="evento evento-${ev.tipo}" title="${ev.descricao || ''}" onclick="abrirDetalhesEvento(${ev.id})">
+                <span>${ev.titulo}</span>
+                <button type="button" onclick="event.stopPropagation(); excluirEvento(${ev.id})">×</button>
+            </div>
+        `).join('');
+
+        elemento.innerHTML = `
+            <span class="numero">${dia}</span>
+            ${eventosHtml}
+        `;
+
+        dias.appendChild(elemento);
+    }
+}
+
+ano.addEventListener('change', () => {
+    window.location.href = `/calendario?ano=${ano.value}&mes=${mes.value}`;
+});
+mes.addEventListener('change', () => {
+    window.location.href = `/calendario?ano=${ano.value}&mes=${mes.value}`;
+});
+
+function abrirModal() {
+
+    document.getElementById('modal')
+        .classList.add('ativo');
+
+}
+
+function fecharModal() {
+
+    document.getElementById('modal')
+        .classList.remove('ativo');
+
+}
+
+gerarCalendario();
+
+</script>
 
 </body>
 </html>
