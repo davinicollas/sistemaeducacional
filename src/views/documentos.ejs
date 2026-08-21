@@ -1,45 +1,224 @@
+
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
+<%
+    documentos = typeof documentos !== 'undefined' ? documentos : {};
+    let documentosList = Array.isArray(documentos.documentos) ? documentos.documentos : [];
+    const TIPOS_DOCUMENTO = {
+        1: 'Regimento escolar', 2: 'Projeto político-pedagógico', 3: 'Calendário escolar',
+        4: 'Plano de ensino', 5: 'Plano de aula', 6: 'Ata', 7: 'Declaração',
+        8: 'Histórico escolar', 9: 'Boletim', 10: 'Ficha de matrícula', 11: 'Contrato',
+        12: 'Comunicado', 13: 'Ofício', 14: 'Circular', 15: 'Histórico Escolar', 16: 'Outro'
+    };
+    const STATUS_DOCUMENTO = { 1: 'Ativo', 2: 'Inativo', 3: 'Vencido', 4: 'Em revisão' };
+    function formatarDataISO(v) {
+        if (!v) return '';
+        return new Date(v).toISOString().slice(0, 10);
+    }
+    function arquivoEhImagem(nome) {
+        return /\.(png|jpe?g)$/i.test(nome || '');
+    }
+    function arquivoIcone(nome) {
+        return /\.pdf$/i.test(nome || '') ? '📄' : '📝';
+    }
+%>
 
 <div class="config-container">
   <div class="page-header">
     <div>
       <h1>Documentos</h1>
-      <p>Gerenciamento de documentos e arquivos da instituição.</p>
+      <p>Cadastre e gerencie os documentos escolares.</p>
     </div>
   </div>
 
   <section class="config-card">
     <div class="card-header">
-      <div class="card-icon">📁</div>
+      <div class="card-icon">📚</div>
       <div>
-        <h2>Arquivos</h2>
-        <p>Placeholder: upload e organização de documentos.</p>
+        <h2>Documentos</h2>
+        <p>Nome, tipo e demais informações de cada documento.</p>
       </div>
     </div>
+
     <div class="card-body">
-      <form action="/documentos" method="POST">
-        <% Object.keys(settings || {}).forEach(function(k){ %>
-          <div class="form-group">
-            <label><%= k %></label>
-            <input type="text" name="settings[<%= k %>]" value="<%= settings[k] %>" />
-          </div>
-        <% }); %>
+      <table class="series-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome do documento</th>
+            <th>Tipo de documento</th>
+            <th>Status</th>
+            <th>Arquivo</th>
+            <th style="width:160px"></th>
+          </tr>
+        </thead>
+        <tbody id="documentos-tbody">
+          <% documentosList.forEach(function (d) { %>
+            <tr>
+              <td><span class="doc-id"><%= d.id || '' %></span></td>
+              <td><span class="doc-nome"><%= d.nome || '' %></span></td>
+              <td><span class="series-abreviacao"><%= TIPOS_DOCUMENTO[d.tipo] || '-' %></span></td>
+              <td><span><%= STATUS_DOCUMENTO[d.status] || '-' %></span></td>
+              <td>
+                <% if (d.arquivo) { %>
+                  <a href="/uploads/documentos/<%= d.arquivo %>" target="_blank" rel="noopener" class="doc-thumb-link">
+                    <% if (arquivoEhImagem(d.arquivo)) { %>
+                      <img src="/uploads/documentos/<%= d.arquivo %>" alt="Miniatura" class="doc-thumb" />
+                    <% } else { %>
+                      <span class="doc-thumb doc-thumb-icon"><%= arquivoIcone(d.arquivo) %></span>
+                    <% } %>
+                  </a>
+                <% } else { %>
+                  -
+                <% } %>
+              </td>
+              <td class="series-actions">
+                <button type="button" class="btn-secondary" onclick="openDocumentoModal(<%= d.id %>)">Editar</button>
+                <button type="button" class="btn-secondary" onclick="excluirDocumento(<%= d.id %>)">Excluir</button>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
 
-        <div class="form-group">
-          <label>Novo campo</label>
-          <input type="text" name="newKey" placeholder="chave" />
-          <input type="text" name="newValue" placeholder="valor" />
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Salvar</button>
-        </div>
-      </form>
+      <% if (!documentosList.length) { %>
+        <p class="series-empty" id="documentos-empty">Nenhum documento cadastrado ainda.</p>
+      <% } %>
+      <div class="form-actions">
+        <button type="button" class="btn-primary series-new-btn" onclick="openDocumentoModal(null)">Novo</button>
+      </div>
     </div>
   </section>
-
 </div>
 
-</body>
-</html>
+
+<!-- MODAL -->
+
+<div id="documento-modal" class="modal">
+  <div class="modal-panel">
+    <h3 id="modal-titulo">Novo documento</h3>
+
+    <form id="documento-form" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="modal-nome">Nome do documento *</label>
+        <input id="modal-nome" name="nome" type="text" placeholder="Ex: Histórico Escolar" required />
+      </div>
+
+      <div class="form-group">
+        <label for="modal-tipo">Tipo de documento</label>
+        <select id="modal-tipo" name="tipo">
+          <option value="">Selecione</option>
+          <% Object.keys(TIPOS_DOCUMENTO).forEach(function (key) { %>
+            <option value="<%= key %>"><%= TIPOS_DOCUMENTO[key] %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="modal-descricao">Descrição</label>
+        <textarea id="modal-descricao" name="descricao" rows="3" placeholder="Informações do documento"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="modal-arquivo">Arquivo (PDF, imagem ou Word - máx. 10MB)</label>
+        <input id="modal-arquivo" name="arquivo" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" />
+        <p id="modal-arquivo-atual" class="arquivo-atual"></p>
+      </div>
+
+      <div class="form-group">
+        <label for="modal-data_documento">Data do documento</label>
+        <input type="date" id="modal-data_documento" name="data_documento" />
+      </div>
+      <div class="form-group">
+        <label for="modal-data_validade">Data de validade</label>
+        <input type="date" id="modal-data_validade" name="data_validade" />
+      </div>
+      <div class="form-group">
+        <label for="modal-status">Status</label>
+        <select id="modal-status" name="status">
+          <option value="1">Ativo</option>
+          <option value="2">Inativo</option>
+          <option value="3">Vencido</option>
+          <option value="4">Em revisão</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="modal-publico">Público</label>
+        <select id="modal-publico" name="publico">
+          <option value="1">Todos</option>
+          <option value="2">Direção</option>
+          <option value="3">Coordenação</option>
+          <option value="4">Professores</option>
+          <option value="5">Secretaria</option>
+          <option value="6">Alunos</option>
+          <option value="7">Responsáveis</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-secondary" onclick="closeDocumentoModal()">Cancelar</button>
+        <button type="submit" class="btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Documentos carregados do servidor, usados para preencher o modal de edição
+  const documentosData = <%- JSON.stringify(documentosList || []).replace(/</g, '\\u003c') %>;
+
+  const documentoModal = document.getElementById('documento-modal');
+  const documentoForm = document.getElementById('documento-form');
+
+  documentoModal.addEventListener('click', function (e) {
+    if (e.target === documentoModal) closeDocumentoModal();
+  });
+
+  function openDocumentoModal(id) {
+    documentoForm.reset();
+    document.getElementById('modal-arquivo-atual').innerHTML = '';
+
+    if (id === null) {
+      document.getElementById('modal-titulo').textContent = 'Novo documento';
+      documentoForm.action = '/documentos';
+    } else {
+      const doc = documentosData.find(d => d.id === id);
+      if (!doc) return;
+
+      document.getElementById('modal-titulo').textContent = 'Editar documento';
+      documentoForm.action = `/documentos/${id}`;
+      document.getElementById('modal-nome').value = doc.nome || '';
+      document.getElementById('modal-tipo').value = doc.tipo || '';
+      document.getElementById('modal-descricao').value = doc.descricao || '';
+      document.getElementById('modal-data_documento').value = doc.data_documento ? doc.data_documento.slice(0, 10) : '';
+      document.getElementById('modal-data_validade').value = doc.data_validade ? doc.data_validade.slice(0, 10) : '';
+      document.getElementById('modal-status').value = doc.status || '1';
+      document.getElementById('modal-publico').value = doc.publico || '';
+
+      if (doc.arquivo) {
+        const url = `/uploads/documentos/${doc.arquivo}`;
+        const ehImagem = /\.(png|jpe?g)$/i.test(doc.arquivo);
+        const miniatura = ehImagem
+          ? `<img src="${url}" alt="Miniatura" class="doc-thumb">`
+          : `<span class="doc-thumb doc-thumb-icon">${/\.pdf$/i.test(doc.arquivo) ? '📄' : '📝'}</span>`;
+        document.getElementById('modal-arquivo-atual').innerHTML =
+          `Arquivo atual: <a href="${url}" target="_blank" rel="noopener" class="doc-thumb-link">${miniatura}</a>`;
+      }
+    }
+
+    documentoModal.classList.add('open');
+    setTimeout(() => document.getElementById('modal-nome').focus(), 10);
+  }
+
+  function closeDocumentoModal() {
+    documentoModal.classList.remove('open');
+  }
+
+  function excluirDocumento(id) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/documentos/excluir/${id}`;
+    document.body.appendChild(form);
+    form.submit();
+  }
+</script>

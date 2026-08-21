@@ -28,6 +28,7 @@
         <table class="series-table">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Nome da série</th>
               <th>Abreviação</th>
               <th style="width:160px"></th>
@@ -36,6 +37,7 @@
           <tbody id="series-tbody">
             <% seriesList.forEach(function (s, idx) { %>
               <tr data-index="<%= idx %>" class="series-row">
+                <td><span class="series-nome"><%= s.id || '' %></span></td>
                 <td><span class="series-nome"><%= s.nome || '' %></span></td>
                 <td><span class="series-abreviacao"><%= s.abreviacao || '' %></span></td>
                 <td class="series-actions">

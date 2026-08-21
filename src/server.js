@@ -17,6 +17,7 @@ const aparencia = require('./routes/aparencia');
 const configuracao_notas = require('./routes/configuracao_notas');
 const series = require('./routes/series');
 const calendario = require('./routes/calendario');
+const documentos = require('./routes/documentos');
 
 const authMid = require("./middleware/auth");
 
@@ -88,10 +89,6 @@ app.get('/termos', (req, res) => {
 });
 
 
-app.get('/documentos', (req, res) => {
-  res.render('documentos');
-});
-
 app.get('/financeiro', (req, res) => {
   res.render('financeiro');
 });
@@ -109,6 +106,7 @@ app.use(aparencia);
 app.use(configuracao_notas);
 app.use(series);
 app.use(calendario);
+app.use(documentos);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {
