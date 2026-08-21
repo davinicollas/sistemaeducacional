@@ -18,6 +18,7 @@ const configuracao_notas = require('./routes/configuracao_notas');
 const series = require('./routes/series');
 const calendario = require('./routes/calendario');
 const documentos = require('./routes/documentos');
+const notificacoes = require('./routes/notificacoes');
 
 const authMid = require("./middleware/auth");
 
@@ -63,18 +64,15 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
    res.render('index');
 });
-
 app.get('/login', (req, res) => {
   res.render('login');
 });
-
 app.get('/cadastro', (req, res) => {
   res.render('cadastro');
 });
 app.get('/alunos', (req, res) => {
   res.render('alunos');
 });
-
 app.get('/professores', (req, res) => {
   res.render('professores');
 });
@@ -92,9 +90,7 @@ app.get('/termos', (req, res) => {
 app.get('/financeiro', (req, res) => {
   res.render('financeiro');
 });
-app.get('/notificacoes', (req, res) => {
-  res.render('notificacoes');
-});
+
 
 
 app.use(usuario);
@@ -107,6 +103,7 @@ app.use(configuracao_notas);
 app.use(series);
 app.use(calendario);
 app.use(documentos);
+app.use(notificacoes);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {

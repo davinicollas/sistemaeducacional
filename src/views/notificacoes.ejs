@@ -1,45 +1,857 @@
 <%- include('partials/header') %>
-<%- include('partials/menu') %>
+    <!-- Sidebar -->
+    <%- include('partials/menu') %>
 
-<div class="config-container">
-  <div class="page-header">
-    <div>
-      <h1>Notificações</h1>
-      <p>Configuração e histórico de notificações.</p>
-    </div>
-  </div>
+<div class="container">
 
-  <section class="config-card">
-    <div class="card-header">
-      <div class="card-icon">🔔</div>
-      <div>
-        <h2>Alertas</h2>
-        <p>Placeholder: configurações e templates de notificação.</p>
-      </div>
+    <!-- CABEÇALHO -->
+    <div class="page-header">
+
+        <div>
+            <h1>🔔 Alertas</h1>
+
+            <p>
+                Gerencie os alertas e notificações do sistema.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="btn-primary"
+            onclick="abrirModal()"
+        >
+            + Novo alerta
+        </button>
+
     </div>
-    <div class="card-body">
-      <form action="/notificacoes" method="POST">
-        <% Object.keys(settings || {}).forEach(function(k){ %>
-          <div class="form-group">
-            <label><%= k %></label>
-            <input type="text" name="settings[<%= k %>]" value="<%= settings[k] %>" />
-          </div>
-        <% }); %>
+
+
+    <!-- CARDS -->
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-icon">🔔</div>
+
+            <div>
+                <span>Total</span>
+                <strong>24</strong>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">📩</div>
+
+            <div>
+                <span>Não lidos</span>
+                <strong>8</strong>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">🔴</div>
+
+            <div>
+                <span>Urgentes</span>
+                <strong>3</strong>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">📚</div>
+
+            <div>
+                <span>Acadêmicos</span>
+                <strong>13</strong>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- FILTROS -->
+    <div class="filtros">
 
         <div class="form-group">
-          <label>Novo campo</label>
-          <input type="text" name="newKey" placeholder="chave" />
-          <input type="text" name="newValue" placeholder="valor" />
+
+            <label for="pesquisa">
+                Pesquisar
+            </label>
+
+            <input
+                type="text"
+                id="pesquisa"
+                placeholder="Pesquisar alerta..."
+            >
+
         </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Salvar</button>
+
+        <div class="form-group">
+
+            <label for="tipo">
+                Tipo
+            </label>
+
+            <select id="tipo">
+
+                <option value="">
+                    Todos
+                </option>
+
+                <option value="academico">
+                    Acadêmico
+                </option>
+
+                <option value="financeiro">
+                    Financeiro
+                </option>
+
+                <option value="frequencia">
+                    Frequência
+                </option>
+
+                <option value="avaliacao">
+                    Avaliação
+                </option>
+
+                <option value="calendario">
+                    Calendário
+                </option>
+
+                <option value="administrativo">
+                    Administrativo
+                </option>
+
+                <option value="sistema">
+                    Sistema
+                </option>
+
+            </select>
+
         </div>
-      </form>
+
+
+        <div class="form-group">
+
+            <label for="prioridade">
+                Prioridade
+            </label>
+
+            <select id="prioridade">
+
+                <option value="">
+                    Todas
+                </option>
+
+                <option value="baixa">
+                    Baixa
+                </option>
+
+                <option value="normal">
+                    Normal
+                </option>
+
+                <option value="alta">
+                    Alta
+                </option>
+
+                <option value="urgente">
+                    Urgente
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="status">
+                Status
+            </label>
+
+            <select id="status">
+
+                <option value="">
+                    Todos
+                </option>
+
+                <option value="nao_lido">
+                    Não lido
+                </option>
+
+                <option value="lido">
+                    Lido
+                </option>
+
+                <option value="ativo">
+                    Ativo
+                </option>
+
+                <option value="inativo">
+                    Inativo
+                </option>
+
+            </select>
+
+        </div>
+
     </div>
-  </section>
+
+
+    <!-- LISTA DE ALERTAS -->
+    <div class="table-container">
+
+        <div class="table-header">
+
+            <h2>Lista de alertas</h2>
+
+            <span>
+                24 alertas encontrados
+            </span>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Alerta</th>
+
+                    <th>Tipo</th>
+
+                    <th>Prioridade</th>
+
+                    <th>Destinatários</th>
+
+                    <th>Data</th>
+
+                    <th>Status</th>
+
+                    <th>Ações</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+
+                        <div class="alerta-info">
+
+                            <div class="alerta-icon urgente">
+                                🔴
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Mensalidade em atraso
+                                </strong>
+
+                                <small>
+                                    Existem mensalidades vencidas.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        <span class="badge tipo-financeiro">
+                            Financeiro
+                        </span>
+                    </td>
+
+
+                    <td>
+                        <span class="badge prioridade-urgente">
+                            Urgente
+                        </span>
+                    </td>
+
+
+                    <td>
+                        Secretaria
+                    </td>
+
+
+                    <td>
+                        21/08/2026
+                    </td>
+
+
+                    <td>
+
+                        <span class="status nao-lido">
+                            Não lido
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="acoes">
+
+                            <button
+                                title="Visualizar"
+                                onclick="visualizarAlerta(1)"
+                            >
+                                👁️
+                            </button>
+
+                            <button
+                                title="Editar"
+                                onclick="editarAlerta(1)"
+                            >
+                                ✏️
+                            </button>
+
+                            <button
+                                title="Excluir"
+                                onclick="excluirAlerta(1)"
+                            >
+                                🗑️
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+
+                        <div class="alerta-info">
+
+                            <div class="alerta-icon">
+                                📚
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Fechamento do bimestre
+                                </strong>
+
+                                <small>
+                                    O prazo para lançamento de notas
+                                    está terminando.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge tipo-academico">
+                            Acadêmico
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge prioridade-normal">
+                            Normal
+                        </span>
+
+                    </td>
+
+
+                    <td>
+                        Professores
+                    </td>
+
+
+                    <td>
+                        20/08/2026
+                    </td>
+
+
+                    <td>
+
+                        <span class="status lido">
+                            Lido
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="acoes">
+
+                            <button title="Visualizar">
+                                👁️
+                            </button>
+
+                            <button title="Editar">
+                                ✏️
+                            </button>
+
+                            <button title="Excluir">
+                                🗑️
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+
+                        <div class="alerta-info">
+
+                            <div class="alerta-icon">
+                                📅
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Reunião pedagógica
+                                </strong>
+
+                                <small>
+                                    Reunião marcada para 25/08.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge tipo-administrativo">
+                            Administrativo
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge prioridade-normal">
+                            Normal
+                        </span>
+
+                    </td>
+
+
+                    <td>
+                        Coordenação
+                    </td>
+
+
+                    <td>
+                        19/08/2026
+                    </td>
+
+
+                    <td>
+
+                        <span class="status lido">
+                            Lido
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="acoes">
+
+                            <button title="Visualizar">
+                                👁️
+                            </button>
+
+                            <button title="Editar">
+                                ✏️
+                            </button>
+
+                            <button title="Excluir">
+                                🗑️
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 
+
+<!-- MODAL -->
+<div
+    id="modal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+                <h2>Novo alerta</h2>
+
+                <p>
+                    Cadastre um novo alerta.
+                </p>
+            </div>
+
+            <button
+                class="btn-close"
+                onclick="fecharModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            action="/notificacoes"
+            method="POST"
+        >
+
+            <div class="form-group">
+
+                <label for="titulo">
+                    Título *
+                </label>
+
+                <input
+                    type="text"
+                    id="titulo"
+                    name="titulo"
+                    placeholder="Ex: Fechamento do bimestre"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="tipo_alerta">
+                        Tipo *
+                    </label>
+
+                    <select
+                        id="tipo_alerta"
+                        name="tipo"
+                        required
+                    >
+
+                        <option value="">
+                            Selecione
+                        </option>
+
+                        <option value="academico">
+                            Acadêmico
+                        </option>
+
+                        <option value="financeiro">
+                            Financeiro
+                        </option>
+
+                        <option value="frequencia">
+                            Frequência
+                        </option>
+
+                        <option value="avaliacao">
+                            Avaliação
+                        </option>
+
+                        <option value="calendario">
+                            Calendário
+                        </option>
+
+                        <option value="administrativo">
+                            Administrativo
+                        </option>
+
+                        <option value="sistema">
+                            Sistema
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="prioridade_alerta">
+                        Prioridade *
+                    </label>
+
+                    <select
+                        id="prioridade_alerta"
+                        name="prioridade"
+                        required
+                    >
+
+                        <option value="baixa">
+                            Baixa
+                        </option>
+
+                        <option value="normal" selected>
+                            Normal
+                        </option>
+
+                        <option value="alta">
+                            Alta
+                        </option>
+
+                        <option value="urgente">
+                            Urgente
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="mensagem">
+                    Mensagem *
+                </label>
+
+                <textarea
+                    id="mensagem"
+                    name="mensagem"
+                    rows="4"
+                    placeholder="Digite a mensagem do alerta..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="destinatarios">
+                    Destinatários *
+                </label>
+
+                <select
+                    id="destinatarios"
+                    name="destinatarios"
+                    multiple
+                >
+
+                    <option value="direcao">
+                        Direção
+                    </option>
+
+                    <option value="coordenacao">
+                        Coordenação
+                    </option>
+
+                    <option value="secretaria">
+                        Secretaria
+                    </option>
+
+                    <option value="professores">
+                        Professores
+                    </option>
+
+                    <option value="alunos">
+                        Alunos
+                    </option>
+
+                    <option value="responsaveis">
+                        Responsáveis
+                    </option>
+
+                </select>
+
+                <small>
+                    Segure Ctrl para selecionar mais de um.
+                </small>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="data_inicio">
+                        Data inicial
+                    </label>
+
+                    <input
+                        type="date"
+                        id="data_inicio"
+                        name="data_inicio"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="data_fim">
+                        Data final
+                    </label>
+
+                    <input
+                        type="date"
+                        id="data_fim"
+                        name="data_fim"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label class="switch-label">
+
+                    <input
+                        type="checkbox"
+                        name="enviar_notificacao"
+                        value="1"
+                    >
+
+                    <span>
+                        Enviar notificação aos destinatários
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    onclick="fecharModal()"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    Salvar alerta
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function abrirModal() {
+
+    document
+        .getElementById('modal')
+        .classList.add('ativo');
+
+}
+
+
+function fecharModal() {
+
+    document
+        .getElementById('modal')
+        .classList.remove('ativo');
+
+}
+
+
+function visualizarAlerta(id) {
+
+    console.log('Visualizar alerta:', id);
+
+}
+
+
+function editarAlerta(id) {
+
+    console.log('Editar alerta:', id);
+
+}
+
+
+function excluirAlerta(id) {
+
+    if (!confirm('Deseja realmente excluir este alerta?')) {
+        return;
+    }
+
+    console.log('Excluir alerta:', id);
+
+}
+
+
+window.addEventListener('click', function(event) {
+
+    const modal = document.getElementById('modal');
+
+    if (event.target === modal) {
+        fecharModal();
+    }
+
+});
+
+</script>
+
 </body>
+
 </html>
