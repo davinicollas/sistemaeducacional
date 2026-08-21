@@ -132,16 +132,19 @@ function addEstadoRow() {
     tr.innerHTML = `
         <td>
             <input type="hidden" name="itens[][id]" value="">
-            <input type="text" class="form-control" name="itens[][texto]" value="" placeholder="Ex: São Paulo">
+            <input type="text" class="form-control" name="itens[][descricao]" value="" placeholder="Ex: São Paulo">
         </td>
         <td>
-            <input type="text" class="form-control" name="itens[][sigla]" value="" placeholder="Ex: SP">
+            <input type="text" class="form-control" name="itens[][uf]" value="" placeholder="Ex: SP">
         </td>
         <td>
-            <button type="button" class="btn btn-sm btn-danger" onclick="removeEstadoRow(this)"><i class="bi bi-trash"></i></button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeEstadoRow(this)" aria-label="Remover linha" title="Remover linha"><i class="bi bi-trash"></i></button>
         </td>
     `;
     tbody.appendChild(tr);
+    // focus the new descricao input for faster data entry
+    const newInput = tr.querySelector('input[name="itens[][descricao]"]');
+    if (newInput) newInput.focus();
 }
 
 function removeEstadoRow(button) {

@@ -398,6 +398,43 @@
 
 /* Buttons */
 .btn-primary { background:#5b5eef; border-radius:8px; padding:8px 14px; }
+
+/* Estados / filtros specific tweaks */
+.filtros-card .card-header.bg-primary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #fff;
+}
+.filtros-card .card-body {
+    padding: 18px;
+}
+
+/* Tables inside config cards */
+.config-card .table thead th {
+    background: #fafbfe;
+    font-weight: 700;
+    color: #33334a;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+}
+.config-card .table td, .config-card .table th {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0f1f6;
+}
+
+/* Header action sizing */
+.header-actions .btn-secondary, .header-actions .btn-primary {
+    min-width: 130px;
+}
+
+/* Small adjustments for the 'Adicionar linha' container */
+.config-card .mb-3.d-flex.justify-content-end {
+    margin-bottom: 12px;
+}
 .btn-secondary { background:#f6f7fb; border:1px solid #e6e7f2; padding:8px 12px }
 
 /* Empty state */

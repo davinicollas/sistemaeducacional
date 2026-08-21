@@ -1,70 +1,189 @@
-<% 
+<%
     filtros = typeof filtros !== 'undefined' ? filtros : {};
     storePerguntas = typeof storePerguntas !== 'undefined' ? storePerguntas : null;
     pageSizes = typeof pageSizes !== 'undefined' ? pageSizes : [];
     fields = typeof fields !== 'undefined' ? fields : null;
     action = typeof action !== 'undefined' ? action : '';
 %>
+
 <form action="<%= action || '' %>" method="GET" class="mb-4">
+
     <div class="card shadow border-0 mb-4">
-        <div class="card-header bg-primary">
+
+        <div class="card-header bg-primary text-white">
             <h5 class="mb-0">🔎 Filtros</h5>
         </div>
+
         <div class="card-body">
+
             <div class="row g-3 align-items-end">
 
                 <% if (Array.isArray(fields) && fields.length) { %>
+
                     <% fields.forEach(function(f) { %>
+
                         <div class="<%= f.col || 'col-md-6' %>">
-                            <label class="form-label"><%= f.label || '' %></label>
+
+                            <label class="form-label">
+                                <%= f.label || '' %>
+                            </label>
+
                             <% if (f.type === 'select') { %>
-                                <select class="form-select" name="<%= f.name %>">
-                                    <option value=""><%= f.allLabel || 'Todos' %></option>
-                                    <% (f.options || []).forEach(function(opt){ %>
-                                        <option value="<%= opt.value %>" <%= String(filtros?.[f.name] || '') === String(opt.value) ? 'selected' : '' %>><%= opt.label %></option>
+
+                                <select
+                                    class="form-select"
+                                    name="<%= f.name %>"
+                                >
+
+                                    <option value="">
+                                        <%= f.allLabel || 'Todos' %>
+                                    </option>
+
+                                    <% (f.options || []).forEach(function(opt) { %>
+
+                                        <option
+                                            value="<%= opt.value %>"
+                                            <%= String(filtros?.[f.name] || '') === String(opt.value) ? 'selected' : '' %>
+                                        >
+                                            <%= opt.label %>
+                                        </option>
+
                                     <% }) %>
+
                                 </select>
+
                             <% } else { %>
-                                <input type="<%= f.type || 'text' %>" class="form-control" name="<%= f.name %>" value="<%= filtros?.[f.name] || '' %>" placeholder="<%= f.placeholder || '' %>">
+
+                                <input
+                                    type="<%= f.type || 'text' %>"
+                                    class="form-control"
+                                    name="<%= f.name %>"
+                                    value="<%= filtros?.[f.name] || '' %>"
+                                    placeholder="<%= f.placeholder || '' %>"
+                                >
+
                             <% } %>
+
                         </div>
+
                     <% }) %>
+
                 <% } else { %>
+
                     <div class="col-md-6">
-                        <label class="form-label">Texto</label>
-                        <input type="text" class="form-control" name="busca" value="<%= filtros?.busca || '' %>" placeholder="Buscar por palavra">
+
+                        <label class="form-label">
+                            Texto
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="busca"
+                            value="<%= filtros?.busca || '' %>"
+                            placeholder="Buscar por palavra"
+                        >
+
                     </div>
+
                 <% } %>
+
 
                 <% if (storePerguntas) { %>
+
                     <div class="col-md-4">
-                        <select class="form-select" name="tipoPerguntaId">
-                            <option value="">Todos</option>
-                            <% const tiposFiltro = Array.isArray(storePerguntas) ? storePerguntas : [storePerguntas] %>
-                            <% tiposFiltro.forEach((tipo) => { %>
-                                <option value="<%= tipo.id %>" <%= String(filtros?.tipoPerguntaId || '') === String(tipo.id) ? 'selected' : '' %>><%= tipo.text %></option>
+
+                        <label class="form-label">
+                            Tipo de pergunta
+                        </label>
+
+                        <select
+                            class="form-select"
+                            name="tipoPerguntaId"
+                        >
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <%
+                                const tiposFiltro = Array.isArray(storePerguntas)
+                                    ? storePerguntas
+                                    : [storePerguntas];
+                            %>
+
+                            <% tiposFiltro.forEach(function(tipo) { %>
+
+                                <option
+                                    value="<%= tipo.id %>"
+                                    <%= String(filtros?.tipoPerguntaId || '') === String(tipo.id) ? 'selected' : '' %>
+                                >
+                                    <%= tipo.text %>
+                                </option>
+
                             <% }) %>
+
                         </select>
+
                     </div>
+
                 <% } %>
 
+
                 <div class="col-md-2 d-flex gap-2">
-                    <button class="btn btn-primary w-100" type="submit">Filtrar</button>
-                    <a class="btn btn-outline-dark w-100" href="<%= action || '/' %>">Limpar</a>
+
+                    <button
+                        class="btn btn-primary w-100"
+                        type="submit"
+                    >
+                        Filtrar
+                    </button>
+
+                    <a
+                        class="btn btn-outline-dark w-100"
+                        href="<%= action || '/' %>"
+                    >
+                        Limpar
+                    </a>
+
                 </div>
 
+
                 <% if (Array.isArray(pageSizes) && pageSizes.length) { %>
+
                     <div class="col-md-2">
-                        <label class="form-label">Itens por página</label>
-                        <select class="form-select" name="pageSize" onchange="this.form.submit()">
-                            <% pageSizes.forEach(function(sz){ %>
-                                <option value="<%= sz %>" <%= String(filtros?.pageSize || '') === String(sz) ? 'selected' : '' %>><%= sz %></option>
+
+                        <label class="form-label">
+                            Itens por página
+                        </label>
+
+                        <select
+                            class="form-select"
+                            name="pageSize"
+                            onchange="this.form.submit()"
+                        >
+
+                            <% pageSizes.forEach(function(sz) { %>
+
+                                <option
+                                    value="<%= sz %>"
+                                    <%= String(filtros?.pageSize || '') === String(sz) ? 'selected' : '' %>
+                                >
+                                    <%= sz %>
+                                </option>
+
                             <% }) %>
+
                         </select>
+
                     </div>
+
                 <% } %>
 
             </div>
+
         </div>
+
     </div>
+
 </form>
