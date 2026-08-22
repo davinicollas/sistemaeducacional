@@ -20,6 +20,7 @@ const calendario = require('./routes/calendario');
 const documentos = require('./routes/documentos');
 const notificacoes = require('./routes/notificacoes');
 const tiposDocumentos = require('./routes/tiposDocumentos');
+const statusDocumentos = require('./routes/statusDocumentos');
 
 const authMid = require("./middleware/auth");
 
@@ -106,6 +107,7 @@ app.use(calendario);
 app.use(documentos);
 app.use(tiposDocumentos);
 app.use(notificacoes);
+app.use(statusDocumentos);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {

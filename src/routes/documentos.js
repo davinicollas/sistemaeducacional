@@ -7,6 +7,8 @@ const db = require("../../database/mysql");
 const router = express.Router();
 
 const documentosModel = require("../model/documentos");
+const tiposDocumentosModel = require("../model/tiposDocumentos");
+const statusDocumentosModel = require("../model/statusDocumentos");
 
 const UPLOAD_DIR = path.join(__dirname, "..", "..", "public", "uploads", "documentos");
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -33,7 +35,7 @@ const upload = multer({
     limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         if (!TIPOS_PERMITIDOS[file.mimetype]) {
-            return cb(new Error("Tipo de arquivo não permitido"));
+            return cb(new Error("idTipo de arquivo não permitido"));
         }
         cb(null, true);
     }
@@ -47,10 +49,13 @@ function removerArquivo(nomeArquivo) {
 router.get("/documentos", async (req, res) => {
     try {
         const documentosList = await documentosModel.getDocumentos();
-        res.render("documentos", { documentos: { documentos: documentosList } });
+        const tiposDocumentos = await tiposDocumentosModel.getTiposDocumentos();
+        const statusDocumentos = await statusDocumentosModel.getStatusDocumentos();
+        res.render("documentos", { "documentos": documentosList, tiposDocumentos, statusDocumentos });
     } catch (err) {
         console.error(err);
-        res.render("documentos", { documentos: { documentos: [] }, erro: "Erro ao carregar documentos" });
+        const tiposDocumentos = await tiposDocumentosModel.getTiposDocumentos();
+        res.render("documentos", { documentosList: [], tiposDocumentos, statusDocumentos: [], erro: "Erro ao carregar documentos" });
     }
 });
 
@@ -59,18 +64,18 @@ router.post("/documentos", upload.single("arquivo"), async (req, res) => {
         const nome = (req.body.nome || "").trim();
         if (!nome) return res.redirect("/documentos");
 
-        const tipo = req.body.tipo ? Number(req.body.tipo) : null;
+        const idTipo = req.body.idTipo ? Number(req.body.idTipo) : null;
         const descricao = (req.body.descricao || "").trim();
         const data_documento = req.body.data_documento || null;
         const data_validade = req.body.data_validade || null;
-        const status = req.body.status ? Number(req.body.status) : 1;
+        const idStatus = req.body.idStatus ? Number(req.body.idStatus) : 1;
         const publico = req.body.publico ? Number(req.body.publico) : null;
         const arquivo = req.file ? req.file.filename : null;
 
         await db.query(
-            `INSERT INTO documentos (nome, tipo, descricao, arquivo, data_documento, data_validade, status, publico)
+            `INSERT INTO documentos (nome, idTipo, descricao, arquivo, data_documento, data_validade, idStatus, publico)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [nome, tipo, descricao, arquivo, data_documento, data_validade, status, publico]
+            [nome, idTipo, descricao, arquivo, data_documento, data_validade, idStatus, publico]
         );
 
         res.redirect("/documentos");
@@ -86,30 +91,30 @@ router.post("/documentos/:id", upload.single("arquivo"), async (req, res) => {
         const nome = (req.body.nome || "").trim();
         if (!nome) return res.redirect("/documentos");
 
-        const tipo = req.body.tipo ? Number(req.body.tipo) : null;
+        const idTipo = req.body.idTipo ? Number(req.body.idTipo) : null;
         const descricao = (req.body.descricao || "").trim();
         const data_documento = req.body.data_documento || null;
         const data_validade = req.body.data_validade || null;
-        const status = req.body.status ? Number(req.body.status) : 1;
+        const idStatus = req.body.idStatus ? Number(req.body.idStatus) : 1;
         const publico = req.body.publico ? Number(req.body.publico) : null;
 
         if (req.file) {
             const [[atual]] = await db.query("SELECT arquivo FROM documentos WHERE id = ?", [id]);
             await db.query(
                 `UPDATE documentos SET
-                    nome = ?, tipo = ?, descricao = ?, data_documento = ?, data_validade = ?,
-                    status = ?, publico = ?, arquivo = ?
+                    nome = ?, idTipo = ?, descricao = ?, data_documento = ?, data_validade = ?,
+                    idStatus = ?, publico = ?, arquivo = ?
                  WHERE id = ?`,
-                [nome, tipo, descricao, data_documento, data_validade, status, publico, req.file.filename, id]
+                [nome, idTipo, descricao, data_documento, data_validade, idStatus, publico, req.file.filename, id]
             );
             if (atual && atual.arquivo) removerArquivo(atual.arquivo);
         } else {
             await db.query(
                 `UPDATE documentos SET
-                    nome = ?, tipo = ?, descricao = ?, data_documento = ?, data_validade = ?,
-                    status = ?, publico = ?
+                    nome = ?, idTipo = ?, descricao = ?, data_documento = ?, data_validade = ?,
+                    idStatus = ?, publico = ?
                  WHERE id = ?`,
-                [nome, tipo, descricao, data_documento, data_validade, status, publico, id]
+                [nome, idTipo, descricao, data_documento, data_validade, idStatus, publico, id]
             );
         }
 
@@ -130,7 +135,7 @@ router.post("/documentos/excluir/:id", async (req, res) => {
     }
 });
 
-// Captura erros do multer (tipo de arquivo não permitido, tamanho excedido, etc.)
+// Captura erros do multer (idTipo de arquivo não permitido, tamanho excedido, etc.)
 router.use((err, req, res, next) => {
     console.error(err);
     res.redirect("/documentos");

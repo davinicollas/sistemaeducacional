@@ -1,0 +1,127 @@
+<%- include('partials/header') %>
+    <%- include('partials/menu') %>
+<%
+    filtros = typeof filtros !== 'undefined' ? filtros : {};
+    pagination = typeof pagination !== 'undefined' ? pagination : {};
+    statusDocumentos = typeof statusDocumentos !== 'undefined' ? statusDocumentos : [];
+%>
+
+<div class="main-content">
+
+    <%- include('partials/filtros', {
+            action: '/StatusDocumentos',
+            filtros,
+            fields: [
+                { name: 'busca', label: 'Descrição', placeholder: 'Buscar por palavra', col: 'col-md-6' }
+            ]
+    }) %>
+
+
+    <form id="formStatusDocumentos" action="/StatusDocumentos" method="POST">
+
+        <section class="config-card">
+
+            <div class="card-header">
+                <div class="card-icon">🌐</div>
+
+                <div>
+                    <h2>Status de Documentos</h2>
+                    <p>Adicione, edite ou remova status de documentos utilizados pelo sistema.</p>
+                </div>
+            </div>
+            
+            <div class="card-body">
+
+                <div class="mb-3 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn-secondary" onclick="addParamsRow(document.getElementById('trClone'))">Adicionar linha</button>
+                </div>
+
+                
+
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%; display: none;">ID</th>
+                                <th style="width: 50%">Descrição</th>
+                                <th style="width: 10%">Cor</th>
+                                <th style="width: 10%">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="grid-params">
+                            <% const itens = Array.isArray(statusDocumentos) ? statusDocumentos : [statusDocumentos]; %>
+                            <% itens.forEach((item, index) => { %>
+                                <tr data-id="<%= item.id || '' %>">
+                                    <td>
+                                        <input type="hidden" name="itens[<%= index %>][id]" value="<%= item.id || '' %>">   
+                                        <input type="text" class="form-control" name="itens[<%= index %>][text]" value="<%= item.text || '' %>" placeholder="Ex: Status do Documento">
+                                    </td>
+                                    <td>
+                                        <input type="color" name="itens[<%= index %>][cor]" value="<%= item.cor || '#000000' %>" placeholder="Cor do status">
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="removeParamsRow(this)"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                              <!-- TR MODELO -->
+                            <tr id="trClone" style="display: none;">
+                                <td>
+                                    <input type="hidden" data-field="id" value="">
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        data-field="text"
+                                        value="" 
+                                        placeholder="Ex: Documento de Identidade"
+                                    >
+                                </td>
+                                <td>
+                                    <input 
+                                        type="color" 
+                                        class="form-control" 
+                                        data-field="cor"
+                                        value="#000000" 
+                                        placeholder="Cor do status"
+                                    >
+                                    </td>
+                                <td>
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-sm btn-danger" 
+                                        onclick="removeParamsRow(this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <small class="text-muted">Preencha uma linha por estado. Linhas vazias serão ignoradas ao salvar.</small>
+                <div id="to-delete"></div>
+            </div>
+
+        </section>
+
+        <%- include('partials/paginations', {
+            pagination,
+            filtros,
+            rota: '/StatusDocumentos',
+            query: `busca=${encodeURIComponent(filtros?.busca || '')}`
+        }) %>
+
+    </form>
+
+    <!-- BOTÕES MOBILE -->
+    <div class="mobile-actions">
+
+        <button type="button" class="btn-secondary">Cancelar</button>
+
+        <button type="submit" form="formStatusDocumentos" class="btn-primary">Salvar alterações</button>
+
+    </div>
+
+</div>
+
+</body>
+</html>

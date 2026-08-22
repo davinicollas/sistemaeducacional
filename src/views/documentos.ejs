@@ -3,14 +3,9 @@
 <%- include('partials/menu') %>
 <%
     documentos = typeof documentos !== 'undefined' ? documentos : {};
-    let documentosList = Array.isArray(documentos.documentos) ? documentos.documentos : [];
-    const TIPOS_DOCUMENTO = {
-        1: 'Regimento escolar', 2: 'Projeto político-pedagógico', 3: 'Calendário escolar',
-        4: 'Plano de ensino', 5: 'Plano de aula', 6: 'Ata', 7: 'Declaração',
-        8: 'Histórico escolar', 9: 'Boletim', 10: 'Ficha de matrícula', 11: 'Contrato',
-        12: 'Comunicado', 13: 'Ofício', 14: 'Circular', 15: 'Histórico Escolar', 16: 'Outro'
-    };
-    const STATUS_DOCUMENTO = { 1: 'Ativo', 2: 'Inativo', 3: 'Vencido', 4: 'Em revisão' };
+    let documentosList = Array.isArray(documentos) ? documentos : [];
+    const tiposDocumentosList = Array.isArray(tiposDocumentos) ? tiposDocumentos : [];
+    const statusDocumentosList = Array.isArray(statusDocumentos) ? statusDocumentos : [];
     function formatarDataISO(v) {
         if (!v) return '';
         return new Date(v).toISOString().slice(0, 10);
@@ -21,6 +16,8 @@
     function arquivoIcone(nome) {
         return /\.pdf$/i.test(nome || '') ? '📄' : '📝';
     }
+    console.log('documentosList:', documentosList);
+
 %>
 
 <div class="main-content">
@@ -30,7 +27,6 @@
       <p>Cadastre e gerencie os documentos escolares.</p>
     </div>
   </div>
-
   <section class="config-card">
     <div class="card-header">
       <div class="card-icon">📚</div>
@@ -57,8 +53,8 @@
             <tr>
               <td><span class="doc-id"><%= d.id || '' %></span></td>
               <td><span class="doc-nome"><%= d.nome || '' %></span></td>
-              <td><span class="series-abreviacao"><%= TIPOS_DOCUMENTO[d.tipo] || '-' %></span></td>
-              <td><span><%= STATUS_DOCUMENTO[d.status] || '-' %></span></td>
+              <td><span class="series-abreviacao"><%= tiposDocumentosList.find(t => t.id === d.idTipo   )?.text || '-' %></span></td>
+              <td><span><%= statusDocumentosList.find(s => s.id === d.idStatus)?.text || '-' %></span></td>
               <td>
                 <% if (d.arquivo) { %>
                   <a href="/uploads/documentos/<%= d.arquivo %>" target="_blank" rel="noopener" class="doc-thumb-link">
@@ -106,11 +102,14 @@
 
       <div class="form-group">
         <label for="modal-tipo">Tipo de documento</label>
-        <select id="modal-tipo" name="tipo">
+        <select id="modal-tipo" name="idTipo">
           <option value="">Selecione</option>
-          <% Object.keys(TIPOS_DOCUMENTO).forEach(function (key) { %>
-            <option value="<%= key %>"><%= TIPOS_DOCUMENTO[key] %></option>
+           <% tiposDocumentosList.forEach(function (t) { %> 
+             <option value="<%= t.id %>">
+              <%= t.text %>
+            </option>
           <% }) %>
+         
         </select>
       </div>
 
@@ -135,11 +134,13 @@
       </div>
       <div class="form-group">
         <label for="modal-status">Status</label>
-        <select id="modal-status" name="status">
-          <option value="1">Ativo</option>
-          <option value="2">Inativo</option>
-          <option value="3">Vencido</option>
-          <option value="4">Em revisão</option>
+        <select id="modal-status" name="idStatus">
+          <option value="">Selecione</option>
+          <% statusDocumentos.forEach(function (d) { %> 
+            <option value="<%= d.id %>">
+              <%= d.text %>
+            </option>
+          <% }) %>
         </select>
       </div>
       <div class="form-group">
@@ -181,19 +182,21 @@
     if (id === null) {
       document.getElementById('modal-titulo').textContent = 'Novo documento';
       documentoForm.action = '/documentos';
-    } else {
-      const doc = documentosData.find(d => d.id === id);
-      if (!doc) return;
+    }
+    else {
+    const doc = documentosData.find(d => d.id === id);
+  
+    if (!doc) return;
 
-      document.getElementById('modal-titulo').textContent = 'Editar documento';
-      documentoForm.action = `/documentos/${id}`;
-      document.getElementById('modal-nome').value = doc.nome || '';
-      document.getElementById('modal-tipo').value = doc.tipo || '';
-      document.getElementById('modal-descricao').value = doc.descricao || '';
-      document.getElementById('modal-data_documento').value = doc.data_documento ? doc.data_documento.slice(0, 10) : '';
-      document.getElementById('modal-data_validade').value = doc.data_validade ? doc.data_validade.slice(0, 10) : '';
-      document.getElementById('modal-status').value = doc.status || '1';
-      document.getElementById('modal-publico').value = doc.publico || '';
+    document.getElementById('modal-titulo').textContent = 'Editar documento';
+    documentoForm.action = `/documentos/${id}`;
+    document.getElementById('modal-nome').value = doc.nome || '';
+    document.getElementById('modal-tipo').value = doc.idTipo || '';
+    document.getElementById('modal-descricao').value = doc.descricao || '';
+    document.getElementById('modal-data_documento').value = doc.data_documento ? doc.data_documento.slice(0, 10) : '';
+    document.getElementById('modal-data_validade').value = doc.data_validade ? doc.data_validade.slice(0, 10) : '';
+    document.getElementById('modal-status').value = doc.idStatus || '';
+    document.getElementById('modal-publico').value = doc.publico || '';
 
       if (doc.arquivo) {
         const url = `/uploads/documentos/${doc.arquivo}`;
