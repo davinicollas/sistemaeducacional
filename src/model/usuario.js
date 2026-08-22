@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 async function getUsuario(email) {
     const [usuario] = await db.query(
-        "SELECT * FROM usuarios WHERE email = ?",
+        "SELECT * FROM usuarios WHERE email = ? AND excluido = 0",
         [email]
     );
 
@@ -13,7 +13,7 @@ async function getUsuario(email) {
 
 async function getUsuarioPorId(id) {
     const [usuario] = await db.query(
-        "SELECT * FROM usuarios WHERE id = ?",
+        "SELECT * FROM usuarios WHERE id = ? AND excluido = 0",
         [id]
     );
 

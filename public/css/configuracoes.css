@@ -123,8 +123,8 @@
 
 .form-group input:focus,
 .form-group select:focus {
-    border-color: #5967e8;
-    box-shadow: 0 0 0 3px rgba(89, 103, 232, 0.10);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255,107,107,0.10);
 }
 
 .form-group small {
@@ -200,12 +200,12 @@
 }
 
 .btn-primary {
-    background: #5967e8;
+    background: var(--primary);
     color: #ffffff;
 }
 
 .btn-primary:hover {
-    background: #4857d7;
+    background: var(--primary-dark);
 }
 
 .btn-secondary {

@@ -245,12 +245,12 @@
                     <select class="form-select" id="estado" name="idEstado" required>
                         <% const tiposLista = Array.isArray(estado) ? estado : (estado ? [estado] : []); %>
                         <option value="">Selecione</option>
-                        <% tiposLista.forEach(({ id, uf, descricao }) => { %>
+                        <% tiposLista.forEach(({ id, uf, text }) => { %>
                             <option 
                                 value="<%= id %>"
                                 <%= config.idEstado === id ? 'selected' : '' %>
                             >
-                                <%= descricao %>
+                                <%= text %>
                             </option>
                         <% }) %>
                     </select>

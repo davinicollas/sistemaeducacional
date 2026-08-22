@@ -124,30 +124,33 @@ document.querySelectorAll('.search-box input').forEach(function (input) {
 });
 
 // ======== Estados: adicionar / remover linhas dinamicamente ========
-function addEstadoRow() {
-    const tbody = document.getElementById('grid-palavras');
-    if (!tbody) return;
+function addParamsRow(tr) {
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-        <td>
-            <input type="hidden" name="itens[][id]" value="">
-            <input type="text" class="form-control" name="itens[][descricao]" value="" placeholder="Ex: São Paulo">
-        </td>
-        <td>
-            <input type="text" class="form-control" name="itens[][uf]" value="" placeholder="Ex: SP">
-        </td>
-        <td>
-            <button type="button" class="btn btn-sm btn-danger" onclick="removeEstadoRow(this)" aria-label="Remover linha" title="Remover linha"><i class="bi bi-trash"></i></button>
-        </td>
-    `;
-    tbody.appendChild(tr);
-    // focus the new descricao input for faster data entry
-    const newInput = tr.querySelector('input[name="itens[][descricao]"]');
-    if (newInput) newInput.focus();
+    const tbody = document.getElementById('grid-params');
+
+    const novaLinha = tr.cloneNode(true);
+
+    const index = tbody.querySelectorAll('tr:not(#trClone)').length;
+
+    novaLinha.removeAttribute('id');
+    novaLinha.style.display = '';
+
+    novaLinha.querySelectorAll('[data-field]').forEach(input => {
+
+        const field = input.dataset.field;
+
+        input.name = `itens[${index}][${field}]`;
+        input.value = '';
+
+        if (field === 'uf') {
+            input.maxLength = 2;
+        }
+    });
+
+    tbody.appendChild(novaLinha);
 }
 
-function removeEstadoRow(button) {
+function removeParamsRow(button) {
     const tr = button.closest('tr');
     if (!tr) return;
     const id = tr.getAttribute('data-id');

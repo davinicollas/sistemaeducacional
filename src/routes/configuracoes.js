@@ -22,7 +22,6 @@
     });
 
     router.post("/configuracoes", async(req,res)=>{
-        console.log(req.body);
         const {
             nome,
             nome_fantasia,

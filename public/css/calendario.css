@@ -33,7 +33,7 @@ body {
 }
 
 .btn-primary {
-    background: #4f46e5;
+    background: var(--primary);
     color: white;
     border: none;
     padding: 12px 18px;
@@ -112,7 +112,7 @@ body {
     border-radius: 5px;
     font-size: 11px;
     color: white;
-    background: #4f46e5;
+    background: var(--primary);
     overflow: hidden;
     cursor: pointer;
 }

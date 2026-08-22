@@ -6,8 +6,9 @@
 }
 
 :root {
-    --primary: #5a4bfa;
-    --primary-light: #f0edff;
+    --primary: #FF6B6B;
+    --primary-dark: #cc5757;
+    --primary-light: #fff2f2;
     --bg-color: #fafafa;
     --sidebar-bg: #ffffff;
     --text-main: #1e1e2d;
@@ -37,7 +38,7 @@ a { color: inherit; text-decoration: none; }
     transition: background-color 0.2s;
 }
 
-.btn-primary:hover { background-color: #4a3ce0; }
+.btn-primary:hover { background-color: var(--primary-dark); }
 
 /* Auth pages centering */
 .auth-page {

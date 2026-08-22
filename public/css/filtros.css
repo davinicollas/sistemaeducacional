@@ -1,0 +1,112 @@
+/* filtros.css — estilos padronizados para componentes de filtro */
+:root {
+    /* Reaproveita variáveis existentes em base.css */
+}
+
+.app-filters .card {
+    border-radius: 10px;
+}
+
+.app-filters .card-header {
+    background: var(--primary);
+    color: #fff;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.app-filters .card-header h5 {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.app-filters .card-body { padding: 1rem; }
+
+.app-filters .form-label {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+}
+
+.app-filters .form-control,
+.app-filters .form-select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    box-shadow: none;
+}
+
+.app-filters .form-control:focus,
+.app-filters .form-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(255,107,107,0.06);
+}
+
+.app-filters .filter-actions { display: flex; gap: 0.5rem; align-items: center; }
+
+.app-filters .filter-actions .btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.app-filters .filter-actions .btn-outline-dark {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-main);
+}
+
+.app-filters .filter-actions .btn.w-100 { width: 100%; }
+
+/* Small screens: make columns stack nicely */
+@media (max-width: 768px) {
+    .app-filters .col-md-6,
+    .app-filters .col-md-4,
+    .app-filters .col-md-2 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    .app-filters .filter-actions { flex-direction: row; gap: 0.5rem; }
+}
+
+/* Misc helpers */
+.app-filters .small-note { font-size: 0.85rem; color: var(--text-muted); }
+
+/* ===== Overrides to avoid global .card conflicts ===== */
+.app-filters .card {
+    display: block !important;
+    width: 100%;
+    background: #fff;
+}
+
+.app-filters .card .card-header,
+.app-filters .card .card-body {
+    display: block;
+    width: 100%;
+}
+
+.app-filters .card-header {
+    justify-content: flex-start;
+    gap: 0.75rem;
+}
+
+.app-filters .card-header h5 { margin: 0; }
+
+.app-filters .filter-actions .btn { white-space: nowrap; min-width: 84px; }
+
+.app-filters .filter-reset { display: inline-flex; align-items: center; justify-content: center; }
+
+/* Ensure columns use bootstrap grid behaviour inside the filters scope */
+.app-filters .row { margin-left: 0; margin-right: 0; }
+
+/* Small visual polish */
+.app-filters { margin-bottom: 16px; }
+

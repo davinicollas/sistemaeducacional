@@ -19,6 +19,7 @@ const series = require('./routes/series');
 const calendario = require('./routes/calendario');
 const documentos = require('./routes/documentos');
 const notificacoes = require('./routes/notificacoes');
+const tiposDocumentos = require('./routes/tiposDocumentos');
 
 const authMid = require("./middleware/auth");
 
@@ -103,6 +104,7 @@ app.use(configuracao_notas);
 app.use(series);
 app.use(calendario);
 app.use(documentos);
+app.use(tiposDocumentos);
 app.use(notificacoes);
 
 // Inicia o servidor

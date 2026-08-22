@@ -9,7 +9,7 @@
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-#grid-palavras input.form-control {
+#grid-params input.form-control {
   background: transparent;
   border: 1px solid rgba(255,255,255,0.08);
 }
@@ -39,7 +39,7 @@
 }
 
 @media (max-width: 767px) {
-  #grid-palavras input.form-control {
+  #grid-params input.form-control {
     font-size: 14px;
   }
   .card-header small {

@@ -4,11 +4,16 @@
     pageSizes = typeof pageSizes !== 'undefined' ? pageSizes : [];
     fields = typeof fields !== 'undefined' ? fields : null;
     action = typeof action !== 'undefined' ? action : '';
+    skipWrapper = typeof skipWrapper !== 'undefined' ? skipWrapper : false;
 %>
 
-<form action="<%= action || '' %>" method="GET" class="mb-4">
+<% if (!skipWrapper) { %>
+    <form action="<%= action || '' %>" method="GET" class="app-filters" role="search">
+<% } else { %>
+    <div class="app-filters" role="search">
+<% } %>
 
-    <div class="card shadow border-0 mb-4">
+    <div class="card shadow border-0">
 
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">🔎 Filtros</h5>
@@ -130,17 +135,17 @@
                 <% } %>
 
 
-                <div class="col-md-2 d-flex gap-2">
+                <div class="col-md-2 d-flex gap-2 filter-actions">
 
                     <button
-                        class="btn btn-primary w-100"
+                        class="btn btn-primary w-100 filter-submit"
                         type="submit"
                     >
                         Filtrar
                     </button>
 
                     <a
-                        class="btn btn-outline-dark w-100"
+                        class="btn btn-outline-dark w-100 filter-reset"
                         href="<%= action || '/' %>"
                     >
                         Limpar
@@ -160,7 +165,7 @@
                         <select
                             class="form-select"
                             name="pageSize"
-                            onchange="this.form.submit()"
+                            onchange="this.form && this.form.submit()"
                         >
 
                             <% pageSizes.forEach(function(sz) { %>
@@ -186,4 +191,8 @@
 
     </div>
 
-</form>
+<% if (!skipWrapper) { %>
+    </form>
+<% } else { %>
+    </div>
+<% } %>

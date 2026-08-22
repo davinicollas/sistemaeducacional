@@ -52,7 +52,7 @@ body {
 
 .btn-primary {
     border: none;
-    background: #4f46e5;
+    background: var(--primary);
     color: #fff;
     padding: 11px 18px;
     border-radius: 8px;
@@ -63,7 +63,7 @@ body {
 }
 
 .btn-primary:hover {
-    background: #4338ca;
+    background: var(--primary-dark);
 }
 
 .btn-secondary {
@@ -113,7 +113,7 @@ body {
     align-items: center;
     justify-content: center;
 
-    background: #eef2ff;
+    background: var(--primary-light);
     border-radius: 10px;
 
     font-size: 20px;
@@ -187,9 +187,9 @@ body {
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #4f46e5;
+    border-color: var(--primary);
 
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .08);
+    box-shadow: 0 0 0 3px rgba(255,107,107,0.08);
 }
 
 .form-group textarea {
@@ -317,7 +317,7 @@ tbody tr:last-child td {
 }
 
 .alerta-icon.urgente {
-    background: #fff1f2;
+    background: var(--primary-light);
 }
 
 
@@ -361,8 +361,8 @@ tbody tr:last-child td {
 /* Prioridades */
 
 .prioridade-urgente {
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--primary-light);
+    color: var(--primary-dark);
 }
 
 .prioridade-alta {
@@ -409,7 +409,7 @@ tbody tr:last-child td {
 }
 
 .status.nao-lido {
-    color: #dc2626;
+    color: var(--primary);
 }
 
 .status.lido {
