@@ -20,7 +20,7 @@ docker compose up --build
 ```
 
 - App: http://localhost:3000
-- MySQL: localhost:3306 (usuário `root`, senha `root`, banco `sistema_educacional`)
+- MySQL: localhost:3306 (usuário ``, senha ``, banco `sistema_educacional`)
 
 Variáveis de ambiente (arquivo `.env` na raiz):
 
@@ -28,8 +28,8 @@ Variáveis de ambiente (arquivo `.env` na raiz):
 DB_HOST=mysql
 DB_PORT=3306
 DB_NAME=sistema_educacional
-DB_USER=root
-DB_PASSWORD=root
+DB_USER=
+DB_PASSWORD=
 
 SESSION_NAME=sistema_educacional_session
 SESSION_SECRET=<valor secreto>
@@ -114,7 +114,7 @@ Os scripts SQL ficam em `patch/*.sql` e devem ser aplicados manualmente no MySQL
 Exemplo de aplicação via Docker:
 
 ```powershell
-docker compose exec mysql mysql -uroot -proot sistema_educacional < patch/configuracaoAcademicas.sql
+docker compose exec mysql mysql -ux -px sistema_educacional < patch/configuracaoAcademicas.sql
 ```
 
 ## Scripts utilitários
