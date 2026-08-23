@@ -4,6 +4,8 @@
 <%
     series = typeof series !== 'undefined' ? series : {};
     let seriesList = Array.isArray(series.series) ? series.series : [];
+    turnos = typeof turnos !== 'undefined' ? turnos : [];
+    let turnosList = Array.isArray(turnos) ? turnos : [];
 %>
 
 <div class="main-content">
@@ -52,7 +54,7 @@
                   <input type="hidden" name="series[<%= idx %>][nivel_ensino]" value="<%= s.nivel_ensino || '' %>" />
                   <input type="hidden" name="series[<%= idx %>][ano_serie]" value="<%= s.ano_serie || '' %>" />
                   <input type="hidden" name="series[<%= idx %>][codigo]" value="<%= s.codigo || '' %>" />
-                  <input type="hidden" name="series[<%= idx %>][turnos]" value="<%= (s.turnos || []).join(',') %>" />
+                  <input type="hidden" name="series[<%= idx %>][idTurnos]" value="<%= s.idTurnos || '' %>" />
                   <input type="hidden" name="series[<%= idx %>][idade_minima]" value="<%= s.idade_minima || '' %>" />
                   <input type="hidden" name="series[<%= idx %>][idade_maxima]" value="<%= s.idade_maxima || '' %>" />
                   <input type="hidden" name="series[<%= idx %>][carga_horaria]" value="<%= s.carga_horaria || '' %>" />
@@ -136,10 +138,12 @@
 
         <div class="form-group">
           <label for="modal-turnos">Turno permitido</label>
-          <select id="modal-turnos" multiple>
-            <option value="Manhã">Manhã</option>
-            <option value="Tarde">Tarde</option>
-            <option value="Noite">Noite</option>
+          <select id="modal-turnos">
+            <option value="">Selecione</option>
+            <% turnosList.forEach(function (turno) { %>
+              <option value="<%= turno.id %>"><%= turno.nome %></option>
+            <% }) %>
+          
           </select>
         </div>
 
@@ -191,7 +195,7 @@
     const modal = getOrCreateModal();
     const idxInput = modal.querySelector('#modal-index');
 
-    const fields = ['id', 'nome', 'abreviacao', 'etapa_ensino', 'nivel_ensino', 'ano_serie', 'codigo',
+    const fields = ['id', 'nome', 'abreviacao', 'etapa_ensino', 'nivel_ensino', 'ano_serie', 'codigo', 'idTurnos',
       'idade_minima', 'idade_maxima', 'carga_horaria', 'aulas_semanais', 'status', 'descricao'];
 
     if (index === null) {
@@ -208,9 +212,8 @@
         return el ? el.value : '';
       };
       fields.forEach(f => { const el = modal.querySelector(`#modal-${f}`); if (el) el.value = getHidden(f); });
-      const turnosVal = getHidden('turnos');
-      const parts = turnosVal ? turnosVal.split(',') : [];
-      modal.querySelectorAll('#modal-turnos option').forEach(o => o.selected = parts.indexOf(o.value) !== -1);
+      const turnosVal = getHidden('idTurnos');
+      modal.querySelector('#modal-turnos').value = turnosVal;
     }
 
     modal.classList.add('open');
@@ -238,7 +241,7 @@
       nivel_ensino: modal.querySelector('#modal-nivel_ensino').value,
       ano_serie: modal.querySelector('#modal-ano_serie').value.trim(),
       codigo: modal.querySelector('#modal-codigo').value.trim(),
-      turnos: Array.from(modal.querySelectorAll('#modal-turnos option')).filter(o => o.selected).map(o => o.value).join(','),
+      idTurnos:modal.querySelector('#modal-turnos').value.trim(),
       idade_minima: modal.querySelector('#modal-idade_minima').value.trim(),
       idade_maxima: modal.querySelector('#modal-idade_maxima').value.trim(),
       carga_horaria: modal.querySelector('#modal-carga_horaria').value.trim(),
@@ -308,7 +311,7 @@
   function reindexSeries() {
     const tbody = document.getElementById('series-tbody');
     if (!tbody) return;
-    const fields = ['id', 'nome', 'abreviacao', 'etapa_ensino', 'nivel_ensino', 'ano_serie', 'codigo', 'turnos',
+    const fields = ['id', 'nome', 'abreviacao', 'etapa_ensino', 'nivel_ensino', 'ano_serie', 'codigo', 'idTurnos',
       'idade_minima', 'idade_maxima', 'carga_horaria', 'aulas_semanais', 'status', 'descricao'];
     tbody.querySelectorAll('tr').forEach(function (row, idx) {
       row.setAttribute('data-index', idx);

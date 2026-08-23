@@ -3,14 +3,17 @@ const db = require("../../database/mysql");
 const router = express.Router();
 
 const seriesModel = require("../model/series");
+const turnosModel = require("../model/turnos");
 
 router.get("/series", async (req, res) => {
     try {
         const seriesList = await seriesModel.getSeries();
-        res.render("series", { series: { series: seriesList } });
+        const turnosList = await turnosModel.getTurnos();
+        res.render("series", { series: { series: seriesList }, turnos: turnosList });
     } catch (err) {
         console.error(err);
-        res.render("series", { series: { series: [] }, erro: 'Erro ao carregar séries' });
+        const turnosList = await turnosModel.getTurnos();
+        res.render("series", { series: { series: [] }, turnos: turnosList, erro: 'Erro ao carregar séries' });
     }
 });
 
@@ -52,7 +55,7 @@ router.post("/series", async (req, res) => {
             const nivel_ensino = (item.nivel_ensino || '').trim();
             const ano_serie = item.ano_serie ? Number(item.ano_serie) : null;
             const codigo = (item.codigo || '').trim();
-            const turnos = (item.turnos || '').trim();
+            const idTurnos = item.idTurnos || null; // Assuming idTurnos is a single value, not an array
             const idade_minima = item.idade_minima ? Number(item.idade_minima) : null;
             const idade_maxima = item.idade_maxima ? Number(item.idade_maxima) : null;
             const carga_horaria = item.carga_horaria ? Number(item.carga_horaria) : null;
@@ -61,7 +64,7 @@ router.post("/series", async (req, res) => {
             const descricao = (item.descricao || '').trim();
 
             const params = [
-                nome, abreviacao, etapa_ensino, nivel_ensino, ano_serie, codigo, turnos,
+                nome, abreviacao, etapa_ensino, nivel_ensino, ano_serie, codigo, idTurnos,
                 idade_minima, idade_maxima, carga_horaria, aulas_semanais, status, descricao
             ];
 
@@ -69,7 +72,7 @@ router.post("/series", async (req, res) => {
                 await db.query(
                     `UPDATE params_series SET
                         nome = ?, abreviacao = ?, etapa_ensino = ?, nivel_ensino = ?, ano_serie = ?,
-                        codigo = ?, turnos = ?, idade_minima = ?, idade_maxima = ?, carga_horaria = ?,
+                        codigo = ?, idTurnos = ?, idade_minima = ?, idade_maxima = ?, carga_horaria = ?,
                         aulas_semanais = ?, status = ?, descricao = ?
                      WHERE id = ?`,
                     [...params, id]
@@ -77,7 +80,7 @@ router.post("/series", async (req, res) => {
             } else {
                 await db.query(
                     `INSERT INTO params_series
-                        (nome, abreviacao, etapa_ensino, nivel_ensino, ano_serie, codigo, turnos,
+                        (nome, abreviacao, etapa_ensino, nivel_ensino, ano_serie, codigo, idTurnos,
                          idade_minima, idade_maxima, carga_horaria, aulas_semanais, status, descricao)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     params

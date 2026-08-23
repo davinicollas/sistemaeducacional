@@ -40,8 +40,8 @@
               <tr data-index="<%= idx %>" class="anos-row">
                 <td><span class="ano-id"><%= s.id || '' %></span></td>
                 <td><span class="ano-ano"><%= s.ano_letivo || s.ano || '' %></span></td>
-                <td><span class="ano-inicio"><%= s.data_inicio || '' %></span></td>
-                <td><span class="ano-fim"><%= s.data_fim || '' %></span></td>
+                <td><span class="ano-inicio"><%= new Date(s.data_inicio).toLocaleDateString('pt-BR') %></span></td>
+                <td><span class="ano-fim"><%= new Date(s.data_fim).toLocaleDateString('pt-BR') %></span></td>
                 <td><span class="ano-atual"><%= s.atual ? 'Sim' : 'Não' %></span></td>
                 <td class="ano-actions">
                   <button type="button" class="btn btn-sm btn-warning" onclick="openAnosModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
