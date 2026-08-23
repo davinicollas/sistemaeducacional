@@ -21,6 +21,11 @@ const documentos = require('./routes/documentos');
 const notificacoes = require('./routes/notificacoes');
 const tiposDocumentos = require('./routes/tiposDocumentos');
 const statusDocumentos = require('./routes/statusDocumentos');
+const anosLetivos = require('./routes/anosLetivos');
+const periodos = require('./routes/periodos');
+const turnos = require('./routes/turnos');
+const salas = require('./routes/salas');
+const tiposAvaliacao = require('./routes/tiposAvaliacao');
 
 const authMid = require("./middleware/auth");
 
@@ -108,6 +113,11 @@ app.use(documentos);
 app.use(tiposDocumentos);
 app.use(notificacoes);
 app.use(statusDocumentos);
+app.use(anosLetivos);
+app.use(periodos);
+app.use(turnos);
+app.use(salas);
+app.use(tiposAvaliacao);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {

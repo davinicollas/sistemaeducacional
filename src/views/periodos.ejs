@@ -1,0 +1,218 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%
+    periodos = typeof periodos !== 'undefined' ? periodos : {};
+    let periodosList = Array.isArray(periodos.periodos) ? periodos.periodos : [];
+    anos = typeof anos !== 'undefined' ? anos : [];
+%>
+
+<div class="main-content">
+  <div class="page-header">
+    <div>
+      <h1>Configurações Acadêmicas</h1>
+      <p>Cadastre e gerencie os períodos / bimestres.</p>
+    </div>
+  </div>
+
+  <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">📐</div>
+      <div>
+        <h2>Períodos / Bimestres</h2>
+        <p>Defina divisões do ano letivo (bimestre, semestre, personalizado).</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form id="periodos-form" action="/periodos" method="POST">
+        <table class="series-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Ano Letivo</th>
+              <th>Início</th>
+              <th>Fim</th>
+              <th>Ordem</th>
+              <th style="width: 10%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="periodos-tbody">
+            <% periodosList.forEach(function (s, idx) { %>
+              <tr data-index="<%= idx %>" class="periodo-row">
+                <td><span class="periodo-id"><%= s.id || '' %></span></td>
+                <td><span class="periodo-nome"><%= s.nome || '' %></span></td>
+                <td><span class="periodo-ano"><%= s.ano_letivo || '' %></span></td>
+                <td><span class="periodo-inicio"><%= s.data_inicio || '' %></span></td>
+                <td><span class="periodo-fim"><%= s.data_fim || '' %></span></td>
+                <td><span class="periodo-ordem"><%= s.ordem || '' %></span></td>
+                <td class="periodo-actions">
+                  <button type="button" class="btn btn-sm btn-warning" onclick="openPeriodosModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirPeriodo(<%= s.id %>)"><i class="bi bi-trash"></i></button>
+                </td>
+                <td class="hidden-values" style="display:none">
+                  <input type="hidden" data-field="id" name="periodos[<%= idx %>][id]" value="<%= s.id || '' %>" />
+                  <input type="hidden" data-field="nome" name="periodos[<%= idx %>][nome]" value="<%= s.nome || '' %>" />
+                  <input type="hidden" data-field="abreviacao" name="periodos[<%= idx %>][abreviacao]" value="<%= s.abreviacao || '' %>" />
+                  <input type="hidden" data-field="anoLetivo" name="periodos[<%= idx %>][anoLetivo]" value="<%= s.ano_letivo || '' %>" />
+                  <input type="hidden" data-field="dataInicio" name="periodos[<%= idx %>][dataInicio]" value="<%= s.data_inicio || '' %>" />
+                  <input type="hidden" data-field="dataFim" name="periodos[<%= idx %>][dataFim]" value="<%= s.data_fim || '' %>" />
+                  <input type="hidden" data-field="ordem" name="periodos[<%= idx %>][ordem]" value="<%= s.ordem || '' %>" />
+                  <input type="hidden" data-field="tipo" name="periodos[<%= idx %>][tipo]" value="<%= s.tipo || '' %>" />
+                  <input type="hidden" data-field="status" name="periodos[<%= idx %>][status]" value="<%= s.status || '1' %>" />
+                  <input type="hidden" data-field="text" name="periodos[<%= idx %>][text]" value="<%= s.text || '' %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <% if (!periodosList.length) { %>
+          <p class="series-empty" id="periodos-empty">Nenhum período cadastrado ainda.</p>
+        <% } %>
+        <div id="to-delete"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="button" class="btn-primary series-new-btn" onclick="openPeriodosModal(null)">Novo</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<script>
+  function getOrCreatePeriodosModal() {
+    let modal = document.getElementById('periodos-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'periodos-modal';
+    modal.innerHTML = `
+      <div class="modal-panel">
+        <h3>Período</h3>
+        <input type="hidden" id="modal-index" value="-1">
+        <input type="hidden" id="modal-id" value="">
+
+        <div class="form-group">
+          <label for="modal-nome">Nome *</label>
+          <input id="modal-nome" type="text" placeholder="Ex: 1º Bimestre" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-abreviacao">Abreviação</label>
+          <input id="modal-abreviacao" type="text" placeholder="Ex: 1º Bim" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-anoLetivo">Ano letivo</label>
+          <select id="modal-anoLetivo">
+            <option value="">Selecione</option>
+            <% anos.forEach(function(a){ %>
+              <option value="<%= a.ano_letivo || a.ano || a.id %>"><%= a.ano_letivo || a.ano %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-dataInicio">Data inicial</label>
+          <input id="modal-dataInicio" type="date" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-dataFim">Data final</label>
+          <input id="modal-dataFim" type="date" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-ordem">Ordem</label>
+          <input id="modal-ordem" type="number" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-tipo">Tipo</label>
+          <select id="modal-tipo">
+            <option value="Bimestre">Bimestre</option>
+            <option value="Trimestre">Trimestre</option>
+            <option value="Semestre">Semestre</option>
+            <option value="Personalizado">Personalizado</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-status">Status *</label>
+          <select id="modal-status">
+            <option value="1">Ativo</option>
+            <option value="0">Inativo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-text">Descrição</label>
+          <textarea id="modal-text" rows="3" placeholder="Observações do período"></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" onclick="closePeriodosModal()">Cancelar</button>
+          <button type="button" class="btn-primary" onclick="savePeriodosModal()">Salvar</button>
+        </div>
+      </div>
+    `;
+    modal.addEventListener('click', function (e) { if (e.target === modal) closePeriodosModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openPeriodosModal(index) {
+    const modal = getOrCreatePeriodosModal();
+    const fields = ['id', 'nome', 'abreviacao', 'anoLetivo', 'dataInicio', 'dataFim', 'ordem', 'tipo', 'status', 'text'];
+
+    ModalHelper.openModal(modal, 'periodos', fields, index, { status: '1' });
+
+    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
+  }
+
+  function closePeriodosModal() { const modal = document.getElementById('periodos-modal'); if (!modal) return; modal.classList.remove('open'); }
+
+  function savePeriodosModal() {
+    const modal = document.getElementById('periodos-modal');
+    if (!modal) return;
+    const nome = modal.querySelector('#modal-nome').value.trim();
+    if (!nome) { modal.querySelector('#modal-nome').focus(); return; }
+
+    const values = {
+      id: modal.querySelector('#modal-id').value.trim(),
+      nome,
+      abreviacao: modal.querySelector('#modal-abreviacao').value.trim(),
+      anoLetivo: modal.querySelector('#modal-anoLetivo').value,
+      dataInicio: modal.querySelector('#modal-dataInicio').value.trim(),
+      dataFim: modal.querySelector('#modal-dataFim').value.trim(),
+      ordem: modal.querySelector('#modal-ordem').value.trim(),
+      tipo: modal.querySelector('#modal-tipo').value,
+      status: modal.querySelector('#modal-status').value,
+      text: modal.querySelector('#modal-text').value.trim()
+    };
+
+    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
+
+    const fields = ['id','nome','abreviacao','anoLetivo','dataInicio','dataFim','ordem','tipo','status','text'];
+    const displayMap = [
+      { field: 'nome', cls: 'periodo-nome' },
+      { field: 'anoLetivo', cls: 'periodo-ano' },
+      { field: 'dataInicio', cls: 'periodo-inicio' },
+      { field: 'dataFim', cls: 'periodo-fim' },
+      { field: 'ordem', cls: 'periodo-ordem' }
+    ];
+
+    ModalHelper.applyValuesToRow('periodos', fields, displayMap, idx, values, 'openPeriodosModal', '/periodos/excluir');
+    ModalHelper.reindex('periodos', fields, 'openPeriodosModal');
+    closePeriodosModal();
+  }
+
+  function excluirPeriodo(id) {
+    ModalHelper.submitDelete(`/periodos/excluir/${id}`);
+  }
+
+  function removePeriodosRow(btn) { ModalHelper.removeRow(btn, 'periodos', ['id','nome','abreviacao','anoLetivo','dataInicio','dataFim','ordem','tipo','status','text'], 'openPeriodosModal'); }
+
+  function reindexPeriodos() { ModalHelper.reindex('periodos', ['id','nome','abreviacao','anoLetivo','dataInicio','dataFim','ordem','tipo','status','text'], 'openPeriodosModal'); }
+</script>

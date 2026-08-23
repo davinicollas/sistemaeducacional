@@ -1,0 +1,189 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%
+    anos = typeof anos !== 'undefined' ? anos : {};
+    let anosList = Array.isArray(anos.anos) ? anos.anos : [];
+%>
+
+<div class="main-content">
+  <div class="page-header">
+    <div>
+      <h1>Configurações Acadêmicas</h1>
+      <p>Cadastre e gerencie os anos letivos.</p>
+    </div>
+  </div>
+
+  <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">📅</div>
+      <div>
+        <h2>Anos Letivos</h2>
+        <p>Períodos escolares com datas de início e fim.</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form id="anos-form" action="/anos-letivos" method="POST">
+        <table class="series-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Ano</th>
+              <th>Início</th>
+              <th>Fim</th>
+              <th>Atual</th>
+              <th style="width: 10%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="anos-tbody">
+            <% anosList.forEach(function (s, idx) { %>
+              <tr data-index="<%= idx %>" class="anos-row">
+                <td><span class="ano-id"><%= s.id || '' %></span></td>
+                <td><span class="ano-ano"><%= s.ano_letivo || s.ano || '' %></span></td>
+                <td><span class="ano-inicio"><%= s.data_inicio || '' %></span></td>
+                <td><span class="ano-fim"><%= s.data_fim || '' %></span></td>
+                <td><span class="ano-atual"><%= s.atual ? 'Sim' : 'Não' %></span></td>
+                <td class="ano-actions">
+                  <button type="button" class="btn btn-sm btn-warning" onclick="openAnosModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirAno(<%= s.id %>)"><i class="bi bi-trash"></i></button>
+                </td>
+                <td class="hidden-values" style="display:none">
+                  <input type="hidden" data-field="id" name="anos[<%= idx %>][id]" value="<%= s.id || '' %>" />
+                  <input type="hidden" data-field="anoLetivo" name="anos[<%= idx %>][anoLetivo]" value="<%= s.ano_letivo || s.ano || '' %>" />
+                  <input type="hidden" data-field="dataInicio" name="anos[<%= idx %>][dataInicio]" value="<%= s.data_inicio || '' %>" />
+                  <input type="hidden" data-field="dataFim" name="anos[<%= idx %>][dataFim]" value="<%= s.data_fim || '' %>" />
+                  <input type="hidden" data-field="status" name="anos[<%= idx %>][status]" value="<%= s.status || '1' %>" />
+                  <input type="hidden" data-field="atual" name="anos[<%= idx %>][atual]" value="<%= s.atual ? '1' : '0' %>" />
+                  <input type="hidden" data-field="text" name="anos[<%= idx %>][text]" value="<%= s.text || '' %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <% if (!anosList.length) { %>
+          <p class="series-empty" id="anos-empty">Nenhum ano letivo cadastrado ainda.</p>
+        <% } %>
+        <div id="to-delete"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="button" class="btn-primary series-new-btn" onclick="openAnosModal(null)">Novo</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<script>
+  function getOrCreateAnosModal() {
+    let modal = document.getElementById('anos-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'anos-modal';
+    modal.innerHTML = `
+      <div class="modal-panel">
+        <h3>Ano Letivo</h3>
+        <input type="hidden" id="modal-index" value="-1">
+        <input type="hidden" id="modal-id" value="">
+
+        <div class="form-group">
+          <label for="modal-anoLetivo">Ano *</label>
+          <input id="modal-anoLetivo" type="number" placeholder="Ex: 2026" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-dataInicio">Data inicial</label>
+          <input id="modal-dataInicio" type="date" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-dataFim">Data final</label>
+          <input id="modal-dataFim" type="date" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-atual">Ano atual</label>
+          <select id="modal-atual">
+            <option value="0">Não</option>
+            <option value="1">Sim</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-status">Status *</label>
+          <select id="modal-status">
+            <option value="1">Ativo</option>
+            <option value="0">Inativo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-text">Descrição</label>
+          <textarea id="modal-text" rows="3" placeholder="Informações do ano letivo"></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" onclick="closeAnosModal()">Cancelar</button>
+          <button type="button" class="btn-primary" onclick="saveAnosModal()">Salvar</button>
+        </div>
+      </div>
+    `;
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeAnosModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openAnosModal(index) {
+    const modal = getOrCreateAnosModal();
+    const fields = ['id', 'anoLetivo', 'dataInicio', 'dataFim', 'status', 'atual', 'text'];
+
+    ModalHelper.openModal(modal, 'anos', fields, index, { status: '1', atual: '0' });
+
+    setTimeout(() => { const nameInput = modal.querySelector('#modal-anoLetivo'); if (nameInput) nameInput.focus(); }, 10);
+  }
+
+  function closeAnosModal() {
+    const modal = document.getElementById('anos-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+  }
+
+  function saveAnosModal() {
+    const modal = document.getElementById('anos-modal');
+    if (!modal) return;
+
+    const ano = modal.querySelector('#modal-anoLetivo').value.trim();
+    if (!ano) { modal.querySelector('#modal-anoLetivo').focus(); return; }
+
+    const values = {
+      id: modal.querySelector('#modal-id').value.trim(),
+      anoLetivo: ano,
+      dataInicio: modal.querySelector('#modal-dataInicio').value.trim(),
+      dataFim: modal.querySelector('#modal-dataFim').value.trim(),
+      status: modal.querySelector('#modal-status').value,
+      atual: modal.querySelector('#modal-atual').value,
+      text: modal.querySelector('#modal-text').value.trim()
+    };
+
+    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
+
+    const fields = ['id','anoLetivo','dataInicio','dataFim','status','atual','text'];
+    const displayMap = [
+      { field: 'anoLetivo', cls: 'ano-ano' },
+      { field: 'dataInicio', cls: 'ano-inicio' },
+      { field: 'dataFim', cls: 'ano-fim' },
+      { field: 'atual', cls: 'ano-atual' }
+    ];
+
+    ModalHelper.applyValuesToRow('anos', fields, displayMap, idx, values, 'openAnosModal', '/anos-letivos/excluir');
+    ModalHelper.reindex('anos', fields, 'openAnosModal');
+    closeAnosModal();
+  }
+
+  function excluirAno(id) { ModalHelper.submitDelete(`/anos-letivos/excluir/${id}`); }
+
+  function removeAnosRow(btn) { ModalHelper.removeRow(btn, 'anos', ['id','anoLetivo','dataInicio','dataFim','status','atual','text'], 'openAnosModal'); }
+
+  function reindexAnos() { ModalHelper.reindex('anos', ['id','anoLetivo','dataInicio','dataFim','status','atual','text'], 'openAnosModal'); }
+</script>

@@ -1,68 +1,93 @@
 <%- include('header') %>
 
-<aside class="sidebar">
-    <div class="logo">
-        <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
-        <span style="text-align:center;">Sistema Educacional <small>Gestão Inteligente</small></span>
-    </div>
-    <nav class="nav-menu" aria-label="Menu Principal">
-        <a href="/dashboard" class="nav-item">
-            <i class="fa-solid fa-house" aria-hidden="true"></i> Dashboard
-        </a>
-        <a href="/agenda" class="nav-item">
-            <i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Agenda
-        </a>
-        <a href="/alunos" class="nav-item">
-            <i class="fa-solid fa-user-graduate" aria-hidden="true"></i> Alunos
-        </a>
-        <a href="/professores" class="nav-item">
-            <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> Professores
-        </a>
-        <a href="/turmas" class="nav-item">
-            <i class="fa-solid fa-users-rectangle" aria-hidden="true"></i> Turmas
-        </a>
-        <a href="/disciplinas" class="nav-item">
-            <i class="fa-solid fa-book" aria-hidden="true"></i> Disciplinas
-        </a>
-        <a href="/notas" class="nav-item">
-            <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notas
-        </a>
-        <a href="/frequencia" class="nav-item">
-            <i class="fa-solid fa-clipboard-user" aria-hidden="true"></i> Frequência
-        </a>
-        <a href="/financeiro" class="nav-item">
-            <i class="fa-solid fa-wallet" aria-hidden="true"></i> Financeiro
-        </a>
-        <a href="/relatorios" class="nav-item">
-            <i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Relatórios
-        </a>
-        
-        <div class="nav-divider"></div>
-        <div class="sidebar-submenu">
-            <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)" aria-expanded="false" aria-controls="submenu-parametros">
-                <i class="bi bi-sliders"></i> Parametros <i class="bi bi-chevron-down submenu-caret" aria-hidden="true"></i>
-            </button>
-            <ul class="submenu-items" id="submenu-parametros" hidden>
-                <li><a href="/estados"><i class="bi bi-grid-3x3-gap"></i> Estados</a></li>
-                <li><a href="/TiposDocumentos"><i class="bi bi-grid-3x3-gap"></i> Tipos de Documentos</a></li>
-                <li><a href="/statusDocumentos"><i class="bi bi-grid-3x3-gap"></i> Status de Documentos</a></li>
-            </ul>
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+            <span style="text-align:center;">Sistema Educacional <small>Gestão Inteligente</small></span>
         </div>
-         <div class="sidebar-submenu">
-            <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)" aria-expanded="false" aria-controls="submenu-configuracoes">
-                <i class="bi bi-sliders"></i> Configurações <i class="bi bi-chevron-down submenu-caret" aria-hidden="true"></i>
-            </button>
-            <ul class="submenu-items" id="submenu-configuracoes" hidden>
-                <li><a href="/configuracoes"><i class="bi bi-grid-3x3-gap"></i> Permissões</a></li>
-                <li><a href="/usuariosPermissoes"><i class="fa-solid fa-user-shield"></i> Usuários e Permissões</a></li>
-                 <li><a href="/aparencia"><i class="bi bi-palette"></i> Aparência</a></li>
-                <li><a href="/calendario"><i class="bi bi-calendar"></i> Calendário</a></li>
-                <li><a href="/configuracao_notas"><i class="bi bi-file-earmark-text"></i> Configuração Notas</a></li>
-                <li><a href="/series"><i class="bi bi-journal-bookmark"></i>Series</a></li>
-                <li><a href="/documentos"><i class="bi bi-folder2-open"></i> Documentos</a></li>
-                <li><a href="/financeiro"><i class="bi bi-currency-dollar"></i> Financeiro</a></li>
-                <li><a href="/notificacoes"><i class="bi bi-bell"></i> Notificações</a></li>
-            </ul>
-        </div>
-    </nav>
-</aside>
+        <nav class="nav-menu" aria-label="Menu Principal">
+            <div class="sidebar-submenu">
+                <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)" aria-expanded="false"
+                    aria-controls="submenu-parametros">
+                    <i class="bi bi-sliders"></i> Acadêmico <i class="bi bi-chevron-down submenu-caret"
+                        aria-hidden="true"></i>
+                </button>   
+                <ul class="submenu-items" id="submenu-parametros" hidden>
+                    <li><a href="/dashboard" class="nav-item">
+                        <i class="fa-solid fa-house" aria-hidden="true"></i> Dashboard
+                    </a></li>
+                    <li><a href="/agenda" class="nav-item">
+                        <i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Agenda
+                    </a></li>
+                    <li><a href="/alunos" class="nav-item">
+                        <i class="fa-solid fa-user-graduate" aria-hidden="true"></i> Alunos
+                    </a></li>
+                    <li><a href="/professores" class="nav-item">
+                        <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> Professores
+                    </a></li>
+                    <li><a href="/turmas" class="nav-item">
+                        <i class="fa-solid fa-users-rectangle" aria-hidden="true"></i> Turmas
+                    </a></li>
+                    <li><a href="/disciplinas" class="nav-item">
+                        <i class="fa-solid fa-book" aria-hidden="true"></i> Disciplinas
+                    </a></li>
+                    <li><a href="/notas" class="nav-item">
+                        <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notas
+                    </a></li>
+                    <li><a href="/frequencia" class="nav-item">
+                        <i class="fa-solid fa-clipboard-user" aria-hidden="true"></i> Frequência
+                    </a></li>
+                    <li><a href="/financeiro" class="nav-item">
+                        <i class="fa-solid fa-wallet" aria-hidden="true"></i> Financeiro
+                    </a></li>
+                    <li><a href="/relatorios" class="nav-item">
+                        <i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Relatórios
+                    </a></li>
+                </ul>
+            </div>
+            <div class="nav-divider"></div>
+            <div class="sidebar-submenu">
+                <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)" aria-expanded="false"
+                    aria-controls="submenu-parametros">
+                    <i class="bi bi-sliders"></i> Parametros <i class="bi bi-chevron-down submenu-caret"
+                        aria-hidden="true"></i>
+                </button>
+                <ul class="submenu-items" id="submenu-parametros" hidden>
+                    <li><a href="/estados"><i class="bi bi-grid-3x3-gap"></i> Estados</a></li>
+                    <li><a href="/TiposDocumentos"><i class="bi bi-grid-3x3-gap"></i> Tipos de Documentos</a></li>
+                    <li><a href="/statusDocumentos"><i class="bi bi-grid-3x3-gap"></i> Status de Documentos</a></li>
+                </ul>
+            </div>
+            <!-- CONFIGURAÇÕES ACADÊMICAS -->
+            <div class="sidebar-submenu">
+                <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)" aria-expanded="false" aria-controls="submenu-config-academica">
+                    <i class="bi bi-mortarboard"></i>Configurações Acadêmicas<i class="bi bi-chevron-down submenu-caret" aria-hidden="true"></i>
+                </button>
+                <ul class="submenu-items" id="submenu-config-academica" hidden>
+                    <li><a href="/series"><i class="bi bi-journal-bookmark"></i>Séries</a></li>
+                    <li><a href="/anos-letivos"><i class="bi bi-calendar3"></i> Anos Letivos</a></li>
+                    <li><a href="/periodos"> <i class="bi bi-calendar-range"></i>Períodos / Bimestres</a></li>
+                    <li><a href="/turnos"><i class="bi bi-clock"></i> Turnos</a></li>
+                    <li><a href="/salas"><i class="bi bi-door-open"></i> Salas</a></li>
+                    <li><a href="/tipos-avaliacao"><i class="bi bi-clipboard-check"></i> Tipos de Avaliação</a></li>
+                </ul>
+            </div>
+
+
+            <!-- CONFIGURAÇÕES GERAIS -->
+            <div class="sidebar-submenu">
+                <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)" aria-expanded="false" aria-controls="submenu-configuracoes">
+                    <i class="bi bi-sliders"></i>Configurações<i class="bi bi-chevron-down submenu-caret" aria-hidden="true"></i>
+                </button>
+                <ul class="submenu-items" id="submenu-configuracoes" hidden>
+                    <li> <a href="/configuracoes"><i class="bi bi-grid-3x3-gap"></i>Permissões</a></li>
+                    <li><a href="/usuariosPermissoes"><i class="fa-solid fa-user-shield"></i>Usuários e Permissões</a></li>
+                    <li><a href="/aparencia"><i class="bi bi-palette"></i>Aparência</a></li>
+                    <li><a href="/configuracao_notas"><i class="bi bi-file-earmark-text"></i>Configuração de Notas</a></li>
+                    <li><a href="/documentos"><i class="bi bi-folder2-open"></i>Documentos</a></li>
+                    <li><a href="/financeiro"><i class="bi bi-currency-dollar"></i>Financeiro</a></li>
+                    <li><a href="/notificacoes"><i class="bi bi-bell"></i>Notificações</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>

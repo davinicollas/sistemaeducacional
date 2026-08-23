@@ -1,0 +1,170 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%
+    tipos = typeof tipos !== 'undefined' ? tipos : {};
+    let tiposList = Array.isArray(tipos.tipos) ? tipos.tipos : [];
+%>
+
+<div class="main-content">
+  <div class="page-header">
+    <div>
+      <h1>Configurações Acadêmicas</h1>
+      <p>Cadastre e gerencie os tipos de avaliação.</p>
+    </div>
+  </div>
+
+  <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">✅</div>
+      <div>
+        <h2>Tipos de Avaliação</h2>
+        <p>Nome, sigla e nota máxima.</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form id="tipos-form" action="/tipos-avaliacao" method="POST">
+        <table class="series-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Sigla</th>
+              <th>Nota Máxima</th>
+              <th style="width: 10%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tipos-tbody">
+            <% tiposList.forEach(function (s, idx) { %>
+              <tr data-index="<%= idx %>" class="tipo-row">
+                <td><span class="tipo-id"><%= s.id || '' %></span></td>
+                <td><span class="tipo-nome"><%= s.nome || '' %></span></td>
+                <td><span class="tipo-sigla"><%= s.sigla || '' %></span></td>
+                <td><span class="tipo-nota"><%= s.nota_maxima || '' %></span></td>
+                <td class="tipo-actions">
+                  <button type="button" class="btn btn-sm btn-warning" onclick="openTiposModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirTipo(<%= s.id %>)"><i class="bi bi-trash"></i></button>
+                </td>
+                <td class="hidden-values" style="display:none">
+                  <input type="hidden" data-field="id" name="tipos[<%= idx %>][id]" value="<%= s.id || '' %>" />
+                  <input type="hidden" data-field="nome" name="tipos[<%= idx %>][nome]" value="<%= s.nome || '' %>" />
+                  <input type="hidden" data-field="sigla" name="tipos[<%= idx %>][sigla]" value="<%= s.sigla || '' %>" />
+                  <input type="hidden" data-field="notaMaxima" name="tipos[<%= idx %>][notaMaxima]" value="<%= s.nota_maxima || '' %>" />
+                  <input type="hidden" data-field="status" name="tipos[<%= idx %>][status]" value="<%= s.status || '1' %>" />
+                  <input type="hidden" data-field="text" name="tipos[<%= idx %>][text]" value="<%= s.text || '' %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <% if (!tiposList.length) { %>
+          <p class="series-empty" id="tipos-empty">Nenhum tipo cadastrado ainda.</p>
+        <% } %>
+        <div id="to-delete"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="button" class="btn-primary series-new-btn" onclick="openTiposModal(null)">Novo</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<script>
+  function getOrCreateTiposModal() {
+    let modal = document.getElementById('tipos-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'tipos-modal';
+    modal.innerHTML = `
+      <div class="modal-panel">
+        <h3>Tipo de Avaliação</h3>
+        <input type="hidden" id="modal-index" value="-1">
+        <input type="hidden" id="modal-id" value="">
+
+        <div class="form-group">
+          <label for="modal-nome">Nome *</label>
+          <input id="modal-nome" type="text" placeholder="Ex: Prova" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-sigla">Sigla</label>
+          <input id="modal-sigla" type="text" placeholder="Ex: P" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-notaMaxima">Nota máxima</label>
+          <input id="modal-notaMaxima" type="number" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-status">Status *</label>
+          <select id="modal-status">
+            <option value="1">Ativo</option>
+            <option value="0">Inativo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-text">Descrição</label>
+          <textarea id="modal-text" rows="3"></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" onclick="closeTiposModal()">Cancelar</button>
+          <button type="button" class="btn-primary" onclick="saveTiposModal()">Salvar</button>
+        </div>
+      </div>
+    `;
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeTiposModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openTiposModal(index) {
+    const modal = getOrCreateTiposModal();
+    const fields = ['id','nome','sigla','notaMaxima','status','text'];
+
+    ModalHelper.openModal(modal, 'tipos', fields, index, { status: '1' });
+
+    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
+  }
+
+  function closeTiposModal() { const modal = document.getElementById('tipos-modal'); if (!modal) return; modal.classList.remove('open'); }
+
+  function saveTiposModal() {
+    const modal = document.getElementById('tipos-modal');
+    if (!modal) return;
+    const nome = modal.querySelector('#modal-nome').value.trim(); if (!nome) { modal.querySelector('#modal-nome').focus(); return; }
+
+    const values = {
+      id: modal.querySelector('#modal-id').value.trim(),
+      nome,
+      sigla: modal.querySelector('#modal-sigla').value.trim(),
+      notaMaxima: modal.querySelector('#modal-notaMaxima').value.trim(),
+      status: modal.querySelector('#modal-status').value,
+      text: modal.querySelector('#modal-text').value.trim()
+    };
+
+    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
+
+    const fields = ['id','nome','sigla','notaMaxima','status','text'];
+    const displayMap = [
+      { field: 'nome', cls: 'tipo-nome' },
+      { field: 'sigla', cls: 'tipo-sigla' },
+      { field: 'notaMaxima', cls: 'tipo-nota' }
+    ];
+
+    ModalHelper.applyValuesToRow('tipos', fields, displayMap, idx, values, 'openTiposModal', '/tipos-avaliacao/excluir');
+    ModalHelper.reindex('tipos', fields, 'openTiposModal');
+    closeTiposModal();
+  }
+
+  function excluirTipo(id) { ModalHelper.submitDelete(`/tipos-avaliacao/excluir/${id}`); }
+
+  function removeTiposRow(btn) { ModalHelper.removeRow(btn, 'tipos', ['id','nome','sigla','notaMaxima','status','text'], 'openTiposModal'); }
+
+  function reindexTipos() { ModalHelper.reindex('tipos', ['id','nome','sigla','notaMaxima','status','text'], 'openTiposModal'); }
+</script>

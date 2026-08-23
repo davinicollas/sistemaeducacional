@@ -31,7 +31,7 @@
               <th>ID</th>
               <th>Nome da série</th>
               <th>Abreviação</th>
-              <th style="width:160px"></th>
+              <th style="width: 10%">Ações</th>
             </tr>
           </thead>
           <tbody id="series-tbody">
@@ -41,8 +41,8 @@
                 <td><span class="series-nome"><%= s.nome || '' %></span></td>
                 <td><span class="series-abreviacao"><%= s.abreviacao || '' %></span></td>
                 <td class="series-actions">
-                  <button type="button" class="btn-secondary" onclick="openSeriesModal(<%= idx %>)">Editar</button>
-                  <button type="button" class="btn-secondary" onclick="excluirEvento(<%= s.id %>)">Excluir</button>
+                  <button type="button" class="btn btn-sm btn-warning" onclick="openSeriesModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirEvento(<%= s.id %>)"><i class="bi bi-trash"></i></button>
                 </td>
                 <td class="hidden-values" style="display:none">
                   <input type="hidden" name="series[<%= idx %>][id]" value="<%= s.id || '' %>" />

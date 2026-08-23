@@ -1,0 +1,201 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%
+    salas = typeof salas !== 'undefined' ? salas : {};
+    let salasList = Array.isArray(salas.salas) ? salas.salas : [];
+%>
+
+<div class="main-content">
+  <div class="page-header">
+    <div>
+      <h1>Configurações Acadêmicas</h1>
+      <p>Cadastre e gerencie as salas da instituição.</p>
+    </div>
+  </div>
+
+  <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">🏫</div>
+      <div>
+        <h2>Salas</h2>
+        <p>Salas, capacidade e recursos.</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form id="salas-form" action="/salas" method="POST">
+        <table class="series-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome / Número</th>
+              <th>Tipo</th>
+              <th>Capacidade</th>
+              <th>Recursos</th>
+              <th style="width: 10%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="salas-tbody">
+            <% salasList.forEach(function (s, idx) { %>
+              <tr data-index="<%= idx %>" class="sala-row">
+                <td><span class="sala-id"><%= s.id || '' %></span></td>
+                <td><span class="sala-nome"><%= s.nome || '' %></span></td>
+                <td><span class="sala-tipo"><%= s.tipo || '' %></span></td>
+                <td><span class="sala-capacidade"><%= s.capacidade || '' %></span></td>
+                <td><span class="sala-recursos"><%= s.recursos || '' %></span></td>
+                <td class="sala-actions">
+                  <button type="button" class="btn btn-sm btn-warning" onclick="openSalasModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirSala(<%= s.id %>)"><i class="bi bi-trash"></i></button>
+                </td>
+                <td class="hidden-values" style="display:none">
+                  <input type="hidden" data-field="id" name="salas[<%= idx %>][id]" value="<%= s.id || '' %>" />
+                  <input type="hidden" data-field="nome" name="salas[<%= idx %>][nome]" value="<%= s.nome || '' %>" />
+                  <input type="hidden" data-field="codigo" name="salas[<%= idx %>][codigo]" value="<%= s.codigo || '' %>" />
+                  <input type="hidden" data-field="tipo" name="salas[<%= idx %>][tipo]" value="<%= s.tipo || '' %>" />
+                  <input type="hidden" data-field="capacidade" name="salas[<%= idx %>][capacidade]" value="<%= s.capacidade || '' %>" />
+                  <input type="hidden" data-field="bloco" name="salas[<%= idx %>][bloco]" value="<%= s.bloco || '' %>" />
+                  <input type="hidden" data-field="andar" name="salas[<%= idx %>][andar]" value="<%= s.andar || '' %>" />
+                  <input type="hidden" data-field="recursos" name="salas[<%= idx %>][recursos]" value="<%= s.recursos || '' %>" />
+                  <input type="hidden" data-field="status" name="salas[<%= idx %>][status]" value="<%= s.status || '1' %>" />
+                  <input type="hidden" data-field="text" name="salas[<%= idx %>][text]" value="<%= s.text || '' %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <% if (!salasList.length) { %>
+          <p class="series-empty" id="salas-empty">Nenhuma sala cadastrada ainda.</p>
+        <% } %>
+        <div id="to-delete"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="button" class="btn-primary series-new-btn" onclick="openSalasModal(null)">Novo</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<script>
+  function getOrCreateSalasModal() {
+    let modal = document.getElementById('salas-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'salas-modal';
+    modal.innerHTML = `
+      <div class="modal-panel">
+        <h3>Sala</h3>
+        <input type="hidden" id="modal-index" value="-1">
+        <input type="hidden" id="modal-id" value="">
+
+        <div class="form-group">
+          <label for="modal-nome">Nome / Número *</label>
+          <input id="modal-nome" type="text" placeholder="Ex: Sala 01" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-codigo">Código</label>
+          <input id="modal-codigo" type="text" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-tipo">Tipo</label>
+          <input id="modal-tipo" type="text" placeholder="Ex: Sala de aula" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-capacidade">Capacidade</label>
+          <input id="modal-capacidade" type="number" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-bloco">Bloco</label>
+          <input id="modal-bloco" type="text" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-andar">Andar</label>
+          <input id="modal-andar" type="text" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-recursos">Recursos (vírgula separados)</label>
+          <input id="modal-recursos" type="text" placeholder="Projetor, Ar-condicionado" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-status">Status *</label>
+          <select id="modal-status">
+            <option value="1">Ativo</option>
+            <option value="0">Inativo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-text">Descrição</label>
+          <textarea id="modal-text" rows="3"></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" onclick="closeSalasModal()">Cancelar</button>
+          <button type="button" class="btn-primary" onclick="saveSalasModal()">Salvar</button>
+        </div>
+      </div>
+    `;
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeSalasModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openSalasModal(index) {
+    const modal = getOrCreateSalasModal();
+    const fields = ['id','nome','codigo','tipo','capacidade','bloco','andar','recursos','status','text'];
+
+    ModalHelper.openModal(modal, 'salas', fields, index, { status: '1' });
+
+    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
+  }
+
+  function closeSalasModal() { const modal = document.getElementById('salas-modal'); if (!modal) return; modal.classList.remove('open'); }
+
+  function saveSalasModal() {
+    const modal = document.getElementById('salas-modal');
+    if (!modal) return;
+    const nome = modal.querySelector('#modal-nome').value.trim(); if (!nome) { modal.querySelector('#modal-nome').focus(); return; }
+
+    const values = {
+      id: modal.querySelector('#modal-id').value.trim(),
+      nome,
+      codigo: modal.querySelector('#modal-codigo').value.trim(),
+      tipo: modal.querySelector('#modal-tipo').value.trim(),
+      capacidade: modal.querySelector('#modal-capacidade').value.trim(),
+      bloco: modal.querySelector('#modal-bloco').value.trim(),
+      andar: modal.querySelector('#modal-andar').value.trim(),
+      recursos: modal.querySelector('#modal-recursos').value.trim(),
+      status: modal.querySelector('#modal-status').value,
+      text: modal.querySelector('#modal-text').value.trim()
+    };
+
+    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
+
+    const fields = ['id','nome','codigo','tipo','capacidade','bloco','andar','recursos','status','text'];
+    const displayMap = [
+      { field: 'nome', cls: 'sala-nome' },
+      { field: 'tipo', cls: 'sala-tipo' },
+      { field: 'capacidade', cls: 'sala-capacidade' },
+      { field: 'recursos', cls: 'sala-recursos' }
+    ];
+
+    ModalHelper.applyValuesToRow('salas', fields, displayMap, idx, values, 'openSalasModal', '/salas/excluir');
+    ModalHelper.reindex('salas', fields, 'openSalasModal');
+    closeSalasModal();
+  }
+
+  function excluirSala(id) { ModalHelper.submitDelete(`/salas/excluir/${id}`); }
+
+  function removeSalasRow(btn) { ModalHelper.removeRow(btn, 'salas', ['id','nome','codigo','tipo','capacidade','bloco','andar','recursos','status','text'], 'openSalasModal'); }
+
+  function reindexSalas() { ModalHelper.reindex('salas', ['id','nome','codigo','tipo','capacidade','bloco','andar','recursos','status','text'], 'openSalasModal'); }
+</script>

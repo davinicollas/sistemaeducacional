@@ -1,0 +1,192 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%
+    turnos = typeof turnos !== 'undefined' ? turnos : {};
+    let turnosList = Array.isArray(turnos.turnos) ? turnos.turnos : [];
+%>
+
+<div class="main-content">
+  <div class="page-header">
+    <div>
+      <h1>Configurações Acadêmicas</h1>
+      <p>Cadastre e gerencie os turnos da instituição.</p>
+    </div>
+  </div>
+
+  <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">⏰</div>
+      <div>
+        <h2>Turnos</h2>
+        <p>Nome, sigla e horários dos turnos.</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form id="turnos-form" action="/turnos" method="POST">
+        <table class="series-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Sigla</th>
+              <th>Início</th>
+              <th>Fim</th>
+              <th style="width: 10%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="turnos-tbody">
+            <% turnosList.forEach(function (s, idx) { %>
+              <tr data-index="<%= idx %>" class="turnos-row">
+                <td><span class="turno-id"><%= s.id || '' %></span></td>
+                <td><span class="turno-nome"><%= s.nome || '' %></span></td>
+                <td><span class="turno-sigla"><%= s.sigla || '' %></span></td>
+                <td><span class="turno-inicio"><%= s.horario_inicio || '' %></span></td>
+                <td><span class="turno-fim"><%= s.horario_final || '' %></span></td>
+                <td class="turno-actions">
+                  <button type="button" class="btn btn-sm btn-warning" onclick="openTurnosModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirTurno(<%= s.id %>)"><i class="bi bi-trash"></i></button>
+                </td>
+                <td class="hidden-values" style="display:none">
+                  <input type="hidden" data-field="id" name="turnos[<%= idx %>][id]" value="<%= s.id || '' %>" />
+                  <input type="hidden" data-field="nome" name="turnos[<%= idx %>][nome]" value="<%= s.nome || '' %>" />
+                  <input type="hidden" data-field="sigla" name="turnos[<%= idx %>][sigla]" value="<%= s.sigla || '' %>" />
+                  <input type="hidden" data-field="horarioInicio" name="turnos[<%= idx %>][horarioInicio]" value="<%= s.horario_inicio || '' %>" />
+                  <input type="hidden" data-field="horarioFinal" name="turnos[<%= idx %>][horarioFinal]" value="<%= s.horario_final || '' %>" />
+                  <input type="hidden" data-field="status" name="turnos[<%= idx %>][status]" value="<%= s.status || '1' %>" />
+                  <input type="hidden" data-field="text" name="turnos[<%= idx %>][text]" value="<%= s.text || '' %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <% if (!turnosList.length) { %>
+          <p class="series-empty" id="turnos-empty">Nenhum turno cadastrado ainda.</p>
+        <% } %>
+        <div id="to-delete"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="button" class="btn-primary series-new-btn" onclick="openTurnosModal(null)">Novo</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<script>
+  function getOrCreateTurnosModal() {
+    let modal = document.getElementById('turnos-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'turnos-modal';
+    modal.innerHTML = `
+      <div class="modal-panel">
+        <h3>Turno</h3>
+        <input type="hidden" id="modal-index" value="-1">
+        <input type="hidden" id="modal-id" value="">
+
+        <div class="form-group">
+          <label for="modal-nome">Nome *</label>
+          <input id="modal-nome" type="text" placeholder="Ex: Manhã" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-sigla">Sigla</label>
+          <input id="modal-sigla" type="text" placeholder="Ex: MAN" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-horarioInicio">Horário inicial</label>
+          <input id="modal-horarioInicio" type="time" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-horarioFinal">Horário final</label>
+          <input id="modal-horarioFinal" type="time" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-status">Status *</label>
+          <select id="modal-status">
+            <option value="1">Ativo</option>
+            <option value="0">Inativo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-text">Descrição</label>
+          <textarea id="modal-text" rows="3" placeholder="Informações do turno"></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" onclick="closeTurnosModal()">Cancelar</button>
+          <button type="button" class="btn-primary" onclick="saveTurnosModal()">Salvar</button>
+        </div>
+      </div>
+    `;
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeTurnosModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openTurnosModal(index) {
+    const modal = getOrCreateTurnosModal();
+    const fields = ['id', 'nome', 'sigla', 'horarioInicio', 'horarioFinal', 'status', 'text'];
+
+    ModalHelper.openModal(modal, 'turnos', fields, index, { status: '1' });
+
+    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
+  }
+
+  function closeTurnosModal() {
+    const modal = document.getElementById('turnos-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+  }
+
+  function saveTurnosModal() {
+    const modal = document.getElementById('turnos-modal');
+    if (!modal) return;
+
+    const nome = modal.querySelector('#modal-nome').value.trim();
+    if (!nome) { modal.querySelector('#modal-nome').focus(); return; }
+
+    const values = {
+      id: modal.querySelector('#modal-id').value.trim(),
+      nome,
+      sigla: modal.querySelector('#modal-sigla').value.trim(),
+      horarioInicio: modal.querySelector('#modal-horarioInicio').value.trim(),
+      horarioFinal: modal.querySelector('#modal-horarioFinal').value.trim(),
+      status: modal.querySelector('#modal-status').value,
+      text: modal.querySelector('#modal-text').value.trim()
+    };
+
+    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
+
+    const fields = ['id','nome','sigla','horarioInicio','horarioFinal','status','text'];
+    const displayMap = [
+      { field: 'nome', cls: 'turno-nome' },
+      { field: 'sigla', cls: 'turno-sigla' },
+      { field: 'horarioInicio', cls: 'turno-inicio' },
+      { field: 'horarioFinal', cls: 'turno-fim' }
+    ];
+
+    ModalHelper.applyValuesToRow('turnos', fields, displayMap, idx, values, 'openTurnosModal', '/turnos/excluir');
+    ModalHelper.reindex('turnos', fields, 'openTurnosModal');
+    closeTurnosModal();
+  }
+
+  function excluirTurno(id) {
+    ModalHelper.submitDelete(`/turnos/excluir/${id}`);
+  }
+
+  function removeTurnoRow(btn) {
+    ModalHelper.removeRow(btn, 'turnos', ['id','nome','sigla','horarioInicio','horarioFinal','status','text'], 'openTurnosModal');
+  }
+
+  function reindexTurnos() {
+    ModalHelper.reindex('turnos', ['id','nome','sigla','horarioInicio','horarioFinal','status','text'], 'openTurnosModal');
+  }
+</script>
