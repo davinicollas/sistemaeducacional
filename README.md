@@ -114,7 +114,7 @@ Os scripts SQL ficam em `patch/*.sql` e devem ser aplicados manualmente no MySQL
 Exemplo de aplicação via Docker:
 
 ```powershell
-docker compose exec mysql mysql -uroot -proot sistema_educacional < patch/configuracaoAcademicas.sql
+docker compose exec mysql mysql -ux -px sistema_educacional < patch/configuracaoAcademicas.sql
 ```
 
 ## Scripts utilitários
