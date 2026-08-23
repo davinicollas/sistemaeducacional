@@ -43,8 +43,8 @@
                 <td><span class="periodo-id"><%= s.id || '' %></span></td>
                 <td><span class="periodo-nome"><%= s.nome || '' %></span></td>
                 <td><span class="periodo-ano"><%= s.ano_letivo || '' %></span></td>
-                <td><span class="periodo-inicio"><%= s.data_inicio || '' %></span></td>
-                <td><span class="periodo-fim"><%= s.data_fim || '' %></span></td>
+                <td><span class="periodo-inicio"><%=  new Date(s.data_inicio).toLocaleDateString('pt-BR') || '' %></span></td>
+                <td><span class="periodo-fim"><%=  new Date(s.data_fim).toLocaleDateString('pt-BR') || '' %></span></td>
                 <td><span class="periodo-ordem"><%= s.ordem || '' %></span></td>
                 <td class="periodo-actions">
                   <button type="button" class="btn btn-sm btn-warning" onclick="openPeriodosModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>

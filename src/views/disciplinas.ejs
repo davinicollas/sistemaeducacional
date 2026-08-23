@@ -1,0 +1,172 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%
+    disciplinas = typeof disciplinas !== 'undefined' ? disciplinas : {};
+    let disciplinasList = Array.isArray(disciplinas.disciplinas) ? disciplinas.disciplinas : [];
+%>
+
+<div class="main-content">
+  <div class="page-header">
+    <div>
+      <h1>Configurações Acadêmicas</h1>
+      <p>Cadastre e gerencie as disciplinas.</p>
+    </div>
+  </div>
+
+  <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">📅</div>
+      <div>
+        <h2>Disciplinas</h2>
+        <p>Gerencie as disciplinas oferecidas.</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form id="disciplinas-form" action="/disciplinas" method="POST">
+        <table class="series-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Disciplina</th>
+              <th>Sigla</th>
+              <th>Carga Hor.</th>
+              <th>Status</th>
+              <th style="width: 10%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="disciplinas-tbody">
+            <% disciplinasList.forEach(function (s, idx) { %>
+              <tr data-index="<%= idx %>" class="disciplinas-row">
+                <td><span class="disciplinas-id"><%= s.id || '' %></span></td>
+                <td><span class="disciplinas-text"><%= s.text || '' %></span></td>
+                <td><span class="disciplinas-sigla"><%= s.sigla || '' %></span></td>
+                <td><span class="disciplinas-carga-horaria"><%= s.carga_horaria || '' %></span></td>
+                <td><span class="disciplinas-IdStatus"><%= s.idStatus ? 'Ativo' : 'Inativo' %></span></td>
+                <td class="disciplinas-actions">
+                  <button type="button" class="btn btn-sm btn-warning" onclick="openDisciplinasModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirDisciplina(<%= s.id %>)"><i class="bi bi-trash"></i></button>
+                </td>
+                <td class="hidden-values" style="display:none">
+                  <input type="hidden" data-field="id" name="disciplinas[<%= idx %>][id]" value="<%= s.id || '' %>" />
+                  <input type="hidden" data-field="text" name="disciplinas[<%= idx %>][text]" value="<%= s.text || '' %>" />
+                  <input type="hidden" data-field="sigla" name="disciplinas[<%= idx %>][sigla]" value="<%= s.sigla || '' %>" />
+                  <input type="hidden" data-field="cargaHoraria" name="disciplinas[<%= idx %>][cargaHoraria]" value="<%= s.carga_horaria || '' %>" />
+                  <input type="hidden" data-field="IdStatus" name="disciplinas[<%= idx %>][IdStatus]" value="<%= s.idStatus || '1' %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <% if (!disciplinasList.length) { %>
+          <p class="series-empty" id="disciplinas-empty">Nenhuma disciplina cadastrada ainda.</p>
+        <% } %>
+        <div id="to-delete"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="button" class="btn-primary series-new-btn" onclick="openDisciplinasModal(null)">Novo</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<script>
+  function getOrCreateDisciplinasModal() {
+    let modal = document.getElementById('disciplinas-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'disciplinas-modal';
+    modal.innerHTML = `
+      <div class="modal-panel">
+        <h3>Disciplina</h3>
+        <input type="hidden" id="modal-index" value="-1">
+        <input type="hidden" id="modal-id" value="">
+
+        <div class="form-group">
+          <label for="modal-text">Nome *</label>
+          <input id="modal-text" type="text" placeholder="Ex: Matemática" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-sigla">Sigla</label>
+          <input id="modal-sigla" type="text" placeholder="Ex: MAT" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-cargaHoraria">Carga horária</label>
+          <input id="modal-cargaHoraria" type="number" placeholder="Ex: 60" />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-IdStatus">Status *</label>
+          <select id="modal-IdStatus">
+            <option value="1">Ativo</option>
+            <option value="0">Inativo</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" onclick="closeDisciplinasModal()">Cancelar</button>
+          <button type="button" class="btn-primary" onclick="saveDisciplinasModal()">Salvar</button>
+        </div>
+      </div>
+    `;
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeDisciplinasModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openDisciplinasModal(index) {
+    const modal = getOrCreateDisciplinasModal();
+    const fields = ['id', 'text', 'sigla', 'cargaHoraria', 'IdStatus'];
+
+    ModalHelper.openModal(modal, 'disciplinas', fields, index, { IdStatus: '1' });
+
+    setTimeout(() => { const nameInput = modal.querySelector('#modal-text'); if (nameInput) nameInput.focus(); }, 10);
+  }
+
+  function closeDisciplinasModal() {
+    const modal = document.getElementById('disciplinas-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+  }
+
+  function saveDisciplinasModal() {
+    const modal = document.getElementById('disciplinas-modal');
+    if (!modal) return;
+
+    const text = modal.querySelector('#modal-text').value.trim();
+    if (!text) { modal.querySelector('#modal-text').focus(); return; }
+
+    const values = {
+      id: modal.querySelector('#modal-id').value.trim(),
+      text: text,
+      sigla: modal.querySelector('#modal-sigla').value.trim(),
+      cargaHoraria: modal.querySelector('#modal-cargaHoraria').value.trim(),
+      IdStatus: modal.querySelector('#modal-IdStatus').value
+    };
+
+    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
+
+    const fields = ['id','text','sigla','cargaHoraria','IdStatus'];
+    const displayMap = [
+      { field: 'text', cls: 'disciplinas-text' },
+      { field: 'sigla', cls: 'disciplinas-sigla' },
+      { field: 'cargaHoraria', cls: 'disciplinas-carga-horaria' },
+      { field: 'IdStatus', cls: 'disciplinas-IdStatus' }
+    ];
+
+    ModalHelper.applyValuesToRow('disciplinas', fields, displayMap, idx, values, 'openDisciplinasModal', '/disciplinas/excluir');
+    ModalHelper.reindex('disciplinas', fields, 'openDisciplinasModal');
+    closeDisciplinasModal();
+  }
+
+  function excluirDisciplina(id) { ModalHelper.submitDelete(`/disciplinas/excluir/${id}`); }
+
+  function removeDisciplinasRow(btn) { ModalHelper.removeRow(btn, 'disciplinas', ['id','text','sigla','cargaHoraria','IdStatus'], 'openDisciplinasModal'); }
+
+  function reindexDisciplinas() { ModalHelper.reindex('disciplinas', ['id','text','sigla','cargaHoraria','IdStatus'], 'openDisciplinasModal'); }
+</script>
