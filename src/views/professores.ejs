@@ -6,6 +6,7 @@
         let professoresList = Array.isArray(professores.professores) ? professores.professores : [];
         let estadoList = Array.isArray(estado) ? estado : (estado ? [estado] : []);
         let disciplinasCatalogo = typeof disciplinasList !== 'undefined' && Array.isArray(disciplinasList) ? disciplinasList : [];
+        let formacaoCatalogo = typeof formacaoList !== 'undefined' && Array.isArray(formacaoList) ? formacaoList : [];
     %>
     <!-- Main Content -->
    <div class="main-content">
@@ -73,7 +74,7 @@
                   <input type="hidden" data-field="matricula" name="professores[<%= idx %>][matricula]" value="<%= s.matricula || '' %>" />
                   <input type="hidden" data-field="registro_profissional" name="professores[<%= idx %>][registro_profissional]" value="<%= s.registro_profissional || '' %>" />
                   <input type="hidden" data-field="data_admissao" name="professores[<%= idx %>][data_admissao]" value="<%= s.data_admissao ? new Date(s.data_admissao).toISOString().slice(0,10) : '' %>" />
-                  <input type="hidden" data-field="formacao" name="professores[<%= idx %>][formacao]" value="<%= s.formacao || '' %>" />
+                  <input type="hidden" data-field="idFormacao" name="professores[<%= idx %>][idFormacao]" value="<%= s.idFormacao || '' %>" />
                   <input type="hidden" data-field="area_formacao" name="professores[<%= idx %>][area_formacao]" value="<%= s.area_formacao || '' %>" />
                   <input type="hidden" data-field="observacoes" name="professores[<%= idx %>][observacoes]" value="<%= s.observacoes || '' %>" />
                 </td>
@@ -94,7 +95,7 @@
     </div>
   </section>
 <script>
-  const PROFESSOR_FIELDS = ['id','nome','nome_social','cpf','data_nascimento','sexo','id_disciplina','carga_horaria','id_status','email','telefone','celular','cep','endereco','numeros','complemento','bairro','cidade','id_estado','matricula','registro_profissional','data_admissao','formacao','area_formacao','observacoes'];
+  const PROFESSOR_FIELDS = ['id','nome','nome_social','cpf','data_nascimento','sexo','id_disciplina','carga_horaria','id_status','email','telefone','celular','cep','endereco','numeros','complemento','bairro','cidade','id_estado','matricula','registro_profissional','data_admissao','idFormacao','area_formacao','observacoes'];
   const PROFESSOR_DISCIPLINAS = <%- JSON.stringify(disciplinasCatalogo.reduce(function (acc, d) { acc[d.id] = d.text; return acc; }, {})) %>;
 
   function getOrCreateProfessorModal() {
@@ -213,8 +214,13 @@
                 <input id="modal-data_admissao" type="date" />
             </div>
             <div class="form-group">
-                <label for="modal-formacao">Formação</label>
-                <input id="modal-formacao" type="text" placeholder="Ex: Graduação em Matemática" />
+              <label for="modal-idFormacao">Formação</label>
+              <select id="modal-idFormacao">
+                    <option value="">Selecione</option>
+                    <% formacaoCatalogo.forEach(function (f) { %>
+                        <option value="<%= f.id %>"><%= f.text %></option>
+                    <% }) %>
+                </select>
             </div>
             <div class="form-group">
                 <label for="modal-area_formacao">Área de Formação</label>

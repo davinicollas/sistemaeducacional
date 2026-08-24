@@ -28,6 +28,7 @@ const salas = require('./routes/salas');
 const tiposAvaliacao = require('./routes/tiposAvaliacao');
 const disciplinas = require('./routes/disciplinas');
 const professores = require('./routes/professores');
+const formacoes = require('./routes/formacoes');
 
 const authMid = require("./middleware/auth");
 
@@ -119,6 +120,7 @@ app.use(salas);
 app.use(tiposAvaliacao);
 app.use(disciplinas);
 app.use(professores);
+app.use(formacoes);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {

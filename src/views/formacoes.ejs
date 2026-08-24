@@ -1,0 +1,124 @@
+<%- include('partials/header') %>
+    <%- include('partials/menu') %>
+<%
+    filtros = typeof filtros !== 'undefined' ? filtros : {};
+    pagination = typeof pagination !== 'undefined' ? pagination : {};
+    formacoes = typeof formacoes !== 'undefined' ? formacoes : [];
+%>
+
+
+
+<div class="main-content">
+
+    <%- include('partials/filtros', {
+            action: '/formacoes',
+            filtros,
+            fields: [
+                { name: 'busca', label: 'Descrição', placeholder: 'Buscar por palavra', col: 'col-md-6' }
+            ]
+    }) %>
+
+
+    <form id="formformacoes" action="/formacoes" method="POST">
+
+        <section class="config-card">
+
+            <div class="card-header">
+                <div class="card-icon">🌐</div>
+
+                <div>
+                    <h2>Formação</h2>
+                    <p>Adicione, edite ou remova formações utilizadas pelo sistema.</p>
+                </div>
+            </div>
+            
+            <div class="card-body">
+
+                <div class="mb-3 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn-secondary" onclick="addParamsRow(document.getElementById('trClone'))">Adicionar linha</button>
+                </div>
+
+                
+
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%; display: none;">ID</th>
+                                <th style="width: 50%">Descrição</th>
+                                <th style="width: 10%">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="grid-params">
+                            <% const itens = Array.isArray(formacoes) ? formacoes : [formacoes]; %>
+                            <% itens.forEach((item) => { %>
+                                <tr data-id="<%= item.id || '' %>">
+                                    <td>
+                                        <input type="hidden" name="itens[][id]" value="<%= item.id || '' %>">   
+                                        <input type="text" class="form-control" name="itens[][text]" value="<%= item.text || '' %>" placeholder="Ex: Documento de Identidade">
+                                    </td>
+                                 
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="removeParamsRow(this)"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                              <!-- TR MODELO -->
+                            <tr id="trClone" style="display: none;">
+                                <td>
+                                    <input type="hidden" data-field="id" name="itens[][id]" value="">
+
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        data-field="text" name="itens[][text]"
+                                        value="" 
+                                        placeholder="Ex: Documento de Identidade"
+                                    >
+                                </td>
+                                <td>
+                                    <select id="modal-publico" name="itens[][idStatus]" class="form-select">
+                                        <option value="1">Ativo</option>
+                                        <option value="2">Inativo</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-sm btn-danger" 
+                                        onclick="removeParamsRow(this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <small class="text-muted">Preencha uma linha por estado. Linhas vazias serão ignoradas ao salvar.</small>
+                <div id="to-delete"></div>
+            </div>
+
+        </section>
+
+        <%- include('partials/paginations', {
+            pagination,
+            filtros,
+            rota: '/formacoes',
+            query: `busca=${encodeURIComponent(filtros?.busca || '')}`
+        }) %>
+
+    </form>
+
+    <!-- BOTÕES MOBILE -->
+    <div class="mobile-actions">
+
+        <button type="button" class="btn-secondary">Cancelar</button>
+
+        <button type="submit" form="formformacoes" class="btn-primary">Salvar alterações</button>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -5,16 +5,19 @@ const router = express.Router();
 const professoresModel = require("../model/professores");
 const estadoModel = require("../model/estados");
 const disciplinasModel = require("../model/disciplinas");
+const formacoesModel = require("../model/formacoes");
 
 router.get("/professores", async (req, res) => {
     try {
         const professoresList = await professoresModel.getProfessores();
         const estadosList = await estadoModel.getEstados();
         const disciplinasList = await disciplinasModel.getDisciplinas();
+        const formacaoList = await formacoesModel.getFormacoes();
         res.render("professores", {
             professores: { professores: professoresList },
             estado: estadosList,
-            disciplinasList
+            disciplinasList,
+            formacaoList
         });
     } catch (err) {
         console.error(err);
@@ -69,20 +72,20 @@ router.post("/professores", async (req, res) => {
             const matricula = (item.matricula || '').trim();
             const registroProfissional = (item.registro_profissional || '').trim();
             const dataAdmissao = (item.data_admissao || '').trim() || null;
-            const formacao = (item.formacao || '').trim();
+            const idFormacao = item.idFormacao || null;
             const areaFormacao = (item.area_formacao || '').trim();
             const observacoes = (item.observacoes || '').trim();
 
-            const params = [nome, nomeSocial, cpf, dataNascimento, sexo, idDisciplina, cargaHoraria, idStatus, email, telefone, celular, cep, endereco, numeros, complemento, bairro, cidade, idEstado, matricula, registroProfissional, dataAdmissao, formacao, areaFormacao, observacoes];
+            const params = [nome, nomeSocial, cpf, dataNascimento, sexo, idDisciplina, cargaHoraria, idStatus, email, telefone, celular, cep, endereco, numeros, complemento, bairro, cidade, idEstado, matricula, registroProfissional, dataAdmissao, idFormacao, areaFormacao, observacoes];
 
             if (id) {
                 await db.query(
-                    `UPDATE professores SET nome = ?, nome_social = ?, cpf = ?, data_nascimento = ?, sexo = ?, id_disciplina = ?, carga_horaria = ?, id_status = ?, email = ?, telefone = ?, celular = ?, cep = ?, endereco = ?, numeros = ?, complemento = ?, bairro = ?, cidade = ?, id_estado = ?, matricula = ?, registro_profissional = ?, data_admissao = ?, formacao = ?, area_formacao = ?, observacoes = ? WHERE id = ?`,
+                    `UPDATE professores SET nome = ?, nome_social = ?, cpf = ?, data_nascimento = ?, sexo = ?, id_disciplina = ?, carga_horaria = ?, id_status = ?, email = ?, telefone = ?, celular = ?, cep = ?, endereco = ?, numeros = ?, complemento = ?, bairro = ?, cidade = ?, id_estado = ?, matricula = ?, registro_profissional = ?, data_admissao = ?, idFormacao = ?, area_formacao = ?, observacoes = ? WHERE id = ?`,
                     [...params, id]
                 );
             } else {
                 await db.query(
-                    `INSERT INTO professores (nome, nome_social, cpf, data_nascimento, sexo, id_disciplina, carga_horaria, id_status, email, telefone, celular, cep, endereco, numeros, complemento, bairro, cidade, id_estado, matricula, registro_profissional, data_admissao, formacao, area_formacao, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    `INSERT INTO professores (nome, nome_social, cpf, data_nascimento, sexo, id_disciplina, carga_horaria, id_status, email, telefone, celular, cep, endereco, numeros, complemento, bairro, cidade, id_estado, matricula, registro_profissional, data_admissao, idFormacao, area_formacao, observacoes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     params
                 );
             }
