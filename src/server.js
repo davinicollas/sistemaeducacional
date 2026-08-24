@@ -27,6 +27,7 @@ const turnos = require('./routes/turnos');
 const salas = require('./routes/salas');
 const tiposAvaliacao = require('./routes/tiposAvaliacao');
 const disciplinas = require('./routes/disciplinas');
+const professores = require('./routes/professores');
 
 const authMid = require("./middleware/auth");
 
@@ -81,9 +82,6 @@ app.get('/cadastro', (req, res) => {
 app.get('/alunos', (req, res) => {
   res.render('alunos');
 });
-app.get('/professores', (req, res) => {
-  res.render('professores');
-});
 app.get('/dashboard', (req, res) => {
   res.render('dashboard');
 });
@@ -120,6 +118,7 @@ app.use(turnos);
 app.use(salas);
 app.use(tiposAvaliacao);
 app.use(disciplinas);
+app.use(professores);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {

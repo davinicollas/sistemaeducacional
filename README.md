@@ -1,128 +1,658 @@
-# Sistema Educacional
+# 🏫 Sistema de Gestão Escolar
 
-Sistema web de gestão escolar (alunos, professores, documentos, configurações acadêmicas, financeiro, etc.), construído com Node.js + Express, EJS (server-side rendering) e MySQL.
+Sistema de gestão escolar para administração acadêmica, alunos, professores, turmas, notas, frequência, documentos e demais processos da instituição.
 
-## Stack
+---
 
-- **Runtime**: Node.js 20 (Alpine, via Docker)
-- **Framework**: Express 5
-- **View engine**: EJS
-- **Banco de dados**: MySQL 8, acesso via `mysql2/promise` (pool de conexões)
-- **Sessão**: `express-session` + `express-mysql-session` (sessão persistida no MySQL)
-- **Autenticação de senha**: `bcrypt`
-- **Upload de arquivos**: `multer`
-- **Dev**: `nodemon` (`npm run dev`)
+## 🎯 Objetivo
 
-## Como rodar
+Centralizar a gestão da instituição de ensino em um único sistema, permitindo controlar:
 
-```powershell
-docker compose up --build
+* Configurações da escola
+* Parâmetros acadêmicos
+* Professores
+* Alunos
+* Turmas
+* Matrículas
+* Disciplinas
+* Grade horária
+* Frequência
+* Avaliações
+* Notas
+* Boletins
+* Documentos
+* Financeiro
+* Notificações
+* Usuários e permissões
+
+---
+
+# 🛠️ Stack
+
+## Backend
+
+* Node.js
+* Express
+* JavaScript
+* MySQL
+
+## Frontend
+
+* EJS
+* HTML
+* CSS
+* JavaScript
+* Bootstrap Icons
+
+## Banco de dados
+
+* MySQL
+
+---
+
+# 🏗️ Estrutura do projeto
+
+A estrutura deve seguir o padrão existente do projeto.
+
+```text
+/
+├── .github/
+│   ├── copilot-instructions.md
+│   ├── instructions/
+│   └── prompts/
+│
+├── docs/
+│   ├── PROJETO.md
+│   ├── ARQUITETURA.md
+│   ├── ACADEMICO.md
+│   ├── BANCO.md
+│   ├── ROTAS.md
+│   └── PROGRESSO.md
+│
+├── routes/
+├── controllers/
+├── services/
+├── views/
+├── public/
+└── ...
 ```
 
-- App: http://localhost:3000
-- MySQL: localhost:3306 (usuário ``, senha ``, banco `sistema_educacional`)
+---
 
-Variáveis de ambiente (arquivo `.env` na raiz):
+# ⚙️ Configurações
 
-```
-DB_HOST=mysql
-DB_PORT=3306
-DB_NAME=sistema_educacional
-DB_USER=
-DB_PASSWORD=
+O sistema possui uma área de configurações gerais e configurações acadêmicas.
 
-SESSION_NAME=sistema_educacional_session
-SESSION_SECRET=<valor secreto>
-```
+## Configurações Acadêmicas
 
-Sem Docker (precisa de um MySQL acessível localmente):
-
-```powershell
-npm install
-npm run dev
+```text
+Configurações
+└── Configurações Acadêmicas
+    ├── Séries
+    ├── Turnos
+    ├── Anos Letivos
+    ├── Períodos / Bimestres
+    ├── Salas
+    └── Tipos de Avaliação
 ```
 
-## Estrutura do projeto
+Todos esses parâmetros já foram criados.
 
-```
-src/
-  app.js / server.js      # bootstrap do Express, sessão, view engine, registro de rotas
-  config/                 # configurações da aplicação
-  controllers/            # (reservado para lógica de controller, quando aplicável)
-  middleware/auth.js       # middleware de autenticação/autorização
-  model/                  # acesso a dados (queries mysql2) por domínio
-  routes/                 # rotas Express por domínio
-  services/               # (reservado para regras de negócio compartilhadas)
-  views/                  # templates EJS (telas + partials/header,menu,footer,filtros,paginations)
-database/
-  mysql.js                # pool de conexão mysql2
-  permissions.json         # definição de permissões do sistema
-patch/                     # scripts SQL incrementais (rodar manualmente no MySQL)
-public/
-  css/                    # estilos por tela
-  javascript/
-    script.js              # scripts gerais do site
-    modalHelper.js          # helper client-side compartilhado para grids com modal (ver abaixo)
-  uploads/documentos/      # arquivos enviados via upload
-scripts/                    # utilitários de manutenção/teste (db insert, http check, validação de CSS)
-```
+### Status
 
-## Módulos / telas implementadas
+* [x] Séries
+* [x] Turnos
+* [x] Anos Letivos
+* [x] Períodos / Bimestres
+* [x] Salas
+* [x] Tipos de Avaliação
 
-| Domínio | Rota principal | View | Model | Observação |
-|---|---|---|---|---|
-| Login / Cadastro | `/login`, `/cadastro` | `login.ejs`, `cadastro.ejs` | `usuario.js` | |
-| Dashboard | `/dashboard` | `dashboard.ejs` | — | |
-| Alunos / Professores | `/alunos`, `/professores` | `alunos.ejs`, `professores.ejs` | — | páginas estáticas (sem grid dinâmica ainda) |
-| Financeiro | `/financeiro` | `financeiro.ejs` | — | |
-| Aparência | `/aparencia` | `aparencia.ejs` | `aparencia.js` | |
-| Calendário | `/calendario` | `calendario.ejs` | `calendario.js` | |
-| Configurações (gerais) | `/configuracoes` | `configuracoes.ejs` | `configuracoes.js` | |
-| Configuração de notas | `/configuracao-notas` | `configuracao_notas.ejs` | `configuracao_notas.js` | |
-| Documentos | `/documentos` | `documentos.ejs` | `documentos.js` | upload via multer |
-| Tipos/Status de documentos | `/tipos-documentos`, `/status-documentos` | `tiposDocumentos.ejs`, `statusDocumentos.ejs` | `tiposDocumentos.js`, `statusDocumentos.js` | |
-| Estados | `/estados` | `estados.ejs` | `estados.js` | |
-| Notificações | `/notificacoes` | `notificacoes.ejs` | `notificacoes.js` | |
-| Permissões de usuário | `/usuario-permissoes` | `usuariosPermissoes.ejs` | `usuarioPermissoes.js` | |
-| Séries | `/series` | `series.ejs` | `series.js` | grid + modal (padrão de referência) |
-| **Anos Letivos** | `/anos-letivos` | `anosLetivos.ejs` | `anosLetivos.js` | grid + modal, campo "atual" |
-| **Períodos/Bimestres** | `/periodos` | `periodos.ejs` | `periodos.js` | grid + modal, vinculado a Ano Letivo |
-| **Turnos** | `/turnos` | `turnos.ejs` | `turnos.js` | grid + modal |
-| **Salas** | `/salas` | `salas.ejs` | `salas.js` | grid + modal |
-| **Tipos de Avaliação** | `/tipos-avaliacao` | `tiposAvaliacao.ejs` | `tiposAvaliacao.js` | grid + modal |
+---
 
-Os cinco últimos itens (Configurações Acadêmicas) foram os últimos módulos adicionados e seguem o padrão grid + modal descrito abaixo.
+# 📚 Cadastros Acadêmicos
 
-## Padrão de tela "grid + modal" (Configurações Acadêmicas)
+## Disciplinas
 
-Cada tela desse grupo segue a mesma estrutura:
+As disciplinas são cadastradas de forma independente das séries e turmas.
 
-- **Tabela** com uma linha por registro (`data-index`) e uma célula oculta (`.hidden-values`) contendo `<input type="hidden" data-field="...">` para cada coluna — usados para reidratar o modal e reenviar o formulário completo no submit.
-- **Modal** criado dinamicamente via JS (`getOrCreateXModal()`), controlado por `public/javascript/modalHelper.js` (`window.ModalHelper`), que centraliza:
-  - abrir modal para novo registro ou edição (`ModalHelper.openModal`);
-  - aplicar valores na grid, criando ou atualizando a linha (`ModalHelper.applyValuesToRow`);
-  - reindexar `name`/`data-index` após inclusão/remoção de linhas (`ModalHelper.reindex`);
-  - remover linha (`ModalHelper.removeRow`) e excluir via POST (`ModalHelper.submitDelete`).
-- CSS do modal é genérico: qualquer elemento com `id` terminado em `-modal` recebe o estilo de overlay/painel (`public/css/configuracoes.css`), então novas telas não precisam adicionar CSS de modal.
-- **Convenção de nomes**: no banco as colunas usam `snake_case` (ex.: `ano_letivo`, `horario_inicio`, `nota_maxima`); no lado cliente (ids de input, `name` dos campos, chaves dos objetos JS) usa-se `camelCase` (ex.: `anoLetivo`, `horarioInicio`, `notaMaxima`) — a rota faz a ponte entre os dois. O campo de descrição livre é sempre chamado de `text` (não `descricao`).
-- Exclusão lógica: todas as tabelas de parâmetros usam `excluido` (soft delete) em vez de `DELETE`.
+Exemplos:
 
-## Banco de dados / patches
-
-Os scripts SQL ficam em `patch/*.sql` e devem ser aplicados manualmente no MySQL (não há migração automática). O patch mais recente, `patch/configuracaoAcademicas.sql`, cria as tabelas `params_anos_letivos`, `params_periodos`, `params_turnos`, `params_salas` e `params_tipos_avaliacao` com o schema atual (inclui `DROP TABLE IF EXISTS` das versões antigas/incompatíveis dessas tabelas — confira se não há dados importantes antes de rodar).
-
-Exemplo de aplicação via Docker:
-
-```powershell
-docker compose exec mysql mysql -ux -px sistema_educacional < patch/configuracaoAcademicas.sql
+```text
+Matemática
+Português
+História
+Geografia
+Ciências
+Física
+Química
+Biologia
 ```
 
-## Scripts utilitários
+### Status
 
-- `scripts/db_test_insert.js` — teste manual de insert no banco.
-- `scripts/http_post_check.js` — teste manual de requisições POST.
-- `scripts/validate_css_classes.js` — valida uso de classes CSS nas views.
+* [x] Tela de Disciplinas
 
-## Convenções do projeto
+---
 
-Consulte `.github/instructions/` para as regras detalhadas de backend, banco de dados, EJS e frontend usadas neste repositório.
+## 👨‍🏫 Professores
+
+Cadastro dos professores da instituição.
+
+O cadastro possui três grupos principais:
+
+### Dados pessoais
+
+* Nome
+* Nome social
+* CPF
+* Data de nascimento
+* Sexo
+
+### Contato
+
+* E-mail
+* Telefone
+* Celular
+* CEP
+* Endereço
+* Número
+* Complemento
+* Bairro
+* Cidade
+* Estado
+
+### Dados profissionais
+
+* Matrícula
+* Registro profissional
+* Data de admissão
+* Formação
+* Área de formação
+* Carga horária
+* Status
+* Observações
+
+### Importação
+
+Professores poderão ser cadastrados individualmente ou através de arquivo Excel.
+
+Planejado:
+
+* [ ] Importação de Professores via Excel
+* [ ] Modelo/template Excel
+* [ ] Validação dos dados
+* [ ] Pré-visualização
+* [ ] Identificação de duplicados
+* [ ] Relatório de erros
+* [ ] Confirmação da importação
+
+---
+
+# 👨‍🎓 Alunos
+
+Cadastro dos alunos da instituição.
+
+O cadastro deverá permitir inclusão individual e importação em massa através de Excel.
+
+Planejado:
+
+* [ ] Tela de Alunos
+* [ ] Cadastro individual
+* [ ] Importação via Excel
+* [ ] Modelo/template Excel
+* [ ] Validação dos dados
+* [ ] Pré-visualização
+* [ ] Identificação de duplicados
+* [ ] Relatório de erros
+* [ ] Confirmação da importação
+
+---
+
+# 🏫 Turmas
+
+A turma será responsável por reunir os principais parâmetros acadêmicos.
+
+Exemplo:
+
+```text
+Turma: 1º Ano A
+
+Ano Letivo:
+2026
+
+Série:
+1º Ano do Ensino Fundamental
+
+Turno:
+Manhã
+
+Sala:
+Sala 01
+```
+
+A turma deverá utilizar os parâmetros já cadastrados, evitando duplicação de informações.
+
+Planejado:
+
+* [ ] Cadastro de Turmas
+* [ ] Vincular Ano Letivo
+* [ ] Vincular Série
+* [ ] Vincular Turno
+* [ ] Vincular Sala
+* [ ] Vincular Disciplinas
+* [ ] Vincular Professores
+
+---
+
+# 📝 Matrículas
+
+Responsável por relacionar alunos ao ano letivo e à turma.
+
+Exemplo:
+
+```text
+Aluno
+    ↓
+Matrícula
+    ↓
+Ano Letivo 2026
+    ↓
+Turma 1º Ano A
+```
+
+Planejado:
+
+* [ ] Cadastro de matrícula
+* [ ] Situação da matrícula
+* [ ] Histórico de turmas
+* [ ] Transferência
+* [ ] Cancelamento
+* [ ] Remanejamento
+
+---
+
+# 🕐 Grade Horária
+
+Responsável por definir quando cada disciplina acontece.
+
+Exemplo:
+
+```text
+1º Ano A
+Segunda-feira
+07:00 - 07:50
+Matemática
+Professor: João
+Sala: 01
+```
+
+Planejado:
+
+* [ ] Cadastro de horários
+* [ ] Dias da semana
+* [ ] Horários
+* [ ] Disciplina
+* [ ] Professor
+* [ ] Turma
+* [ ] Sala
+* [ ] Validação de conflitos
+
+---
+
+# 📋 Diário de Classe
+
+Responsável pelo acompanhamento das aulas.
+
+Planejado:
+
+* [ ] Registro de aula
+* [ ] Conteúdo ministrado
+* [ ] Frequência
+* [ ] Observações
+* [ ] Professor responsável
+
+---
+
+# 📊 Avaliações e Notas
+
+Os tipos de avaliação são configurados previamente em:
+
+```text
+Configurações
+└── Configurações Acadêmicas
+    └── Tipos de Avaliação
+```
+
+Exemplos:
+
+```text
+Prova
+Trabalho
+Atividade
+Projeto
+Seminário
+Recuperação
+```
+
+Depois serão utilizados no lançamento das avaliações.
+
+Planejado:
+
+* [ ] Criar avaliação
+* [ ] Vincular disciplina
+* [ ] Vincular turma
+* [ ] Vincular período
+* [ ] Vincular tipo de avaliação
+* [ ] Lançar notas
+* [ ] Recuperação
+* [ ] Cálculo de médias
+
+---
+
+# 📅 Calendário Escolar
+
+Responsável pelo calendário acadêmico da instituição.
+
+Planejado:
+
+* [ ] Eventos escolares
+* [ ] Feriados
+* [ ] Recessos
+* [ ] Dias letivos
+* [ ] Reuniões
+* [ ] Avaliações
+* [ ] Início e fim dos períodos
+
+---
+
+# 💰 Financeiro
+
+Área destinada ao gerenciamento financeiro da instituição.
+
+Planejado:
+
+* [ ] Receitas
+* [ ] Despesas
+* [ ] Mensalidades
+* [ ] Pagamentos
+* [ ] Inadimplência
+* [ ] Relatórios financeiros
+
+---
+
+# 🔐 Usuários e Permissões
+
+Controle de acesso ao sistema.
+
+Já existem configurações relacionadas a:
+
+* Permissões
+* Usuários e permissões
+* Perfis de acesso
+
+Planejado:
+
+* [ ] Perfis
+* [ ] Permissões por módulo
+* [ ] Permissões por ação
+* [ ] Controle de acesso
+* [ ] Auditoria
+
+---
+
+# 📄 Documentos
+
+Área destinada ao gerenciamento dos documentos da instituição.
+
+Planejado:
+
+* [ ] Tipos de documentos
+* [ ] Upload
+* [ ] Documentos de alunos
+* [ ] Documentos de professores
+* [ ] Documentos institucionais
+* [ ] Controle de validade
+
+---
+
+# 🔔 Notificações
+
+Responsável pelas notificações do sistema.
+
+Planejado:
+
+* [ ] Notificações internas
+* [ ] Alertas
+* [ ] Avisos acadêmicos
+* [ ] Avisos financeiros
+* [ ] Configuração de notificações
+
+---
+
+# 🧠 Regras de arquitetura
+
+## Parâmetros x Cadastros
+
+A principal regra do sistema é:
+
+> **Parâmetros definem as opções. Cadastros utilizam essas opções.**
+
+Exemplo:
+
+```text
+Parâmetro
+    ↓
+Turno: Manhã
+    ↓
+Turma
+    ↓
+1º Ano A - Manhã
+```
+
+Outro exemplo:
+
+```text
+Parâmetro
+    ↓
+Ano Letivo: 2026
+    ↓
+Turma
+    ↓
+1º Ano A - 2026
+```
+
+---
+
+# 🔗 Relacionamento acadêmico
+
+A estrutura planejada é:
+
+```text
+ANO LETIVO
+│
+├── PERÍODOS
+│
+├── TURMAS
+│   ├── SÉRIE
+│   ├── TURNO
+│   ├── SALA
+│   ├── DISCIPLINAS
+│   └── PROFESSORES
+│
+└── CALENDÁRIO
+```
+
+Depois:
+
+```text
+TURMA
+│
+├── ALUNOS
+├── DISCIPLINAS
+│   └── PROFESSORES
+│
+├── DIÁRIO
+├── FREQUÊNCIA
+└── AVALIAÇÕES
+    └── NOTAS
+```
+
+---
+
+# 📥 Importação Excel
+
+Professores e alunos poderão ser cadastrados através de arquivos Excel.
+
+Fluxo planejado:
+
+```text
+Selecionar Excel
+      ↓
+Validar arquivo
+      ↓
+Ler dados
+      ↓
+Validar campos
+      ↓
+Verificar duplicidades
+      ↓
+Pré-visualizar
+      ↓
+Exibir erros
+      ↓
+Confirmar
+      ↓
+Inserir no banco
+```
+
+A importação não deve inserir registros automaticamente sem validação e confirmação do usuário.
+
+---
+
+# 🚧 Próximas tarefas
+
+## Cadastros
+
+* [x] Séries
+* [x] Turnos
+* [x] Anos Letivos
+* [x] Períodos / Bimestres
+* [x] Salas
+* [x] Tipos de Avaliação
+* [x] Disciplinas
+* [ ] Professores
+* [ ] Alunos
+* [ ] Turmas
+* [ ] Matrículas
+* [ ] Grade Horária
+
+## Importação
+
+* [ ] Importação de Professores via Excel
+* [ ] Importação de Alunos via Excel
+* [ ] Templates Excel
+* [ ] Validação
+* [ ] Pré-visualização
+* [ ] Duplicidades
+* [ ] Relatório de erros
+
+## Acadêmico
+
+* [ ] Diário
+* [ ] Frequência
+* [ ] Avaliações
+* [ ] Notas
+* [ ] Recuperação
+* [ ] Boletim
+* [ ] Conselho de Classe
+
+---
+
+# 📊 Progresso atual
+
+```text
+Configurações Acadêmicas
+████████████████████ 100%
+
+Cadastros Acadêmicos
+███████░░░░░░░░░░░░░ 35%
+
+Importação Excel
+░░░░░░░░░░░░░░░░░░░░ 0%
+
+Operação Acadêmica
+░░░░░░░░░░░░░░░░░░░░ 0%
+```
+
+---
+
+# 📌 Regra para novas funcionalidades
+
+Antes de criar uma nova tela ou tabela, verificar:
+
+1. A informação já existe?
+2. É um parâmetro ou um cadastro?
+3. Será utilizada por outros módulos?
+4. Existe uma tabela que já representa essa informação?
+5. Existe uma tela semelhante que pode ser reutilizada?
+6. Existe uma função ou componente existente que deve ser reaproveitado?
+
+Evitar duplicação de lógica, tabelas, componentes e regras.
+
+---
+
+# 📝 Histórico de desenvolvimento
+
+## 2026
+
+### Configurações Acadêmicas
+
+Concluídos:
+
+* Séries
+* Turnos
+* Anos Letivos
+* Períodos / Bimestres
+* Salas
+* Tipos de Avaliação
+
+### Cadastros
+
+Concluído:
+
+* Disciplinas
+
+Em desenvolvimento:
+
+* Professores
+
+Próximos:
+
+* Alunos
+* Turmas
+* Matrículas
+* Grade Horária
+
+---
+
+## 🚀 Visão do sistema
+
+O objetivo final é possuir um sistema integrado onde:
+
+```text
+CONFIGURAÇÕES
+      ↓
+PARÂMETROS
+      ↓
+CADASTROS
+      ↓
+TURMAS / MATRÍCULAS
+      ↓
+DIÁRIO / FREQUÊNCIA
+      ↓
+AVALIAÇÕES / NOTAS
+      ↓
+BOLETIM / RELATÓRIOS
+```
+
+Cada módulo deve aproveitar as informações cadastradas anteriormente, evitando retrabalho e duplicação de dados.

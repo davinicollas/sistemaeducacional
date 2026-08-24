@@ -1,102 +1,305 @@
 <%- include('partials/header') %>
     <!-- Sidebar -->
     <%- include('partials/menu') %>
+    <%
+        professores = typeof professores !== 'undefined' ? professores : {};
+        let professoresList = Array.isArray(professores.professores) ? professores.professores : [];
+        let estadoList = Array.isArray(estado) ? estado : (estado ? [estado] : []);
+        let disciplinasCatalogo = typeof disciplinasList !== 'undefined' && Array.isArray(disciplinasList) ? disciplinasList : [];
+    %>
     <!-- Main Content -->
-    <main class="main-content">
-        <h1 class="page-title">Professores</h1>
-
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar professor...">
+   <div class="main-content">
+        <div class="page-header">
+            <div>
+            <h1>Configurações Acadêmicas</h1>
+            <p>Cadastre e gerencie os professores.</p>
             </div>
-            <button class="btn-primary">Novo professor</button>
         </div>
 
-        <!-- Data Table -->
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Disciplina</th>
-                        <th>E-mail</th>
-                        <th>Telefone</th>
-                        <th style="text-align: center;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Ana Paula</td>
-                        <td>Matemática</td>
-                        <td>ana.paula@email.com</td>
-                        <td>(11) 99999-9999</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Carlos Mendes</td>
-                        <td>História</td>
-                        <td>carlos@email.com</td>
-                        <td>(11) 98888-8888</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Fernanda Lima</td>
-                        <td>Português</td>
-                        <td>fernanda@email.com</td>
-                        <td>(11) 97777-7777</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>João Santos</td>
-                        <td>Geografia</td>
-                        <td>joao@email.com</td>
-                        <td>(11) 96666-6666</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Luciana Oliveira</td>
-                        <td>Ciências</td>
-                        <td>luciana@email.com</td>
-                        <td>(11) 95555-5555</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Marcos Alves</td>
-                        <td>Inglês</td>
-                        <td>marcos@email.com</td>
-                        <td>(11) 94444-4444</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Patrícia Costa</td>
-                        <td>Artes</td>
-                        <td>patricia@email.com</td>
-                        <td>(11) 93333-3333</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Rafael Souza</td>
-                        <td>Educação Física</td>
-                        <td>rafael@email.com</td>
-                        <td>(11) 92222-2222</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">📅</div>
+      <div>
+        <h2>Professores</h2>
+        <p>Gerencie os professores cadastrados.</p>
+      </div>
+    </div>
 
-        <!-- Pagination -->
-        <div class="pagination">
-            <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">2</button>
-            <button class="page-btn">3</button>
-            <button class="page-btn">4</button>
-            <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
-        </div>
-    </main>
+    <div class="card-body">
+      <form id="professores-form" action="/professores" method="POST">
+        <table class="professores-table">
+          <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Disciplina</th>
+                <th>Email</th>
+                <th>Status</th>
+              <th style="width: 10%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="professores-tbody">
+            <% professoresList.forEach(function (s, idx) { %>
+              <tr data-index="<%= idx %>" class="professores-row">
+                <td><span class="professores-id"><%= s.id || '' %></span></td>
+                <td><span class="professores-nome"><%= s.nome || '' %></span></td>
+                <td><span class="professores-disciplina"><%= s.disciplina_nome || '' %></span></td>
+                <td><span class="professores-email"><%= s.email || '' %></span></td>
+                <td><span class="professores-status"><%= s.id_status ? 'Ativo' : 'Inativo' %></span></td>
+                <td class="professores-actions">
+                  <button type="button" class="btn btn-sm btn-warning" onclick="openProfessorModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirProfessor(<%= s.id %>)"><i class="bi bi-trash"></i></button>
+                </td>
+                <td class="hidden-values" style="display:none">
+                  <input type="hidden" data-field="id" name="professores[<%= idx %>][id]" value="<%= s.id || '' %>" />
+                  <input type="hidden" data-field="nome" name="professores[<%= idx %>][nome]" value="<%= s.nome || '' %>" />
+                  <input type="hidden" data-field="nome_social" name="professores[<%= idx %>][nome_social]" value="<%= s.nome_social || '' %>" />
+                  <input type="hidden" data-field="cpf" name="professores[<%= idx %>][cpf]" value="<%= s.cpf || '' %>" />
+                  <input type="hidden" data-field="data_nascimento" name="professores[<%= idx %>][data_nascimento]" value="<%= s.data_nascimento ? new Date(s.data_nascimento).toISOString().slice(0,10) : '' %>" />
+                  <input type="hidden" data-field="sexo" name="professores[<%= idx %>][sexo]" value="<%= s.sexo || '' %>" />
+                  <input type="hidden" data-field="id_disciplina" name="professores[<%= idx %>][id_disciplina]" value="<%= s.id_disciplina || '' %>" />
+                  <input type="hidden" data-field="carga_horaria" name="professores[<%= idx %>][carga_horaria]" value="<%= s.carga_horaria || '' %>" />
+                  <input type="hidden" data-field="id_status" name="professores[<%= idx %>][id_status]" value="<%= s.id_status || '1' %>" />
+                  <input type="hidden" data-field="email" name="professores[<%= idx %>][email]" value="<%= s.email || '' %>" />
+                  <input type="hidden" data-field="telefone" name="professores[<%= idx %>][telefone]" value="<%= s.telefone || '' %>" />
+                  <input type="hidden" data-field="celular" name="professores[<%= idx %>][celular]" value="<%= s.celular || '' %>" />
+                  <input type="hidden" data-field="cep" name="professores[<%= idx %>][cep]" value="<%= s.cep || '' %>" />
+                  <input type="hidden" data-field="endereco" name="professores[<%= idx %>][endereco]" value="<%= s.endereco || '' %>" />
+                  <input type="hidden" data-field="numeros" name="professores[<%= idx %>][numeros]" value="<%= s.numeros || '' %>" />
+                  <input type="hidden" data-field="complemento" name="professores[<%= idx %>][complemento]" value="<%= s.complemento || '' %>" />
+                  <input type="hidden" data-field="bairro" name="professores[<%= idx %>][bairro]" value="<%= s.bairro || '' %>" />
+                  <input type="hidden" data-field="cidade" name="professores[<%= idx %>][cidade]" value="<%= s.cidade || '' %>" />
+                  <input type="hidden" data-field="id_estado" name="professores[<%= idx %>][id_estado]" value="<%= s.id_estado || '' %>" />
+                  <input type="hidden" data-field="matricula" name="professores[<%= idx %>][matricula]" value="<%= s.matricula || '' %>" />
+                  <input type="hidden" data-field="registro_profissional" name="professores[<%= idx %>][registro_profissional]" value="<%= s.registro_profissional || '' %>" />
+                  <input type="hidden" data-field="data_admissao" name="professores[<%= idx %>][data_admissao]" value="<%= s.data_admissao ? new Date(s.data_admissao).toISOString().slice(0,10) : '' %>" />
+                  <input type="hidden" data-field="formacao" name="professores[<%= idx %>][formacao]" value="<%= s.formacao || '' %>" />
+                  <input type="hidden" data-field="area_formacao" name="professores[<%= idx %>][area_formacao]" value="<%= s.area_formacao || '' %>" />
+                  <input type="hidden" data-field="observacoes" name="professores[<%= idx %>][observacoes]" value="<%= s.observacoes || '' %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
 
-</body>
-</html>
+        <% if (!professoresList.length) { %>
+          <p class="series-empty" id="professores-empty">Nenhum professor cadastrado ainda.</p>
+        <% } %>
+        <div id="to-delete"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="button" class="btn-primary series-new-btn" onclick="openProfessorModal(null)">Novo</button>
+        </div>
+      </form>
+    </div>
+  </section>
+<script>
+  const PROFESSOR_FIELDS = ['id','nome','nome_social','cpf','data_nascimento','sexo','id_disciplina','carga_horaria','id_status','email','telefone','celular','cep','endereco','numeros','complemento','bairro','cidade','id_estado','matricula','registro_profissional','data_admissao','formacao','area_formacao','observacoes'];
+  const PROFESSOR_DISCIPLINAS = <%- JSON.stringify(disciplinasCatalogo.reduce(function (acc, d) { acc[d.id] = d.text; return acc; }, {})) %>;
+
+  function getOrCreateProfessorModal() {
+    let modal = document.getElementById('professor-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'professor-modal';
+    modal.innerHTML = `
+      <div class="modal-panel">
+        <section class="config-card">
+            <h3>Professor</h3>
+            <input type="hidden" id="modal-index" value="-1">
+            <input type="hidden" id="modal-id" value="">
+
+            <div class="form-group">
+            <label for="modal-nome">Nome *</label>
+            <input id="modal-nome" type="text" placeholder="Ex: Maria" />
+            </div>
+
+            <div class="form-group">
+            <label for="modal-nome_social">Nome Social</label>
+            <input id="modal-nome_social" type="text" placeholder="Ex: Maria" />
+            </div>
+
+            <div class="form-group">
+            <label for="modal-cpf">CPF</label>
+            <input id="modal-cpf" type="text" placeholder="Ex: 123.456.789-00" />
+            </div>
+
+            <div class="form-group">
+            <label for="modal-data_nascimento">Data de Nascimento</label>
+            <input id="modal-data_nascimento" type="date" />
+            </div>
+
+            <div class="form-group">
+            <label for="modal-sexo">Sexo</label>
+            <select id="modal-sexo">
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+                <option value="O">Outro</option>
+            </select>
+            </div>
+        </section>
+
+        <section class="config-card">
+            <h3>Contato</h3>
+            <div class="form-group">
+                <label for="modal-email">Email</label>
+                <input id="modal-email" type="email" placeholder="Ex: maria@example.com" />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-telefone">Telefone</label>
+                <input id="modal-telefone" type="text" placeholder="Ex: (11) 98765-4321" />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-celular">Celular</label>
+                <input id="modal-celular" type="text" placeholder="Ex: (11) 98765-4321" />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-cep">CEP</label>
+                <input id="modal-cep" type="text" placeholder="Ex: 12345-678" />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-endereco">Endereço</label>
+                <input id="modal-endereco" type="text" placeholder="Ex: Rua das Flores, 123" />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-numeros">Números</label>
+                <input id="modal-numeros" type="text" placeholder="Ex: 12345" />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-complemento">Complemento</label>
+                <input id="modal-complemento" type="text" placeholder="Ex: Apt 101" />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-bairro">Bairro</label>
+                <input id="modal-bairro" type="text" placeholder="Ex: Centro" />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-cidade">Cidade</label>
+                <input id="modal-cidade" type="text" placeholder="Ex: São Paulo" />
+            </div>
+
+             <div class="form-group">
+                <label for="modal-id_estado">Estado</label>
+                <select id="modal-id_estado">
+                    <option value="">Selecione</option>
+                    <% estadoList.forEach(function (e) { %>
+                        <option value="<%= e.id %>"><%= e.text %></option>
+                    <% }) %>
+                </select>
+            </div>
+        </section>
+
+        <section class="config-card">
+            <h3>Dados profissionais</h3>    
+            <div class="form-group">
+                <label for="modal-matricula">Matrícula</label>
+                <input id="modal-matricula" type="text" placeholder="Ex: 123456" />
+            </div>
+            <div class="form-group">
+                <label for="modal-registro_profissional">Registro Profissional</label>
+                <input id="modal-registro_profissional" type="text" placeholder="Ex: 123456" />
+            </div>
+            <div class="form-group">
+                <label for="modal-data_admissao">Data de Admissão</label>
+                <input id="modal-data_admissao" type="date" />
+            </div>
+            <div class="form-group">
+                <label for="modal-formacao">Formação</label>
+                <input id="modal-formacao" type="text" placeholder="Ex: Graduação em Matemática" />
+            </div>
+            <div class="form-group">
+                <label for="modal-area_formacao">Área de Formação</label>
+                <input id="modal-area_formacao" type="text" placeholder="Ex: Matemática" />
+            </div>
+            <div class="form-group">
+                <label for="modal-id_disciplina">Disciplina</label>
+                <select id="modal-id_disciplina">
+                    <option value="">Selecione</option>
+                    <% disciplinasCatalogo.forEach(function (d) { %>
+                        <option value="<%= d.id %>"><%= d.text %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="modal-carga_horaria">Carga Horária</label>
+                <input id="modal-carga_horaria" type="text" placeholder="Ex: 40h" />
+            </div>
+            <div class="form-group">
+                <label for="modal-id_status">Status *</label>
+                <select id="modal-id_status">
+                    <option value="1">Ativo</option>
+                    <option value="0">Inativo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="modal-observacoes">Observações</label>
+                <textarea id="modal-observacoes" placeholder="Ex: Professor dedicado e experiente"></textarea>
+            </div>
+        </section>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" onclick="closeProfessorModal()">Cancelar</button>
+          <button type="button" class="btn-primary" onclick="saveProfessorModal()">Salvar</button>
+        </div>
+      </div>
+    `;
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeProfessorModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openProfessorModal(index) {
+    const modal = getOrCreateProfessorModal();
+
+    ModalHelper.openModal(modal, 'professores', PROFESSOR_FIELDS, index, { id_status: '1' });
+
+    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
+  }
+
+  function closeProfessorModal() {
+    const modal = document.getElementById('professor-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+  }
+
+  function saveProfessorModal() {
+    const modal = document.getElementById('professor-modal');
+    if (!modal) return;
+
+    const values = ModalHelper.collectModalValues('professor-modal', PROFESSOR_FIELDS);
+    if (!values.nome) { modal.querySelector('#modal-nome').focus(); return; }
+
+    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
+
+    const displayValues = Object.assign({}, values, {
+      status_label: values.id_status === '0' ? 'Inativo' : 'Ativo',
+      disciplina_nome: PROFESSOR_DISCIPLINAS[values.id_disciplina] || ''
+    });
+
+    const displayMap = [
+      { field: 'nome', cls: 'professores-nome' },
+      { field: 'disciplina_nome', cls: 'professores-disciplina' },
+      { field: 'email', cls: 'professores-email' },
+      { field: 'status_label', cls: 'professores-status' }
+    ];
+
+    ModalHelper.applyValuesToRow('professores', PROFESSOR_FIELDS, displayMap, idx, displayValues, 'openProfessorModal', '/professores/excluir');
+    ModalHelper.reindex('professores', PROFESSOR_FIELDS, 'openProfessorModal');
+    closeProfessorModal();
+  }
+
+  function excluirProfessor(id) { ModalHelper.submitDelete(`/professores/excluir/${id}`); }
+
+  function removeProfessorRow(btn) { ModalHelper.removeRow(btn, 'professores', PROFESSOR_FIELDS, 'openProfessorModal'); }
+
+  function reindexProfessor() { ModalHelper.reindex('professores', PROFESSOR_FIELDS, 'openProfessorModal'); }
+</script>
