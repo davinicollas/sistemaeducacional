@@ -74,7 +74,9 @@
         <%- include('partials/botoes', {
           newAction: 'openSeriesModal(null)',
           showExport: true,
-          exportAction: 'ExportExcel(null)'
+          exportAction: 'ExportExcel(null)',
+          showImport: true,
+          importAction: 'ImportExcel(null)'
         }) %>
       </form>
     </div>
@@ -230,9 +232,45 @@
     console.log('Exportando para Excel...');
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = '/exportar-excel';
+    form.action = '/series-exportar-excel';
     document.body.appendChild(form);
     form.submit();
+  }
+  function ImportExcel() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'arquivo';
+    input.accept = '.xlsx,.xls';
+    input.style.display = 'none';
+
+    input.addEventListener('change', function () {
+      const file = this.files && this.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('arquivo', file);
+
+      fetch('/series-importar-excel', {
+        method: 'POST',
+        body: formData
+      })
+        .then(async (response) => {
+          const text = await response.text();
+          if (!response.ok) {
+            throw new Error(text || 'Erro ao importar séries');
+          }
+          alert('Importação concluída com sucesso.');
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error(error);
+          alert(error.message || 'Erro ao importar séries.');
+        });
+    });
+
+    document.body.appendChild(input);
+    input.click();
+    setTimeout(() => input.remove(), 1000);
   }
 
   function saveSeriesModal() {

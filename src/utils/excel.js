@@ -1,4 +1,5 @@
 const ExcelJS = require('exceljs');
+const multer = require('multer');
 
 async function exportarExcel({
     res,
@@ -56,6 +57,16 @@ async function exportarExcel({
     res.end();
 }
 
+
+const upload = multer({
+    storage: multer.memoryStorage(), limits: {
+        fileSize: 10 * 1024 * 1024 // 10 MB 
+    }, fileFilter: (req, file, cb) => {
+        const extensoesPermitidas = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"];
+        if (extensoesPermitidas.includes(file.mimetype)) { cb(null, true); } else { cb(new Error("Arquivo inválido. Envie um arquivo Excel.")); }
+    }
+});
 module.exports = {
-    exportarExcel
+    exportarExcel,
+    upload
 };
