@@ -68,10 +68,7 @@
           <p class="series-empty" id="salas-empty">Nenhuma sala cadastrada ainda.</p>
         <% } %>
         <div id="to-delete"></div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Salvar</button>
-          <button type="button" class="btn-primary series-new-btn" onclick="openSalasModal(null)">Novo</button>
-        </div>
+        <%- include('partials/botoes', { newAction: 'openSalasModal(null)' }) %>
       </form>
     </div>
   </section>

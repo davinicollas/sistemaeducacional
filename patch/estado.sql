@@ -1,0 +1,38 @@
+CREATE TABLE params_estados (
+    id INT NOT NULL AUTO_INCREMENT,
+    text VARCHAR(20) NOT NULL,
+    uf VARCHAR(255) NOT NULL,
+    excluido INT  NOT NULL DEFAULT 0,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO params_estados (uf, text) VALUES
+('AC', 'Acre'),
+('AL', 'Alagoas'),
+('AP', 'Amapá'),
+('AM', 'Amazonas'),
+('BA', 'Bahia'),
+('CE', 'Ceará'),
+('DF', 'Distrito Federal'),
+('ES', 'Espírito Santo'),
+('GO', 'Goiás'),
+('MA', 'Maranhão'),
+('MT', 'Mato Grosso'),
+('MS', 'Mato Grosso do Sul'),
+('MG', 'Minas Gerais'),
+('PA', 'Pará'),
+('PB', 'Paraíba'),
+('PR', 'Paraná'),
+('PE', 'Pernambuco'),
+('PI', 'Piauí'),
+('RJ', 'Rio de Janeiro'),
+('RN', 'Rio Grande do Norte'),
+('RS', 'Rio Grande do Sul'),
+('RO', 'Rondônia'),
+('RR', 'Roraima'),
+('SC', 'Santa Catarina'),
+('SP', 'São Paulo'),
+('SE', 'Sergipe'),
+('TO', 'Tocantins');

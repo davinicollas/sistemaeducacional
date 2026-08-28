@@ -1,0 +1,12 @@
+CREATE TABLE eventos_calendario (
+    id INT NOT NULL AUTO_INCREMENT,
+    titulo VARCHAR(255) NOT NULL,
+    tipo VARCHAR(20) NOT NULL DEFAULT 'evento',
+    data_inicio DATE NOT NULL,
+    data_fim DATE DEFAULT NULL,
+    descricao TEXT,
+    excluido INT NOT NULL DEFAULT 0,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);

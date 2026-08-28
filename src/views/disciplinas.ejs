@@ -63,10 +63,7 @@
           <p class="series-empty" id="disciplinas-empty">Nenhuma disciplina cadastrada ainda.</p>
         <% } %>
         <div id="to-delete"></div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Salvar</button>
-          <button type="button" class="btn-primary series-new-btn" onclick="openDisciplinasModal(null)">Novo</button>
-        </div>
+        <%- include('partials/botoes', { newAction: 'openDisciplinasModal(null)' }) %>
       </form>
     </div>
   </section>

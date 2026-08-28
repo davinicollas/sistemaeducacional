@@ -71,11 +71,11 @@
           <p class="series-empty" id="series-empty">Nenhuma série cadastrada ainda.</p>
         <% } %>
         <div id="to-delete"></div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Salvar</button>
-          <button type="button" class="btn-primary series-new-btn" onclick="openSeriesModal(null)">Novo</button>
-
-        </div>
+        <%- include('partials/botoes', {
+          newAction: 'openSeriesModal(null)',
+          showExport: true,
+          exportAction: 'ExportExcel(null)'
+        }) %>
       </form>
     </div>
   </section>
@@ -224,6 +224,15 @@
     const modal = document.getElementById('series-modal');
     if (!modal) return;
     modal.classList.remove('open');
+  }
+
+  function ExportExcel() {
+    console.log('Exportando para Excel...');
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/exportar-excel';
+    document.body.appendChild(form);
+    form.submit();
   }
 
   function saveSeriesModal() {

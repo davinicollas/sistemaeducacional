@@ -87,10 +87,7 @@
           <p class="series-empty" id="professores-empty">Nenhum professor cadastrado ainda.</p>
         <% } %>
         <div id="to-delete"></div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Salvar</button>
-          <button type="button" class="btn-primary series-new-btn" onclick="openProfessorModal(null)">Novo</button>
-        </div>
+        <%- include('partials/botoes', { newAction: 'openProfessorModal(null)' }) %>
       </form>
     </div>
   </section>

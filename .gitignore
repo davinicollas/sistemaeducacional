@@ -1,28 +1,21 @@
-# Ignora tudo
-*
-
-# Mantém pastas
-!*/
-
-# JavaScript
-!*.js
-
-# EJS
-!*.ejs
-
-!*.css
-projeto/
-
-# Arquivos importantes
-!.gitignore
-!README.md
-!package.json
-!package-lock.json
-
+# Node
 node_modules/
 
-
-# Ignorar ambiente
+# Ambiente
 .env
 .env.*
 
+# Arquivos temporários
+*.log
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+projeto/
+uploads/
+
+database/

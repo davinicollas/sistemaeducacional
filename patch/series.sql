@@ -1,0 +1,21 @@
+CREATE TABLE params_series (
+    id INT NOT NULL AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    abreviacao VARCHAR(20),
+    etapa_ensino VARCHAR(50),
+    nivel_ensino VARCHAR(50),
+    ano_serie INT,
+    codigo VARCHAR(20),
+    idTurnos VARCHAR(50),
+    idade_minima INT,
+    idade_maxima INT,
+    carga_horaria INT,
+    aulas_semanais INT,
+    status TINYINT(1) NOT NULL DEFAULT 1,
+    descricao TEXT,
+    excluido INT NOT NULL DEFAULT 0,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_params_turnos` FOREIGN KEY (`idTurnos`) REFERENCES `params_turnos` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE,
+    PRIMARY KEY (id)
+);

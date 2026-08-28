@@ -2,6 +2,9 @@ const express = require("express");
 const db = require("../../database/mysql");
 const router = express.Router();
 
+const { exportarExcel } = require('../utils/excel');
+
+
 const seriesModel = require("../model/series");
 const turnosModel = require("../model/turnos");
 
@@ -92,6 +95,43 @@ router.post("/series", async (req, res) => {
     } catch (err) {
         console.error(err);
         res.redirect("/series");
+    }
+});
+
+router.post('/exportar-excel', async (req, res) => {
+    try {
+        const [alunos] = await db.query(`
+            SELECT
+               *
+            FROM params_series
+            ORDER BY nome
+        `);
+
+        await exportarExcel({
+            res,
+            nomeArquivo: 'series',
+            nomePlanilha: 'Séries',
+            colunas: [
+                { header: 'ID', key: 'id' },
+                { header: 'Nome', key: 'nome' },
+                { header: 'Abreviação', key: 'abreviacao' },
+                { header: 'Etapa de Ensino', key: 'etapa_ensino' },
+                { header: 'Nível de Ensino', key: 'nivel_ensino' },
+                { header: 'Ano da Série', key: 'ano_serie' },
+                { header: 'Código', key: 'codigo' },
+                { header: 'Turno', key: 'idTurnos' },
+                { header: 'Idade Mínima', key: 'idade_minima' },
+                { header: 'Idade Máxima', key: 'idade_maxima' },
+                { header: 'Carga Horária', key: 'carga_horaria' },
+                { header: 'Aulas Semanais', key: 'aulas_semanais' },
+                { header: 'Status', key: 'status' },
+                { header: 'Descrição', key: 'descricao' }
+            ],
+            dados: alunos
+        });
+    } catch (error) {
+        console.error('Erro ao exportar alunos:', error);
+        res.status(500).json({ erro: 'Erro ao gerar arquivo Excel' });
     }
 });
 

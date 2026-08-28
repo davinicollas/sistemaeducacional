@@ -1,0 +1,14 @@
+CREATE TABLE documentos (
+    id INT NOT NULL AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL,
+    tipo INT DEFAULT NULL,
+    descricao TEXT,
+    data_documento DATE DEFAULT NULL,
+    data_validade DATE DEFAULT NULL,
+    status INT NOT NULL DEFAULT 1,
+    publico INT DEFAULT NULL,
+    excluido INT NOT NULL DEFAULT 0,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);

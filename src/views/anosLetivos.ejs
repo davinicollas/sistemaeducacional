@@ -65,10 +65,7 @@
           <p class="series-empty" id="anos-empty">Nenhum ano letivo cadastrado ainda.</p>
         <% } %>
         <div id="to-delete"></div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Salvar</button>
-          <button type="button" class="btn-primary series-new-btn" onclick="openAnosModal(null)">Novo</button>
-        </div>
+        <%- include('partials/botoes', { newAction: 'openAnosModal(null)' }) %>
       </form>
     </div>
   </section>

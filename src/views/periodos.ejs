@@ -71,10 +71,7 @@
           <p class="series-empty" id="periodos-empty">Nenhum período cadastrado ainda.</p>
         <% } %>
         <div id="to-delete"></div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Salvar</button>
-          <button type="button" class="btn-primary series-new-btn" onclick="openPeriodosModal(null)">Novo</button>
-        </div>
+        <%- include('partials/botoes', { newAction: 'openPeriodosModal(null)' }) %>
       </form>
     </div>
   </section>

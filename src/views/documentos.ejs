@@ -80,9 +80,10 @@
       <% if (!documentosList.length) { %>
         <p class="series-empty" id="documentos-empty">Nenhum documento cadastrado ainda.</p>
       <% } %>
-      <div class="form-actions">
-        <button type="button" class="btn-primary series-new-btn" onclick="openDocumentoModal(null)">Novo</button>
-      </div>
+      <%- include('partials/botoes', {
+        showSave: false,
+        newAction: 'openDocumentoModal(null)'
+      }) %>
     </div>
   </section>
 </div>
