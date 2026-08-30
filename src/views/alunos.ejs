@@ -1,103 +1,515 @@
 <%- include('partials/header') %>
     <!-- Sidebar -->
     <%- include('partials/menu') %>
+    <%
+        alunos = typeof alunos !== 'undefined' ? alunos : {};
+        estado = typeof estado !== 'undefined' ? estado : {};
+        tiposDocumentos = typeof tipoDocumento !== 'undefined' ? tipoDocumento : [];
+        let alunosList = Array.isArray(alunos.alunos) ? alunos.alunos : [];
+        let estadoList = Array.isArray(estado) ? estado : (estado ? [estado] : []);
+        let tiposDocumentosCatalogo = Array.isArray(tiposDocumentos) ? tiposDocumentos : (tiposDocumentos ? [tiposDocumentos] : []);
+
+
+    %>
     <!-- Main Content -->
-    <main class="main-content">
-        <h1 class="page-title">Alunos</h1>
-
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar aluno...">
+   <div class="main-content">
+        <div class="page-header">
+            <div>
+                <h1>Configurações Acadêmicas</h1>
+                <p>Cadastre e gerencie os Alunos.</p>
             </div>
-            <button class="btn-primary">Novo aluno</button>
         </div>
 
-        <!-- Data Table -->
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Turma</th>
-                        <th>E-mail</th>
-                        <th>Telefone</th>
-                        <th style="text-align: center;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Ana Beatriz</td>
-                        <td>9º Ano A</td>
-                        <td>ana@email.com</td>
-                        <td>(11) 99999-9999</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Bruno Silva</td>
-                        <td>8º Ano B</td>
-                        <td>bruno@email.com</td>
-                        <td>(11) 98888-8888</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Carlos Eduardo</td>
-                        <td>1º Ano A</td>
-                        <td>carlos@email.com</td>
-                        <td>(11) 97777-7777</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Daniela Lima</td>
-                        <td>9º Ano B</td>
-                        <td>daniela@email.com</td>
-                        <td>(11) 96666-6666</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Eduardo Santos</td>
-                        <td>2º Ano A</td>
-                        <td>eduardo@email.com</td>
-                        <td>(11) 95555-5555</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Fernanda Costa</td>
-                        <td>3º Ano B</td>
-                        <td>fernanda@email.com</td>
-                        <td>(11) 94444-4444</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Gabriel Martins</td>
-                        <td>1º Ano B</td>
-                        <td>gabriel@email.com</td>
-                        <td>(11) 93333-3333</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>Isabela Almeida</td>
-                        <td>8º Ano A</td>
-                        <td>isabela@email.com</td>
-                        <td>(11) 92222-2222</td>
-                        <td style="text-align: center;"><button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <section class="config-card">
+    <div class="card-header">
+      <div class="card-icon">📅</div>
+      <div>
+        <h2>Alunos</h2>
+        <p>Gerencie os alunos cadastrados.</p>
+      </div>
+    </div>
 
-        <!-- Pagination -->
-        <div class="pagination">
-            <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">2</button>
-            <button class="page-btn">3</button>
-            <button class="page-btn">4</button>
-            <button class="page-btn">5</button>
-            <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
-        </div>
-    </main>
+    <div class="card-body">
+      <form id="alunos-form" action="/alunos" method="POST">
+        <table class="alunos-table">
+          <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Idade</th>
+                <th>Matricula</th>
+                <th>Status</th>
+              <th style="width: 10%">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="alunos-tbody">
+            <% alunosList.forEach(function (s, idx) { %>
+              <tr data-index="<%= idx %>" class="alunos-row">
+                <td><span class="alunos-id"><%= s.id || '' %></span></td>
+                <td><span class="alunos-nome"><%= s.nome || '' %></span></td>
+                <td><span class="alunos-idade"><%= s.idade || '' %></span></td>
+                <td><span class="alunos-matricula"><%= s.matricula || '' %></span></td>
+                <td><span class="alunos-status"><%= s.id_status ? 'Ativo' : 'Inativo' %></span></td>
+                <td class="alunos-actions">
+                  <button type="button" class="btn btn-sm btn-warning" onclick="openAlunosModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirAluno(<%= s.id %>)"><i class="bi bi-trash"></i></button>
+                </td>
+                <td class="hidden-values" style="display:none">
+                  <input type="hidden" data-field="id" name="alunos[<%= idx %>][id]" value="<%= s.id || '' %>" />
+                  <input type="hidden" data-field="nome" name="alunos[<%= idx %>][nome]" value="<%= s.nome || '' %>" />
+                  <input type="hidden" data-field="nome_social" name="alunos[<%= idx %>][nome_social]" value="<%= s.nome_social || '' %>" />
+                  <input type="hidden" data-field="cpf" name="alunos[<%= idx %>][cpf]" value="<%= s.cpf || '' %>" />
+                  <input type="hidden" data-field="rg" name="alunos[<%= idx %>][rg]" value="<%= s.rg || '' %>" />
+                  <input type="hidden" data-field="matricula" name="alunos[<%= idx %>][matricula]" value="<%= s.matricula || '' %>" />
+                  <input type="hidden" data-field="data_nascimento" name="alunos[<%= idx %>][data_nascimento]" value="<%= s.data_nascimento ? new Date(s.data_nascimento).toISOString().slice(0,10) : '' %>" />
+                  <input type="hidden" data-field="sexo" name="alunos[<%= idx %>][sexo]" value="<%= s.sexo || '' %>" />
+                  <input type="hidden" data-field="estado_civil" name="alunos[<%= idx %>][estado_civil]" value="<%= s.estado_civil || '' %>" />
+                  <input type="hidden" data-field="nacionalidade" name="alunos[<%= idx %>][nacionalidade]" value="<%= s.nacionalidade || '' %>" />
+                  <input type="hidden" data-field="naturalidade" name="alunos[<%= idx %>][naturalidade]" value="<%= s.naturalidade || '' %>" />
+                  <input type="hidden" data-field="id_estado_nascimento" name="alunos[<%= idx %>][id_estado_nascimento]" value="<%= s.id_estado_nascimento || '' %>" />
+                  <input type="hidden" data-field="foto" name="alunos[<%= idx %>][foto]" value="<%= s.foto || '' %>" />
+                  <input type="hidden" data-field="id_tipo_documento" name="alunos[<%= idx %>][id_tipo_documento]" value="<%= s.id_tipo_documento || '' %>" />
+                  <input type="hidden" data-field="numero_documento" name="alunos[<%= idx %>][numero_documento]" value="<%= s.numero_documento || '' %>" />
+                  <input type="hidden" data-field="orgao_expedidor" name="alunos[<%= idx %>][orgao_expedidor]" value="<%= s.orgao_expedidor || '' %>" />
+                  <input type="hidden" data-field="data_expedicao" name="alunos[<%= idx %>][data_expedicao]" value="<%= s.data_expedicao ? new Date(s.data_expedicao).toISOString().slice(0,10) : '' %>" />
+                  <input type="hidden" data-field="certidao_nascimento" name="alunos[<%= idx %>][certidao_nascimento]" value="<%= s.certidao_nascimento || '' %>" />
+                  <input type="hidden" data-field="numero_certidao" name="alunos[<%= idx %>][numero_certidao]" value="<%= s.numero_certidao || '' %>" />
+                  <input type="hidden" data-field="cep" name="alunos[<%= idx %>][cep]" value="<%= s.cep || '' %>" />
+                  <input type="hidden" data-field="endereco" name="alunos[<%= idx %>][endereco]" value="<%= s.endereco || '' %>" />
+                  <input type="hidden" data-field="numeros" name="alunos[<%= idx %>][numeros]" value="<%= s.numeros || '' %>" />
+                  <input type="hidden" data-field="complemento" name="alunos[<%= idx %>][complemento]" value="<%= s.complemento || '' %>" />
+                  <input type="hidden" data-field="bairro" name="alunos[<%= idx %>][bairro]" value="<%= s.bairro || '' %>" />
+                  <input type="hidden" data-field="cidade" name="alunos[<%= idx %>][cidade]" value="<%= s.cidade || '' %>" />
+                  <input type="hidden" data-field="id_estado" name="alunos[<%= idx %>][id_estado]" value="<%= s.id_estado || '' %>" />
+                  <input type="hidden" data-field="email" name="alunos[<%= idx %>][email]" value="<%= s.email || '' %>" />
+                  <input type="hidden" data-field="telefone" name="alunos[<%= idx %>][telefone]" value="<%= s.telefone || '' %>" />
+                  <input type="hidden" data-field="celular" name="alunos[<%= idx %>][celular]" value="<%= s.celular || '' %>" />
+                  <input type="hidden" data-field="id_turma" name="alunos[<%= idx %>][id_turma]" value="<%= s.id_turma || '' %>" />
+                  <input type="hidden" data-field="id_status" name="alunos[<%= idx %>][id_status]" value="<%= s.id_status || '1' %>" />
+                  <input type="hidden" data-field="observacoes" name="alunos[<%= idx %>][observacoes]" value="<%= s.observacoes || '' %>" />
+                  <input type="hidden" data-field="nome_pai" name="alunos[<%= idx %>][nome_pai]" value="<%= s.nome_pai || '' %>" />
+                  <input type="hidden" data-field="nome_mae" name="alunos[<%= idx %>][nome_mae]" value="<%= s.nome_mae || '' %>" />
+                  <input type="hidden" data-field="nome_responsavel" name="alunos[<%= idx %>][nome_responsavel]" value="<%= s.nome_responsavel || '' %>" />
+                  <input type="hidden" data-field="telefone_responsavel" name="alunos[<%= idx %>][telefone_responsavel]" value="<%= s.telefone_responsavel || '' %>" />
+                  <input type="hidden" data-field="email_responsavel" name="alunos[<%= idx %>][email_responsavel]" value="<%= s.email_responsavel || '' %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
 
-</body>
-</html>
+        <% if (!alunosList.length) { %>
+          <p class="series-empty" id="alunos-empty">Nenhum aluno cadastrado ainda.</p>
+        <% } %>
+        <div id="to-delete"></div>
+        <%- include('partials/botoes', { newAction: 'openAlunosModal(null)',
+          showExport: true,
+          exportAction: 'ExportExcel(null)',
+          showImport: true,
+          importAction: 'ImportExcel(null)'
+        }) %>
+      </form>
+    </div>
+  </section>
+<script>
+    const alunosData = <%- JSON.stringify(alunosList || []).replace(/</g, '\\u003c') %>;
+
+
+  const ALUNOS_FIELDS = ['id','nome','nome_social','cpf','rg','data_nascimento','sexo','nacionalidade','naturalidade','matricula','id_estado_nascimento','foto','id_tipo_documento','numero_documento','orgao_expedidor',
+  'data_expedicao','certidao_nascimento','numero_certidao','observacoes','id_status'];
+
+  function getOrCreateAlunosModal() {
+    console.log("teste");
+    let modal = document.getElementById('alunos-modal');
+    const alunosForm = document.getElementById('alunos-form');
+
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'alunos-modal';
+    modal.innerHTML = `
+    <div class="modal-panel">
+
+        <!-- =========================
+             DADOS PESSOAIS
+        ========================== -->
+        <section class="config-card">
+            <h3>Dados pessoais</h3>
+
+            <input type="hidden" id="modal-index" value="-1">
+            <input type="hidden" id="modal-id" value="">
+
+            <div class="form-group">
+                <label for="modal-nome">Nome *</label>
+                <input
+                    id="modal-nome"
+                    type="text"
+                    placeholder="Ex: Maria da Silva"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-nome_social">Nome Social</label>
+                <input
+                    id="modal-nome_social"
+                    type="text"
+                    placeholder="Ex: Maria"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-cpf">CPF</label>
+                <input
+                    id="modal-cpf"
+                    type="text"
+                    placeholder="Ex: 123.456.789-00"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-rg">RG</label>
+                <input
+                    id="modal-rg"
+                    type="text"
+                    placeholder="Ex: MG-12.345.678"
+                />
+            </div>
+            <div class="form-group">
+                <label for="modal-matricula">Matrícula</label>
+                <input
+                    id="modal-matricula"
+                    type="text"
+                    placeholder="Ex: 123456"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-data_nascimento">Data de Nascimento</label>
+                <input
+                    id="modal-data_nascimento"
+                    type="date"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-sexo">Sexo</label>
+                <select id="modal-sexo">
+                    <option value="">Selecione</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                    <option value="O">Outro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="modal-nacionalidade">Nacionalidade</label>
+                <input
+                    id="modal-nacionalidade"
+                    type="text"
+                    placeholder="Ex: Brasileira"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-naturalidade">Naturalidade</label>
+                <input
+                    id="modal-naturalidade"
+                    type="text"
+                    placeholder="Ex: Belo Horizonte"
+                />
+            </div>
+            <div class="form-group">
+                <label for="modal-id_estado_nascimento">Estado de Nascimento</label>
+                <select id="modal-id_estado_nascimento">
+                    <option value="">Selecione</option>
+                    <% estadoList.forEach(function (e) { %>
+                        <option value="<%= e.id %>"><%= e.text %></option>
+                    <% }) %>
+                </select>
+            </div>
+           <div class="form-group"> <label for="modal-foto"> Foto do aluno </label> <input id="modal-foto" name="foto" type="file" accept=".png,.jpg,.jpeg" /> <p id="modal-foto-atual" class="foto-atual"></p> </div>
+            <div class="form-group">
+                <label for="modal-id_status">Status *</label>
+                <select id="modal-id_status">
+                    <option value="1">Ativo</option>
+                    <option value="0">Inativo</option>
+                </select>
+            </div>
+        </section>
+
+
+        <!-- =========================
+             DOCUMENTAÇÃO
+        ========================== -->
+        <section class="config-card">
+            <h3>Documentação</h3>
+
+            <div class="form-group">
+                <label for="modal-id_tipo_documento">
+                    Tipo de Documento
+                </label>
+
+                <select id="modal-id_tipo_documento">
+                    <option value="">Selecione</option>
+
+                    <% tiposDocumentosCatalogo.forEach(function (d) { %>
+                        <option value="<%= d.id %>">
+                            <%= d.text %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="modal-numero_documento">
+                    Número do Documento
+                </label>
+
+                <input
+                    id="modal-numero_documento"
+                    type="text"
+                    placeholder="Ex: 123456789"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-orgao_expedidor">
+                    Órgão Expedidor
+                </label>
+
+                <input
+                    id="modal-orgao_expedidor"
+                    type="text"
+                    placeholder="Ex: SSP/MG"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-data_expedicao">
+                    Data de Expedição
+                </label>
+
+                <input
+                    id="modal-data_expedicao"
+                    type="date"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-certidao_nascimento">
+                    Certidão de Nascimento
+                </label>
+
+                <input
+                    id="modal-certidao_nascimento"
+                    type="text"
+                    placeholder="Ex: Certidão de Nascimento"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="modal-numero_certidao">
+                    Número da Certidão
+                </label>
+
+                <input
+                    id="modal-numero_certidao"
+                    type="text"
+                    placeholder="Número da certidão"
+                />
+            </div>
+        </section>
+        <section class="config-card">
+            <h3>Informações complementares</h3>
+            <div class="form-group">
+                <label for="modal-observacoes">Observações</label>
+                <textarea id="modal-observacoes" placeholder="Ex: Professor dedicado e experiente"></textarea>
+            </div>
+        </section>
+
+        <!-- =========================
+             AÇÕES
+        ========================== -->
+        <div class="actions">
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="closeAlunosModal()"
+            >
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                class="btn-primary"
+                onclick="saveAlunosModal()"
+            >
+                Salvar
+            </button>
+        </div>
+      </div>
+    `;
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeAlunosModal(); });
+    document.body.appendChild(modal);
+    return modal;
+  }
+
+  function openAlunosModal(index) {
+
+        const modal = getOrCreateAlunosModal();
+        
+
+        ModalHelper.openModal(
+            modal,
+            'alunos',
+            ALUNOS_FIELDS,
+            index,
+            {
+                id_status: '1'
+            }
+        );
+
+        setTimeout(() => {
+
+            const nameInput = modal.querySelector('#modal-nome');
+
+            if (nameInput) {
+                nameInput.focus();
+            }
+
+        }, 10);
+    }
+  function closeAlunosModal() {
+    const modal = document.getElementById('alunos-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+  }
+
+ function saveAlunosModal() {
+
+    const modal = document.getElementById('alunos-modal');
+
+    if (!modal) return;
+
+    const values = ModalHelper.collectModalValues(
+        'alunos-modal',
+        ALUNOS_FIELDS
+    );
+
+    if (!values.nome) {
+
+        modal.querySelector('#modal-nome').focus();
+
+        return;
+    }
+
+    const idx = parseInt(
+        modal.querySelector('#modal-index').value,
+        10
+    );
+
+    const displayValues = Object.assign({}, values, {
+
+        status_label:
+            values.id_status === '0'
+                ? 'Inativo'
+                : 'Ativo'
+
+    });
+
+    const displayMap = [
+
+        {
+            field: 'nome',
+            cls: 'alunos-nome'
+        },
+
+        {
+            field: 'email',
+            cls: 'alunos-email'
+        },
+
+        {
+            field: 'status_label',
+            cls: 'alunos-status'
+        }
+
+    ];
+
+    ModalHelper.applyValuesToRow(
+        'alunos',
+        ALUNOS_FIELDS,
+        displayMap,
+        idx,
+        displayValues,
+        'openAlunosModal',
+        '/alunos/excluir'
+    );
+
+    ModalHelper.reindex(
+        'alunos',
+        ALUNOS_FIELDS,
+        'openAlunosModal'
+    );
+
+    closeAlunosModal();
+}
+
+  function excluirAluno(id) { ModalHelper.submitDelete(`/alunos/excluir/${id}`); }
+
+  function removeAlunoRow(btn) { ModalHelper.removeRow(btn, 'alunos', ALUNOS_FIELDS, 'openAlunosModal'); }
+
+  function reindexAluno() { ModalHelper.reindex('alunos', ALUNOS_FIELDS, 'openAlunosModal'); }
+
+  function ExportExcel() {
+    console.log('Exportando para Excel...');
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/alunos-exportar-excel';
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  function ImportExcel() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'arquivo';
+    input.accept = '.xlsx,.xls';
+    input.style.display = 'none';
+
+    input.addEventListener('change', function () {
+      const file = this.files && this.files[0];
+      if (!file) return;
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/alunos-importar-excel';
+      form.enctype = 'multipart/form-data';
+
+      const formData = new FormData();
+      formData.append('arquivo', file);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: formData
+      })
+        .then(async (response) => {
+          const text = await response.text();
+          if (!response.ok) {
+            throw new Error(text || 'Erro ao importar alunos');
+          }
+          alert('Importação concluída com sucesso.');
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error(error);
+          alert(error.message || 'Erro ao importar alunos.');
+        });
+    });
+
+    document.body.appendChild(input);
+    input.click();
+    setTimeout(() => input.remove(), 1000);
+  }
+
+</script>

@@ -1,21 +1,26 @@
-CREATE TABLE params_series (
-    id INT NOT NULL AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL,
-    abreviacao VARCHAR(20),
-    etapa_ensino VARCHAR(50),
-    nivel_ensino VARCHAR(50),
-    ano_serie INT,
-    codigo VARCHAR(20),
-    idTurnos VARCHAR(50),
-    idade_minima INT,
-    idade_maxima INT,
-    carga_horaria INT,
-    aulas_semanais INT,
-    status TINYINT(1) NOT NULL DEFAULT 1,
-    descricao TEXT,
-    excluido INT NOT NULL DEFAULT 0,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_params_turnos` FOREIGN KEY (`idTurnos`) REFERENCES `params_turnos` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE,
-    PRIMARY KEY (id)
-);
+CREATE TABLE `params_series` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`nome` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`abreviacao` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`etapa_ensino` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`nivel_ensino` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`ano_serie` INT NULL DEFAULT NULL,
+	`codigo` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`idTurnos` INT NULL DEFAULT NULL,
+	`idade_minima` INT NULL DEFAULT NULL,
+	`idade_maxima` INT NULL DEFAULT NULL,
+	`carga_horaria` INT NULL DEFAULT NULL,
+	`aulas_semanais` INT NULL DEFAULT NULL,
+	`status` TINYINT(1) NOT NULL DEFAULT '1',
+	`descricao` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`excluido` INT NOT NULL DEFAULT '0',
+	`criado_em` TIMESTAMP NULL DEFAULT (CURRENT_TIMESTAMP),
+	`atualizado_em` TIMESTAMP NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `FK_params_series_params_turnos` (`idTurnos`) USING BTREE,
+	CONSTRAINT `FK_params_series_params_turnos` FOREIGN KEY (`idTurnos`) REFERENCES `params_turnos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=3
+;

@@ -14,12 +14,27 @@
   };
 
   // Preenche os campos do modal com valores informados (usado para "Novo" com defaults)
-  ModalHelper.fillModalFields = function (modal, fields, values = {}) {
-    fields.forEach(f => {
-      const el = modal.querySelector(`#modal-${f}`);
-      if (el) el.value = values[f] !== undefined && values[f] !== null ? values[f] : '';
+ ModalHelper.fillModalFields = function (modal, fields, values = {}) {
+
+    if (!modal || !Array.isArray(fields)) {
+        return;
+    }
+
+    fields.forEach(field => {
+
+        const el = modal.querySelector(`#modal-${field}`);
+
+        if (!el) {
+            return;
+        }
+        if (el.type === 'file') {
+            el.value = '';
+            return;
+        }
+
+       const value = values[field] !== undefined && values[field] !== null ? values[field] : ''; el.value = value;
     });
-  };
+};
 
   // Limpa o modal para um novo registro, aplicando defaults (ex: status = '1')
   ModalHelper.resetModal = function (modal, fields, defaults = {}) {

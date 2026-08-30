@@ -1,14 +1,21 @@
-CREATE TABLE documentos (
-    id INT NOT NULL AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL,
-    tipo INT DEFAULT NULL,
-    descricao TEXT,
-    data_documento DATE DEFAULT NULL,
-    data_validade DATE DEFAULT NULL,
-    status INT NOT NULL DEFAULT 1,
-    publico INT DEFAULT NULL,
-    excluido INT NOT NULL DEFAULT 0,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-);
+CREATE TABLE `documentos` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`nome` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`idTipo` INT NULL DEFAULT NULL,
+	`descricao` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`arquivo` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`data_documento` DATE NULL DEFAULT NULL,
+	`data_validade` DATE NULL DEFAULT NULL,
+	`idStatus` INT NULL DEFAULT '1',
+	`publico` INT NULL DEFAULT NULL,
+	`excluido` INT NOT NULL DEFAULT '0',
+	`criado_em` TIMESTAMP NULL DEFAULT (CURRENT_TIMESTAMP),
+	`atualizado_em` TIMESTAMP NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `FK_documentos_params_tipos_documentos` (`idTipo`) USING BTREE,
+	CONSTRAINT `FK_documentos_params_tipos_documentos` FOREIGN KEY (`idTipo`) REFERENCES `params_tipos_documentos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=0
+;
