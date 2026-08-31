@@ -1,6 +1,8 @@
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
 <%
+    filtros = typeof filtros !== 'undefined' ? filtros : {};
+    pagination = typeof pagination !== 'undefined' ? pagination : {};
     disciplinas = typeof disciplinas !== 'undefined' ? disciplinas : {};
     let disciplinasList = Array.isArray(disciplinas.disciplinas) ? disciplinas.disciplinas : [];
 %>
@@ -30,6 +32,7 @@
               <th>ID</th>
               <th>Disciplina</th>
               <th>Sigla</th>
+              <th>Descrição</th>
               <th>Carga Hor.</th>
               <th>Status</th>
               <th style="width: 10%">Ações</th>
@@ -41,6 +44,7 @@
                 <td><span class="disciplinas-id"><%= s.id || '' %></span></td>
                 <td><span class="disciplinas-text"><%= s.text || '' %></span></td>
                 <td><span class="disciplinas-sigla"><%= s.sigla || '' %></span></td>
+                <td><span class="disciplinas-descricao"><%= s.descricao || '' %></span></td>
                 <td><span class="disciplinas-carga-horaria"><%= s.carga_horaria || '' %></span></td>
                 <td><span class="disciplinas-IdStatus"><%= s.idStatus ? 'Ativo' : 'Inativo' %></span></td>
                 <td class="disciplinas-actions">
@@ -53,6 +57,7 @@
                   <input type="hidden" data-field="sigla" name="disciplinas[<%= idx %>][sigla]" value="<%= s.sigla || '' %>" />
                   <input type="hidden" data-field="cargaHoraria" name="disciplinas[<%= idx %>][cargaHoraria]" value="<%= s.carga_horaria || '' %>" />
                   <input type="hidden" data-field="IdStatus" name="disciplinas[<%= idx %>][IdStatus]" value="<%= s.idStatus || '1' %>" />
+                  <input type="hidden" data-field="descricao" name="disciplinas[<%= idx %>][descricao]" value="<%= s.descricao || '' %>" />
                 </td>
               </tr>
             <% }) %>
@@ -66,6 +71,12 @@
         <%- include('partials/botoes', { newAction: 'openDisciplinasModal(null)' }) %>
       </form>
     </div>
+    <%- include('partials/paginations', {
+          pagination,
+          filtros,
+          rota: '/disciplinas',
+          query: `busca=${encodeURIComponent(filtros?.busca || '')}`
+      }) %>
   </section>
 </div>
 
@@ -90,6 +101,10 @@
         <div class="form-group">
           <label for="modal-sigla">Sigla</label>
           <input id="modal-sigla" type="text" placeholder="Ex: MAT" />
+        </div>
+        <div class="form-group">
+          <label for="modal-descricao">Descrição</label>
+          <input id="modal-descricao" type="text" placeholder="Ex: Disciplina de Matemática" />
         </div>
 
         <div class="form-group">
@@ -118,7 +133,7 @@
 
   function openDisciplinasModal(index) {
     const modal = getOrCreateDisciplinasModal();
-    const fields = ['id', 'text', 'sigla', 'cargaHoraria', 'IdStatus'];
+    const fields = ['id', 'text', 'sigla', 'cargaHoraria', 'IdStatus', 'descricao'];
 
     ModalHelper.openModal(modal, 'disciplinas', fields, index, { IdStatus: '1' });
 
@@ -143,17 +158,19 @@
       text: text,
       sigla: modal.querySelector('#modal-sigla').value.trim(),
       cargaHoraria: modal.querySelector('#modal-cargaHoraria').value.trim(),
-      IdStatus: modal.querySelector('#modal-IdStatus').value
+      IdStatus: modal.querySelector('#modal-IdStatus').value,
+      descricao: modal.querySelector('#modal-descricao').value.trim()
     };
 
     const idx = parseInt(modal.querySelector('#modal-index').value, 10);
 
-    const fields = ['id','text','sigla','cargaHoraria','IdStatus'];
+    const fields = ['id','text','sigla','cargaHoraria','IdStatus','descricao'];
     const displayMap = [
       { field: 'text', cls: 'disciplinas-text' },
       { field: 'sigla', cls: 'disciplinas-sigla' },
       { field: 'cargaHoraria', cls: 'disciplinas-carga-horaria' },
-      { field: 'IdStatus', cls: 'disciplinas-IdStatus' }
+      { field: 'IdStatus', cls: 'disciplinas-IdStatus' },
+      { field: 'descricao', cls: 'disciplinas-descricao' }
     ];
 
     ModalHelper.applyValuesToRow('disciplinas', fields, displayMap, idx, values, 'openDisciplinasModal', '/disciplinas/excluir');
@@ -163,7 +180,7 @@
 
   function excluirDisciplina(id) { ModalHelper.submitDelete(`/disciplinas/excluir/${id}`); }
 
-  function removeDisciplinasRow(btn) { ModalHelper.removeRow(btn, 'disciplinas', ['id','text','sigla','cargaHoraria','IdStatus'], 'openDisciplinasModal'); }
+  function removeDisciplinasRow(btn) { ModalHelper.removeRow(btn, 'disciplinas', ['id','text','sigla','cargaHoraria','IdStatus','descricao'], 'openDisciplinasModal'); }
 
-  function reindexDisciplinas() { ModalHelper.reindex('disciplinas', ['id','text','sigla','cargaHoraria','IdStatus'], 'openDisciplinasModal'); }
+  function reindexDisciplinas() { ModalHelper.reindex('disciplinas', ['id','text','sigla','cargaHoraria','IdStatus','descricao'], 'openDisciplinasModal'); }
 </script>
