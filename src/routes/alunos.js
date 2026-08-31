@@ -12,13 +12,37 @@ const tipoDocumentoModel = require("../model/tiposDocumentos");
 
 router.get("/alunos", async (req, res) => {
     try {
-        const alunosList = await alunos.getAlunos();
+        const filtros = {
+          busca: req.query.busca || ""
+        };
+        let where = "1=1";
+
+        const params = [];
+        if (filtros.busca) {
+            where = "1=1 AND (a.nome LIKE ? OR a.matricula LIKE ? )";
+            params.push(`%${filtros.busca}%`, `%${filtros.busca}%`);
+        }
+
+        const page = parseInt(req.query.page, 10) || 1;
+        const pageSize = parseInt(req.query.pageSize, 10) || 10;
+        const offset = (page - 1) * pageSize;
+
+        const alunosList = await alunos.getAlunos(where, params, pageSize, offset);
+        const totalItems = alunosList.length;
+        const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
         const estadosList = await estadoModel.getEstados();
         const tipoDocumentoList = await tipoDocumentoModel.getTiposDocumentos();
         res.render("alunos", {
             alunos: { alunos: alunosList },
             estado: estadosList,
-            tipoDocumento: tipoDocumentoList
+            tipoDocumento: tipoDocumentoList,
+            filtros,
+            pagination: {
+                page,
+                pageSize,
+                totalItems,
+                totalPages
+            }
         });
     } catch (err) {
         console.error(err);

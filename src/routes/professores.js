@@ -13,7 +13,24 @@ const formacoesModel = require("../model/formacoes");
 
 router.get("/professores", async (req, res) => {
     try {
-        const professoresList = await professoresModel.getProfessores();
+        const filtros = {
+          busca: req.query.busca || ""
+        };
+        let where = "1=1";
+
+        const params = [];
+        if (filtros.busca) {
+            where = "1=1 AND (a.nome LIKE ? OR a.matricula LIKE ? )";
+            params.push(`%${filtros.busca}%`, `%${filtros.busca}%`);
+        }
+
+        const page = parseInt(req.query.page, 10) || 1;
+        const pageSize = parseInt(req.query.pageSize, 10) || 10;
+        const offset = (page - 1) * pageSize;
+        const professoresList = await professoresModel.getProfessores(where, params, pageSize, offset);
+        const totalItems = professoresList.length;
+        const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
         const estadosList = await estadoModel.getEstados();
         const disciplinasList = await disciplinasModel.getDisciplinas();
         const formacaoList = await formacoesModel.getFormacoes();
@@ -21,7 +38,14 @@ router.get("/professores", async (req, res) => {
             professores: { professores: professoresList },
             estado: estadosList,
             disciplinasList,
-            formacaoList
+            formacaoList,
+            filtros,
+            pagination: {
+                page,
+                pageSize,
+                totalItems:totalItems,
+                totalPages: totalPages
+            }
         });
     } catch (err) {
         console.error(err);

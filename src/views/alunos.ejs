@@ -2,6 +2,8 @@
     <!-- Sidebar -->
     <%- include('partials/menu') %>
     <%
+        filtros = typeof filtros !== 'undefined' ? filtros : {};
+        pagination = typeof pagination !== 'undefined' ? pagination : {};
         alunos = typeof alunos !== 'undefined' ? alunos : {};
         estado = typeof estado !== 'undefined' ? estado : {};
         tiposDocumentos = typeof tipoDocumento !== 'undefined' ? tipoDocumento : [];
@@ -110,6 +112,12 @@
         }) %>
       </form>
     </div>
+     <%- include('partials/paginations', {
+          pagination,
+          filtros,
+          rota: '/alunos',
+          query: `busca=${encodeURIComponent(filtros?.busca || '')}`
+      }) %>
   </section>
 <script>
     const alunosData = <%- JSON.stringify(alunosList || []).replace(/</g, '\\u003c') %>;

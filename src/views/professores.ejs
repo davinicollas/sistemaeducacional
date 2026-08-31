@@ -95,6 +95,12 @@
         }) %>
       </form>
     </div>
+     <%- include('partials/paginations', {
+          pagination,
+          filtros,
+          rota: '/professores',
+          query: `busca=${encodeURIComponent(filtros?.busca || '')}`
+      }) %>
   </section>
 <script>
   const PROFESSOR_FIELDS = ['id','nome','nome_social','cpf','data_nascimento','sexo','id_disciplina','carga_horaria','id_status','email','telefone','celular','cep','endereco','numeros','complemento','bairro','cidade','id_estado','matricula','registro_profissional','data_admissao','idFormacao','area_formacao','observacoes'];
