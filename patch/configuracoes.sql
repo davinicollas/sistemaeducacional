@@ -1,4 +1,4 @@
-CREATE TABLE `configuracoes` (
+CREATE TABLE IF NOT EXISTS `configuracoes` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`nome` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`nome_fantasia` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',

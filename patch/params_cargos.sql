@@ -1,4 +1,4 @@
-CREATE TABLE params_cargos (
+CREATE TABLE IF NOT EXISTS params_cargos (
     id INT AUTO_INCREMENT,
     text VARCHAR(20) NOT NULL,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

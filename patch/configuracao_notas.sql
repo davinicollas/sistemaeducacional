@@ -1,4 +1,4 @@
-CREATE TABLE `configuracao_notas` (
+CREATE TABLE IF NOT EXISTS `configuracao_notas` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`tipo` VARCHAR(20) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`nota_minima` DECIMAL(5,2) NOT NULL,

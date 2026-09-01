@@ -1,4 +1,4 @@
-CREATE TABLE `params_tipos_documentos` (
+CREATE TABLE IF NOT EXISTS `params_tipos_documentos` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`text` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`criado_em` TIMESTAMP NULL DEFAULT (CURRENT_TIMESTAMP),

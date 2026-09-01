@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS params_salas;
 DROP TABLE IF EXISTS params_tipos_avaliacao;
 DROP TABLE IF EXISTS params_anos_letivos;
 
-CREATE TABLE params_anos_letivos (
+CREATE TABLE IF NOT EXISTS params_anos_letivos (
     id INT NOT NULL AUTO_INCREMENT,
     ano_letivo INT NOT NULL,
     data_inicio DATE NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE params_anos_letivos (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE params_periodos (
+CREATE TABLE IF NOT EXISTS params_periodos (
     id INT NOT NULL AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     abreviacao VARCHAR(20),
@@ -45,7 +45,7 @@ CREATE TABLE params_periodos (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE params_turnos (
+CREATE TABLE IF NOT EXISTS params_turnos (
     id INT NOT NULL AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     sigla VARCHAR(20),
@@ -59,7 +59,7 @@ CREATE TABLE params_turnos (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE params_salas (
+CREATE TABLE IF NOT EXISTS params_salas (
     id INT NOT NULL AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     codigo VARCHAR(20),
@@ -76,7 +76,7 @@ CREATE TABLE params_salas (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE params_tipos_avaliacao (
+CREATE TABLE IF NOT EXISTS params_tipos_avaliacao (
     id INT NOT NULL AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     sigla VARCHAR(20),

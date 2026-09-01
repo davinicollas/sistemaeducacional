@@ -1,1 +1,0 @@
-ALTER TABLE documentos ADD COLUMN arquivo VARCHAR(255) DEFAULT NULL AFTER descricao;

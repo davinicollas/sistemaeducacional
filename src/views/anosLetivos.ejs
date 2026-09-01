@@ -50,8 +50,8 @@
                 <td class="hidden-values" style="display:none">
                   <input type="hidden" data-field="id" name="anos[<%= idx %>][id]" value="<%= s.id || '' %>" />
                   <input type="hidden" data-field="anoLetivo" name="anos[<%= idx %>][anoLetivo]" value="<%= s.ano_letivo || s.ano || '' %>" />
-                  <input type="hidden" data-field="dataInicio" name="anos[<%= idx %>][dataInicio]" value="<%= s.data_inicio || '' %>" />
-                  <input type="hidden" data-field="dataFim" name="anos[<%= idx %>][dataFim]" value="<%= s.data_fim || '' %>" />
+                  <input type="hidden" data-field="dataInicio" name="anos[<%= idx %>][dataInicio]" value="<%= s.data_inicio ? new Date(s.data_inicio).toISOString().slice(0,10) : '' %>" />
+                  <input type="hidden" data-field="dataFim" name="anos[<%= idx %>][dataFim]" value="<%= s.data_fim ? new Date(s.data_fim).toISOString().slice(0,10) : '' %>" />
                   <input type="hidden" data-field="status" name="anos[<%= idx %>][status]" value="<%= s.status || '1' %>" />
                   <input type="hidden" data-field="atual" name="anos[<%= idx %>][atual]" value="<%= s.atual ? '1' : '0' %>" />
                   <input type="hidden" data-field="text" name="anos[<%= idx %>][text]" value="<%= s.text || '' %>" />

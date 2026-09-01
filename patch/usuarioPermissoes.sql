@@ -1,4 +1,4 @@
-CREATE TABLE usuariosPermissoes (
+CREATE TABLE IF NOT EXISTS usuariosPermissoes (
     id INT NOT NULL AUTO_INCREMENT,
     text VARCHAR(20) NOT NULL,
     idCargo INT (11) NOT NULL,

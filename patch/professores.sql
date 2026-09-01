@@ -1,4 +1,4 @@
-CREATE TABLE professores (
+CREATE TABLE IF NOT EXISTS professores (
     id INT AUTO_INCREMENT,
     nome VARCHAR(255) NOT NULL,
     nome_social VARCHAR(255),

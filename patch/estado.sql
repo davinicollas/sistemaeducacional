@@ -1,4 +1,4 @@
-CREATE TABLE `params_estados` (
+CREATE TABLE IF NOT EXISTS `params_estados` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`text` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`uf` VARCHAR(2) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',

@@ -1,4 +1,4 @@
-CREATE TABLE `params_disciplina` (
+CREATE TABLE IF NOT EXISTS `params_disciplina` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`text` VARCHAR(20) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`sigla` VARCHAR(10) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',

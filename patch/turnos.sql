@@ -1,4 +1,4 @@
-CREATE TABLE `params_turnos` (
+CREATE TABLE IF NOT EXISTS `params_turnos` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`nome` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`sigla` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',

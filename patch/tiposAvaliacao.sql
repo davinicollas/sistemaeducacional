@@ -1,4 +1,4 @@
-CREATE TABLE `params_tipos_avaliacao` (
+CREATE TABLE IF NOT EXISTS `params_tipos_avaliacao` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`nome` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`sigla` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',

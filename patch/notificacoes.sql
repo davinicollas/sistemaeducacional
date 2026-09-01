@@ -1,4 +1,4 @@
-CREATE TABLE notificacoes (
+CREATE TABLE IF NOT EXISTS notificacoes (
 
     id INT NOT NULL AUTO_INCREMENT,
     titulo VARCHAR(255) NOT NULL,

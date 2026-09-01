@@ -1,4 +1,4 @@
-CREATE TABLE `params_status_documentos` (
+CREATE TABLE IF NOT EXISTS `params_status_documentos` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`text` VARCHAR(20) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`cor` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',

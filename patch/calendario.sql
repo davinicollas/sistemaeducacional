@@ -1,4 +1,4 @@
-CREATE TABLE `eventos_calendario` (
+CREATE TABLE IF NOT EXISTS `eventos_calendario` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`titulo` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`tipo` VARCHAR(20) NOT NULL DEFAULT 'evento' COLLATE 'utf8mb4_0900_ai_ci',

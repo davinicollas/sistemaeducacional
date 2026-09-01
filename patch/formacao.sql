@@ -1,4 +1,4 @@
-CREATE TABLE `params_formacao` (
+CREATE TABLE IF NOT EXISTS `params_formacao` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`text` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`idStatus` INT NOT NULL DEFAULT '1',

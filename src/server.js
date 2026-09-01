@@ -30,6 +30,7 @@ const disciplinas = require('./routes/disciplinas');
 const professores = require('./routes/professores');
 const formacoes = require('./routes/formacoes');
 const alunos = require('./routes/alunos');
+const turmas = require('./routes/turmas');
 
 const authMid = require("./middleware/auth");
 
@@ -75,9 +76,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
    res.render('index');
 });
-app.get('/login', (req, res) => {
-  res.render('login');
-});
+
 app.get('/cadastro', (req, res) => {
   res.render('cadastro');
 });
@@ -91,10 +90,6 @@ app.get('/termos', (req, res) => {
   res.render('termos');
 });
 
-
-app.get('/financeiro', (req, res) => {
-  res.render('financeiro');
-});
 
 
 
@@ -120,6 +115,7 @@ app.use(disciplinas);
 app.use(professores);
 app.use(formacoes);
 app.use(alunos);
+app.use(turmas);
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, '0.0.0.0', () => {

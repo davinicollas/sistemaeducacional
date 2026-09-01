@@ -1,4 +1,4 @@
-CREATE TABLE `usuarios` (
+CREATE TABLE IF NOT EXISTS `usuarios` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`telefone` VARCHAR(20) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`nome` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',

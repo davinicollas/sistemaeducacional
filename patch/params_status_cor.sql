@@ -1,4 +1,4 @@
-CREATE TABLE params_status_documentos (
+CREATE TABLE IF NOT EXISTS params_status_documentos (
     id INT AUTO_INCREMENT,
     text VARCHAR(20) NOT NULL,
     cor VARCHAR(7) NOT NULL DEFAULT '#000000',
