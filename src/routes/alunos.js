@@ -32,10 +32,12 @@ router.get("/alunos", async (req, res) => {
         const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
         const estadosList = await estadoModel.getEstados();
         const tipoDocumentoList = await tipoDocumentoModel.getTiposDocumentos();
+        const statusAluno = await alunos.getStatusAluno(where, params);
         res.render("alunos", {
             alunos: { alunos: alunosList },
             estado: estadosList,
             tipoDocumento: tipoDocumentoList,
+            statusAluno: statusAluno,
             filtros,
             pagination: {
                 page,
@@ -95,7 +97,7 @@ router.post("/alunos", async (req, res) => {
             const observacoes = (item.observacoes || '').trim();
             const idStatus = item.id_status || null;
 
-            const params = [nome, nomeSocial, cpf, rg, dataNascimento, sexo, nacionalidade, naturalidade, idEstadoNascimento, foto, idTipoDocumento, numeroDocumento, orgaoExpedidor, matricula, dataExpedicao, certidaoNascimento, numeroCertidao, observacoes, idStatus];
+            const params = [nome, nomeSocial, cpf, rg, matricula, dataNascimento, sexo, nacionalidade, naturalidade, idEstadoNascimento, foto, idTipoDocumento, numeroDocumento, orgaoExpedidor, dataExpedicao, certidaoNascimento, numeroCertidao, observacoes, idStatus];
 
             if (id) {
                 await db.query(

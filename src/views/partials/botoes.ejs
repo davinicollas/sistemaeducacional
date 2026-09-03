@@ -1,10 +1,6 @@
 <%
-   showSave = typeof showSave === 'boolean' ? showSave : true;
-   showNew = typeof showNew === 'boolean' ? showNew : true;
    showExport = typeof showExport === 'boolean' ? showExport : false;
    showImport = typeof showImport === 'boolean' ? showImport : false;
-   saveText = typeof saveText === 'string' && saveText ? saveText : 'Salvar';
-   newText = typeof newText === 'string' && newText ? newText : 'Novo';
    exportText = typeof exportText === 'string' && exportText ? exportText : 'Exportar';
    importText = typeof importText === 'string' && importText ? importText : 'Importar';
    newAction = typeof newAction === 'string' && newAction ? newAction : 'openSeriesModal(null)';
@@ -12,12 +8,6 @@
    importAction = typeof importAction === 'string' && importAction ? importAction : 'ImportExcel(null)';
 %>
 <div class="form-actions">
-  <% if (showSave) { %>
-    <button type="submit" class="btn-primary"><%= saveText %></button>
-  <% } %>
-  <% if (showNew) { %>
-    <button type="button" class="btn-primary series-new-btn" onclick="<%= newAction %>"><%= newText %></button>
-  <% } %>
   <% if (showExport) { %>
     <button type="button" class="btn-primary" onclick="<%= exportAction %>"><i style="margin-right: 5px;" class="bi bi-file-earmark-excel"></i><%= exportText %></button>
   <% } %>

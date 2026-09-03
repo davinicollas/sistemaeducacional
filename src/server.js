@@ -69,6 +69,7 @@ app.use(session({
 }));
 app.use((req, res, next) => {
     res.locals.usuario = req.session.usuario || null;
+    res.locals.isTabbed = req.query && req.query.tabbed === '1';
     next();
 });
 

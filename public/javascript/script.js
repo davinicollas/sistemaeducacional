@@ -1,3 +1,84 @@
+function toggleUserMenu(button) {
+    const menu = button.closest('.app-user-menu');
+    const dropdown = menu.querySelector('.app-user-menu__dropdown');
+    if (!dropdown) return;
+    const isOpen = !dropdown.hidden;
+    dropdown.hidden = isOpen;
+}
+
+document.addEventListener('click', function (event) {
+    document.querySelectorAll('.app-user-menu__dropdown').forEach(function (dropdown) {
+        if (!dropdown.hidden && !dropdown.closest('.app-user-menu').contains(event.target)) {
+            dropdown.hidden = true;
+        }
+    });
+});
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('app-sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('collapsed');
+    }
+}
+
+function highlightActiveNav() {
+    const sidebar = document.getElementById('app-sidebar');
+    if (!sidebar) return;
+
+    const path = window.location.pathname;
+    let activeLink = null;
+
+    sidebar.querySelectorAll('a.nav-item').forEach(function (link) {
+        const href = link.getAttribute('href');
+        if (href && href !== '#' && (href === path || (href.length > 1 && path.startsWith(href)))) {
+            if (!activeLink || href.length > activeLink.getAttribute('href').length) {
+                activeLink = link;
+            }
+        }
+    });
+
+    if (!activeLink) return;
+
+    activeLink.classList.add('active');
+
+    const submenu = activeLink.closest('.sidebar-submenu');
+    if (submenu) {
+        submenu.classList.add('open');
+        const toggle = submenu.querySelector('.submenu-toggle');
+        const list = submenu.querySelector('.submenu-items');
+        if (toggle) toggle.setAttribute('aria-expanded', 'true');
+        if (list) list.hidden = false;
+    }
+
+    const breadcrumb = document.getElementById('app-breadcrumb');
+    if (breadcrumb) {
+        const sectionTitle = submenu
+            ? submenu.querySelector('.submenu-toggle').textContent.replace(/\s+/g, ' ').trim()
+            : null;
+        const itemTitle = (activeLink.dataset.title || activeLink.textContent || '')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        breadcrumb.innerHTML = '';
+        if (sectionTitle && sectionTitle !== itemTitle) {
+            const section = document.createElement('span');
+            section.className = 'app-breadcrumb__item';
+            section.textContent = sectionTitle;
+            breadcrumb.appendChild(section);
+
+            const separator = document.createElement('i');
+            separator.className = 'bi bi-chevron-right app-breadcrumb__separator';
+            breadcrumb.appendChild(separator);
+        }
+        const current = document.createElement('span');
+        current.className = 'app-breadcrumb__item app-breadcrumb__item--current';
+        current.textContent = itemTitle;
+        breadcrumb.appendChild(current);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', highlightActiveNav);
+
 function togglePassword() {
 
     const password = document.getElementById("senha");
@@ -121,6 +202,13 @@ document.querySelectorAll('.search-box input').forEach(function (input) {
             row.style.display = text.indexOf(q) !== -1 ? '' : 'none';
         });
     });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', toggleSidebar);
+    }
 });
 
 // ======== Estados: adicionar / remover linhas dinamicamente ========

@@ -1,0 +1,36 @@
+<header class="app-topbar">
+    <div class="app-topbar__left">
+        <button type="button" class="icon-btn" id="sidebar-toggle" title="Recolher menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <nav class="app-breadcrumb" id="app-breadcrumb" aria-label="Caminho da página">
+            <span class="app-breadcrumb__item">Dashboard</span>
+        </nav>
+    </div>
+
+    <div class="app-topbar__search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Buscar (Ctrl + K)" id="app-search-input">
+    </div>
+
+    <div class="app-topbar__right">
+        <button type="button" class="icon-btn app-notif-btn" title="Notificações">
+            <i class="fa-regular fa-bell"></i>
+            <span class="app-notif-badge">3</span>
+        </button>
+
+        <div class="app-user-menu">
+            <button type="button" class="app-user-menu__toggle" onclick="toggleUserMenu(this)">
+                <div class="user-avatar"></div>
+                <div class="app-user-menu__info">
+                    <span>Olá, <strong><%= usuario ? usuario.nome : 'Visitante' %></strong>!</span>
+                    <small><%= usuario && usuario.cargo ? usuario.cargo : 'Administrador' %></small>
+                </div>
+                <i class="bi bi-chevron-down"></i>
+            </button>
+            <div class="app-user-menu__dropdown" hidden>
+                <a href="/logout"><i class="bi bi-box-arrow-right"></i> Sair</a>
+            </div>
+        </div>
+    </div>
+</header>

@@ -1,141 +1,229 @@
 <%- include('partials/header') %>
     <!-- Sidebar -->
     <%- include('partials/menu') %>
-    <%
-        filtros = typeof filtros !== 'undefined' ? filtros : {};
-        pagination = typeof pagination !== 'undefined' ? pagination : {};
-        alunos = typeof alunos !== 'undefined' ? alunos : {};
-        estado = typeof estado !== 'undefined' ? estado : {};
-        tiposDocumentos = typeof tipoDocumento !== 'undefined' ? tipoDocumento : [];
-        let alunosList = Array.isArray(alunos.alunos) ? alunos.alunos : [];
-        let estadoList = Array.isArray(estado) ? estado : (estado ? [estado] : []);
-        let tiposDocumentosCatalogo = Array.isArray(tiposDocumentos) ? tiposDocumentos : (tiposDocumentos ? [tiposDocumentos] : []);
+        <% filtros=typeof filtros !=='undefined' ? filtros : {}; pagination=typeof pagination !=='undefined' ?
+            pagination : {}; alunos=typeof alunos !=='undefined' ? alunos : {}; estado=typeof estado !=='undefined' ?
+            estado : {}; tiposDocumentos=typeof tipoDocumento !=='undefined' ? tipoDocumento : []; let
+            alunosList=Array.isArray(alunos.alunos) ? alunos.alunos : [];
+            let estadoList=Array.isArray(estado) ? estado: (estado ? [estado] : []); 
+            let tiposDocumentosCatalogo=Array.isArray(tiposDocumentos) ? tiposDocumentos : (tiposDocumentos ? [tiposDocumentos] : []); 
+            let statusAlunoList=Array.isArray(statusAluno) ? statusAluno : (statusAluno ? [statusAluno] : []); %>
+            <!-- Main Content -->
+            <div class="main-content">
+                <section class="config-card">
+                    <div style="text-align: right;">
+                        <button type="button" class="btn-primary series-new-btn" onclick="openAlunosModal(null)">+ Novo Aluno</button>
+                    </div>
+                    <div class="card-header">
+                        <div class="card-icon">📅</div>
+                        <div>
+                            <h2>Alunos</h2>
+                            <p>Cadastre, consulte e gerencie os alunos da instituição.</p>
+                        </div>
+                    </div>
+                    <div class="cards">
+                        <div class="card">
+                            <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+                            <div>
+                                <span>Total de Usuários</span>
+                                <span style="text-align: center;"><strong>
+                                        <%= alunosList.length %>
+                                    </strong></span>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
+                            <div>
+                                <span>Usuarios Ativos</span>
+                                <span style="text-align: center;"><strong><%= statusAlunoList[0]?.total_ativos || 0 %></strong></span>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
+                            <div>
+                                <span>Usuarios Inativos</span>
+                                <span style="text-align: center;"><strong><%= statusAlunoList[0]?.total_desativados || 0 %></strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form id="alunos-form" action="/alunos" method="POST">
+                            <table class="alunos-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Aluno</th>
+                                        <th>Idade</th>
+                                        <th>Matricula</th>
+                                        <th>Status</th>
+                                        <th style="width: 10%">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alunos-tbody">
+                                    <% alunosList.forEach(function (s, idx) { %>
+                                        <tr data-index="<%= idx %>" class="alunos-row">
+                                            <td><span class="alunos-id">
+                                                    <%= s.id || '' %>
+                                                </span></td>
+                                            <td><span class="alunos-nome">
+                                                    <%= s.nome || '' %>
+                                                </span></td>
+                                            <td><span class="alunos-idade">
+                                                    <%= s.idade || '' %>
+                                                </span></td>
+                                            <td><span class="alunos-matricula">
+                                                    <%= s.matricula || '' %>
+                                                </span></td>
+                                            <td><span class="alunos-status">
+                                                    <%= s.id_status ? 'Ativo' : 'Inativo' %>
+                                                </span></td>
+                                            <td class="alunos-actions">
+                                                <button type="button" class="btn btn-sm btn-warning"
+                                                    onclick="openAlunosModal(<%=  idx %>)"><i
+                                                        class="bi bi-pencil"></i></button>
+                                                <button type="button" class="btn btn-sm btn-danger"
+                                                    onclick="excluirAluno(<%= s.id %>)"><i
+                                                        class="bi bi-trash"></i></button>
+                                            </td>
+                                            <td class="hidden-values" style="display:none">
+                                                <input type="hidden" data-field="id" name="alunos[<%= idx %>][id]"
+                                                    value="<%= s.id || '' %>" />
+                                                <input type="hidden" data-field="nome" name="alunos[<%= idx %>][nome]"
+                                                    value="<%= s.nome || '' %>" />
+                                                <input type="hidden" data-field="nome_social"
+                                                    name="alunos[<%= idx %>][nome_social]"
+                                                    value="<%= s.nome_social || '' %>" />
+                                                <input type="hidden" data-field="cpf" name="alunos[<%= idx %>][cpf]"
+                                                    value="<%= s.cpf || '' %>" />
+                                                <input type="hidden" data-field="rg" name="alunos[<%= idx %>][rg]"
+                                                    value="<%= s.rg || '' %>" />
+                                                <input type="hidden" data-field="matricula"
+                                                    name="alunos[<%= idx %>][matricula]"
+                                                    value="<%= s.matricula || '' %>" />
+                                                <input type="hidden" data-field="data_nascimento"
+                                                    name="alunos[<%= idx %>][data_nascimento]"
+                                                    value="<%= s.data_nascimento ? new Date(s.data_nascimento).toISOString().slice(0,10) : '' %>" />
+                                                <input type="hidden" data-field="sexo" name="alunos[<%= idx %>][sexo]"
+                                                    value="<%= s.sexo || '' %>" />
+                                                <input type="hidden" data-field="estado_civil"
+                                                    name="alunos[<%= idx %>][estado_civil]"
+                                                    value="<%= s.estado_civil || '' %>" />
+                                                <input type="hidden" data-field="nacionalidade"
+                                                    name="alunos[<%= idx %>][nacionalidade]"
+                                                    value="<%= s.nacionalidade || '' %>" />
+                                                <input type="hidden" data-field="naturalidade"
+                                                    name="alunos[<%= idx %>][naturalidade]"
+                                                    value="<%= s.naturalidade || '' %>" />
+                                                <input type="hidden" data-field="id_estado_nascimento"
+                                                    name="alunos[<%= idx %>][id_estado_nascimento]"
+                                                    value="<%= s.id_estado_nascimento || '' %>" />
+                                                <input type="hidden" data-field="foto" name="alunos[<%= idx %>][foto]"
+                                                    value="<%= s.foto || '' %>" />
+                                                <input type="hidden" data-field="id_tipo_documento"
+                                                    name="alunos[<%= idx %>][id_tipo_documento]"
+                                                    value="<%= s.id_tipo_documento || '' %>" />
+                                                <input type="hidden" data-field="numero_documento"
+                                                    name="alunos[<%= idx %>][numero_documento]"
+                                                    value="<%= s.numero_documento || '' %>" />
+                                                <input type="hidden" data-field="orgao_expedidor"
+                                                    name="alunos[<%= idx %>][orgao_expedidor]"
+                                                    value="<%= s.orgao_expedidor || '' %>" />
+                                                <input type="hidden" data-field="data_expedicao"
+                                                    name="alunos[<%= idx %>][data_expedicao]"
+                                                    value="<%= s.data_expedicao ? new Date(s.data_expedicao).toISOString().slice(0,10) : '' %>" />
+                                                <input type="hidden" data-field="certidao_nascimento"
+                                                    name="alunos[<%= idx %>][certidao_nascimento]"
+                                                    value="<%= s.certidao_nascimento || '' %>" />
+                                                <input type="hidden" data-field="numero_certidao"
+                                                    name="alunos[<%= idx %>][numero_certidao]"
+                                                    value="<%= s.numero_certidao || '' %>" />
+                                                <input type="hidden" data-field="cep" name="alunos[<%= idx %>][cep]"
+                                                    value="<%= s.cep || '' %>" />
+                                                <input type="hidden" data-field="endereco"
+                                                    name="alunos[<%= idx %>][endereco]"
+                                                    value="<%= s.endereco || '' %>" />
+                                                <input type="hidden" data-field="numeros"
+                                                    name="alunos[<%= idx %>][numeros]" value="<%= s.numeros || '' %>" />
+                                                <input type="hidden" data-field="complemento"
+                                                    name="alunos[<%= idx %>][complemento]"
+                                                    value="<%= s.complemento || '' %>" />
+                                                <input type="hidden" data-field="bairro"
+                                                    name="alunos[<%= idx %>][bairro]" value="<%= s.bairro || '' %>" />
+                                                <input type="hidden" data-field="cidade"
+                                                    name="alunos[<%= idx %>][cidade]" value="<%= s.cidade || '' %>" />
+                                                <input type="hidden" data-field="id_estado"
+                                                    name="alunos[<%= idx %>][id_estado]"
+                                                    value="<%= s.id_estado || '' %>" />
+                                                <input type="hidden" data-field="email" name="alunos[<%= idx %>][email]"
+                                                    value="<%= s.email || '' %>" />
+                                                <input type="hidden" data-field="telefone"
+                                                    name="alunos[<%= idx %>][telefone]"
+                                                    value="<%= s.telefone || '' %>" />
+                                                <input type="hidden" data-field="celular"
+                                                    name="alunos[<%= idx %>][celular]" value="<%= s.celular || '' %>" />
+                                                <input type="hidden" data-field="id_turma"
+                                                    name="alunos[<%= idx %>][id_turma]"
+                                                    value="<%= s.id_turma || '' %>" />
+                                                <input type="hidden" data-field="id_status"
+                                                    name="alunos[<%= idx %>][id_status]"
+                                                    value="<%= s.id_status || '1' %>" />
+                                                <input type="hidden" data-field="observacoes"
+                                                    name="alunos[<%= idx %>][observacoes]"
+                                                    value="<%= s.observacoes || '' %>" />
+                                                <input type="hidden" data-field="nome_pai"
+                                                    name="alunos[<%= idx %>][nome_pai]"
+                                                    value="<%= s.nome_pai || '' %>" />
+                                                <input type="hidden" data-field="nome_mae"
+                                                    name="alunos[<%= idx %>][nome_mae]"
+                                                    value="<%= s.nome_mae || '' %>" />
+                                                <input type="hidden" data-field="nome_responsavel"
+                                                    name="alunos[<%= idx %>][nome_responsavel]"
+                                                    value="<%= s.nome_responsavel || '' %>" />
+                                                <input type="hidden" data-field="telefone_responsavel"
+                                                    name="alunos[<%= idx %>][telefone_responsavel]"
+                                                    value="<%= s.telefone_responsavel || '' %>" />
+                                                <input type="hidden" data-field="email_responsavel"
+                                                    name="alunos[<%= idx %>][email_responsavel]"
+                                                    value="<%= s.email_responsavel || '' %>" />
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+
+                            <% if (!alunosList.length) { %>
+                                <p class="series-empty" id="alunos-empty">Nenhum aluno cadastrado ainda.</p>
+                                <% } %>
+                        </form>
+                    </div>
+                    <div>
+                    <%- include('partials/paginations', { pagination, filtros, rota: '/alunos' , query:
+                        `busca=${encodeURIComponent(filtros?.busca || '' )}` }) %>
+                        </div>
+                        <div class="form-actions" style="margin-top: 20px; text-align: center;">
+                            <%- include('partials/botoes', { showExport:
+                                true, exportAction: 'ExportExcel(null)' , showImport: true,
+                                importAction: 'ImportExcel(null)' }) %>
+                        </div>
+                </section>
+                
+                <script>
+                    const alunosData = <%-JSON.stringify(alunosList || []).replace(/</g, '\\u003c') %>;
 
 
-    %>
-    <!-- Main Content -->
-   <div class="main-content">
-        <div class="page-header">
-            <div>
-                <h1>Configurações Acadêmicas</h1>
-                <p>Cadastre e gerencie os Alunos.</p>
-            </div>
-        </div>
+                    const ALUNOS_FIELDS = ['id', 'nome', 'nome_social', 'cpf', 'rg', 'matricula', 'data_nascimento', 'sexo', 'nacionalidade', 'naturalidade', 'id_estado_nascimento', 'foto', 'id_tipo_documento', 'numero_documento', 'orgao_expedidor',
+                        'data_expedicao', 'certidao_nascimento', 'numero_certidao', 'observacoes', 'id_status'];
 
-        <section class="config-card">
-    <div class="card-header">
-      <div class="card-icon">📅</div>
-      <div>
-        <h2>Alunos</h2>
-        <p>Gerencie os alunos cadastrados.</p>
-      </div>
-    </div>
+                    function getOrCreateAlunosModal() {
+                        console.log("teste");
+                        let modal = document.getElementById('alunos-modal');
+                        const alunosForm = document.getElementById('alunos-form');
 
-    <div class="card-body">
-      <form id="alunos-form" action="/alunos" method="POST">
-        <table class="alunos-table">
-          <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Idade</th>
-                <th>Matricula</th>
-                <th>Status</th>
-              <th style="width: 10%">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="alunos-tbody">
-            <% alunosList.forEach(function (s, idx) { %>
-              <tr data-index="<%= idx %>" class="alunos-row">
-                <td><span class="alunos-id"><%= s.id || '' %></span></td>
-                <td><span class="alunos-nome"><%= s.nome || '' %></span></td>
-                <td><span class="alunos-idade"><%= s.idade || '' %></span></td>
-                <td><span class="alunos-matricula"><%= s.matricula || '' %></span></td>
-                <td><span class="alunos-status"><%= s.id_status ? 'Ativo' : 'Inativo' %></span></td>
-                <td class="alunos-actions">
-                  <button type="button" class="btn btn-sm btn-warning" onclick="openAlunosModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirAluno(<%= s.id %>)"><i class="bi bi-trash"></i></button>
-                </td>
-                <td class="hidden-values" style="display:none">
-                  <input type="hidden" data-field="id" name="alunos[<%= idx %>][id]" value="<%= s.id || '' %>" />
-                  <input type="hidden" data-field="nome" name="alunos[<%= idx %>][nome]" value="<%= s.nome || '' %>" />
-                  <input type="hidden" data-field="nome_social" name="alunos[<%= idx %>][nome_social]" value="<%= s.nome_social || '' %>" />
-                  <input type="hidden" data-field="cpf" name="alunos[<%= idx %>][cpf]" value="<%= s.cpf || '' %>" />
-                  <input type="hidden" data-field="rg" name="alunos[<%= idx %>][rg]" value="<%= s.rg || '' %>" />
-                  <input type="hidden" data-field="matricula" name="alunos[<%= idx %>][matricula]" value="<%= s.matricula || '' %>" />
-                  <input type="hidden" data-field="data_nascimento" name="alunos[<%= idx %>][data_nascimento]" value="<%= s.data_nascimento ? new Date(s.data_nascimento).toISOString().slice(0,10) : '' %>" />
-                  <input type="hidden" data-field="sexo" name="alunos[<%= idx %>][sexo]" value="<%= s.sexo || '' %>" />
-                  <input type="hidden" data-field="estado_civil" name="alunos[<%= idx %>][estado_civil]" value="<%= s.estado_civil || '' %>" />
-                  <input type="hidden" data-field="nacionalidade" name="alunos[<%= idx %>][nacionalidade]" value="<%= s.nacionalidade || '' %>" />
-                  <input type="hidden" data-field="naturalidade" name="alunos[<%= idx %>][naturalidade]" value="<%= s.naturalidade || '' %>" />
-                  <input type="hidden" data-field="id_estado_nascimento" name="alunos[<%= idx %>][id_estado_nascimento]" value="<%= s.id_estado_nascimento || '' %>" />
-                  <input type="hidden" data-field="foto" name="alunos[<%= idx %>][foto]" value="<%= s.foto || '' %>" />
-                  <input type="hidden" data-field="id_tipo_documento" name="alunos[<%= idx %>][id_tipo_documento]" value="<%= s.id_tipo_documento || '' %>" />
-                  <input type="hidden" data-field="numero_documento" name="alunos[<%= idx %>][numero_documento]" value="<%= s.numero_documento || '' %>" />
-                  <input type="hidden" data-field="orgao_expedidor" name="alunos[<%= idx %>][orgao_expedidor]" value="<%= s.orgao_expedidor || '' %>" />
-                  <input type="hidden" data-field="data_expedicao" name="alunos[<%= idx %>][data_expedicao]" value="<%= s.data_expedicao ? new Date(s.data_expedicao).toISOString().slice(0,10) : '' %>" />
-                  <input type="hidden" data-field="certidao_nascimento" name="alunos[<%= idx %>][certidao_nascimento]" value="<%= s.certidao_nascimento || '' %>" />
-                  <input type="hidden" data-field="numero_certidao" name="alunos[<%= idx %>][numero_certidao]" value="<%= s.numero_certidao || '' %>" />
-                  <input type="hidden" data-field="cep" name="alunos[<%= idx %>][cep]" value="<%= s.cep || '' %>" />
-                  <input type="hidden" data-field="endereco" name="alunos[<%= idx %>][endereco]" value="<%= s.endereco || '' %>" />
-                  <input type="hidden" data-field="numeros" name="alunos[<%= idx %>][numeros]" value="<%= s.numeros || '' %>" />
-                  <input type="hidden" data-field="complemento" name="alunos[<%= idx %>][complemento]" value="<%= s.complemento || '' %>" />
-                  <input type="hidden" data-field="bairro" name="alunos[<%= idx %>][bairro]" value="<%= s.bairro || '' %>" />
-                  <input type="hidden" data-field="cidade" name="alunos[<%= idx %>][cidade]" value="<%= s.cidade || '' %>" />
-                  <input type="hidden" data-field="id_estado" name="alunos[<%= idx %>][id_estado]" value="<%= s.id_estado || '' %>" />
-                  <input type="hidden" data-field="email" name="alunos[<%= idx %>][email]" value="<%= s.email || '' %>" />
-                  <input type="hidden" data-field="telefone" name="alunos[<%= idx %>][telefone]" value="<%= s.telefone || '' %>" />
-                  <input type="hidden" data-field="celular" name="alunos[<%= idx %>][celular]" value="<%= s.celular || '' %>" />
-                  <input type="hidden" data-field="id_turma" name="alunos[<%= idx %>][id_turma]" value="<%= s.id_turma || '' %>" />
-                  <input type="hidden" data-field="id_status" name="alunos[<%= idx %>][id_status]" value="<%= s.id_status || '1' %>" />
-                  <input type="hidden" data-field="observacoes" name="alunos[<%= idx %>][observacoes]" value="<%= s.observacoes || '' %>" />
-                  <input type="hidden" data-field="nome_pai" name="alunos[<%= idx %>][nome_pai]" value="<%= s.nome_pai || '' %>" />
-                  <input type="hidden" data-field="nome_mae" name="alunos[<%= idx %>][nome_mae]" value="<%= s.nome_mae || '' %>" />
-                  <input type="hidden" data-field="nome_responsavel" name="alunos[<%= idx %>][nome_responsavel]" value="<%= s.nome_responsavel || '' %>" />
-                  <input type="hidden" data-field="telefone_responsavel" name="alunos[<%= idx %>][telefone_responsavel]" value="<%= s.telefone_responsavel || '' %>" />
-                  <input type="hidden" data-field="email_responsavel" name="alunos[<%= idx %>][email_responsavel]" value="<%= s.email_responsavel || '' %>" />
-                </td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
+                        if (modal) return modal;
 
-        <% if (!alunosList.length) { %>
-          <p class="series-empty" id="alunos-empty">Nenhum aluno cadastrado ainda.</p>
-        <% } %>
-        <div id="to-delete"></div>
-        <%- include('partials/botoes', { newAction: 'openAlunosModal(null)',
-          showExport: true,
-          exportAction: 'ExportExcel(null)',
-          showImport: true,
-          importAction: 'ImportExcel(null)'
-        }) %>
-      </form>
-    </div>
-     <%- include('partials/paginations', {
-          pagination,
-          filtros,
-          rota: '/alunos',
-          query: `busca=${encodeURIComponent(filtros?.busca || '')}`
-      }) %>
-  </section>
-<script>
-    const alunosData = <%- JSON.stringify(alunosList || []).replace(/</g, '\\u003c') %>;
-
-
-  const ALUNOS_FIELDS = ['id','nome','nome_social','cpf','rg','data_nascimento','sexo','nacionalidade','naturalidade','matricula','id_estado_nascimento','foto','id_tipo_documento','numero_documento','orgao_expedidor',
-  'data_expedicao','certidao_nascimento','numero_certidao','observacoes','id_status'];
-
-  function getOrCreateAlunosModal() {
-    console.log("teste");
-    let modal = document.getElementById('alunos-modal');
-    const alunosForm = document.getElementById('alunos-form');
-
-    if (modal) return modal;
-
-    modal = document.createElement('div');
-    modal.id = 'alunos-modal';
-    modal.innerHTML = `
+                        modal = document.createElement('div');
+                        modal.id = 'alunos-modal';
+                        modal.innerHTML = `
     <div class="modal-panel">
 
         <!-- =========================
@@ -357,167 +445,177 @@
         </div>
       </div>
     `;
-    modal.addEventListener('click', function (e) { if (e.target === modal) closeAlunosModal(); });
-    document.body.appendChild(modal);
-    return modal;
-  }
+                        modal.addEventListener('click', function (e) { if (e.target === modal) closeAlunosModal(); });
+                        document.body.appendChild(modal);
+                        return modal;
+                    }
 
-  function openAlunosModal(index) {
+                    function openAlunosModal(index) {
 
-        const modal = getOrCreateAlunosModal();
-        
+                        const modal = getOrCreateAlunosModal();
 
-        ModalHelper.openModal(
-            modal,
-            'alunos',
-            ALUNOS_FIELDS,
-            index,
-            {
-                id_status: '1'
-            }
-        );
 
-        setTimeout(() => {
+                        ModalHelper.openModal(
+                            modal,
+                            'alunos',
+                            ALUNOS_FIELDS,
+                            index,
+                            {
+                                id_status: '1'
+                            }
+                        );
 
-            const nameInput = modal.querySelector('#modal-nome');
+                        setTimeout(() => {
 
-            if (nameInput) {
-                nameInput.focus();
-            }
+                            const nameInput = modal.querySelector('#modal-nome');
 
-        }, 10);
-    }
-  function closeAlunosModal() {
-    const modal = document.getElementById('alunos-modal');
-    if (!modal) return;
-    modal.classList.remove('open');
-  }
+                            if (nameInput) {
+                                nameInput.focus();
+                            }
 
- function saveAlunosModal() {
+                        }, 10);
+                    }
+                    function closeAlunosModal() {
+                        const modal = document.getElementById('alunos-modal');
+                        if (!modal) return;
+                        modal.classList.remove('open');
+                    }
 
-    const modal = document.getElementById('alunos-modal');
+                    function saveAlunosModal() {
 
-    if (!modal) return;
+                        const modal = document.getElementById('alunos-modal');
 
-    const values = ModalHelper.collectModalValues(
-        'alunos-modal',
-        ALUNOS_FIELDS
-    );
+                        if (!modal) return;
 
-    if (!values.nome) {
+                        const values = ModalHelper.collectModalValues(
+                            'alunos-modal',
+                            ALUNOS_FIELDS
+                        );
 
-        modal.querySelector('#modal-nome').focus();
+                        if (!values.nome) {
 
-        return;
-    }
+                            modal.querySelector('#modal-nome').focus();
 
-    const idx = parseInt(
-        modal.querySelector('#modal-index').value,
-        10
-    );
+                            return;
+                        }
 
-    const displayValues = Object.assign({}, values, {
+                        const idx = parseInt(
+                            modal.querySelector('#modal-index').value,
+                            10
+                        );
 
-        status_label:
-            values.id_status === '0'
-                ? 'Inativo'
-                : 'Ativo'
+                        const displayValues = Object.assign({}, values, {
 
-    });
+                            status_label:
+                                values.id_status === '0'
+                                    ? 'Inativo'
+                                    : 'Ativo'
 
-    const displayMap = [
+                        });
 
-        {
-            field: 'nome',
-            cls: 'alunos-nome'
-        },
+                        const displayMap = [
 
-        {
-            field: 'email',
-            cls: 'alunos-email'
-        },
+                            {
+                                field: 'nome',
+                                cls: 'alunos-nome'
+                            },
 
-        {
-            field: 'status_label',
-            cls: 'alunos-status'
-        }
+                            {
+                                field: 'email',
+                                cls: 'alunos-email'
+                            },
 
-    ];
+                            {
+                                field: 'status_label',
+                                cls: 'alunos-status'
+                            }
 
-    ModalHelper.applyValuesToRow(
-        'alunos',
-        ALUNOS_FIELDS,
-        displayMap,
-        idx,
-        displayValues,
-        'openAlunosModal',
-        '/alunos/excluir'
-    );
+                        ];
 
-    ModalHelper.reindex(
-        'alunos',
-        ALUNOS_FIELDS,
-        'openAlunosModal'
-    );
+                        ModalHelper.applyValuesToRow(
+                            'alunos',
+                            ALUNOS_FIELDS,
+                            displayMap,
+                            idx,
+                            displayValues,
+                            'openAlunosModal',
+                            '/alunos/excluir'
+                        );
 
-    closeAlunosModal();
-}
+                        ModalHelper.reindex(
+                            'alunos',
+                            ALUNOS_FIELDS,
+                            'openAlunosModal'
+                        );
 
-  function excluirAluno(id) { ModalHelper.submitDelete(`/alunos/excluir/${id}`); }
+                        closeAlunosModal();
 
-  function removeAlunoRow(btn) { ModalHelper.removeRow(btn, 'alunos', ALUNOS_FIELDS, 'openAlunosModal'); }
+                        const alunosForm = document.getElementById('alunos-form');
+                        if (alunosForm) {
+                            alunosForm.submit();
+                        }
+                    }
 
-  function reindexAluno() { ModalHelper.reindex('alunos', ALUNOS_FIELDS, 'openAlunosModal'); }
+                    function excluirAluno(id) { 
 
-  function ExportExcel() {
-    console.log('Exportando para Excel...');
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/alunos-exportar-excel';
-    document.body.appendChild(form);
-    form.submit();
-  }
+                        if (confirm('Tem certeza que deseja excluir este aluno?')) {
+                                ModalHelper.submitDelete(`/alunos/excluir/${id}`);
+                            }
+                    }
 
-  function ImportExcel() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.name = 'arquivo';
-    input.accept = '.xlsx,.xls';
-    input.style.display = 'none';
+                    function removeAlunoRow(btn) { ModalHelper.removeRow(btn, 'alunos', ALUNOS_FIELDS, 'openAlunosModal'); }
 
-    input.addEventListener('change', function () {
-      const file = this.files && this.files[0];
-      if (!file) return;
+                    function reindexAluno() { ModalHelper.reindex('alunos', ALUNOS_FIELDS, 'openAlunosModal'); }
 
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = '/alunos-importar-excel';
-      form.enctype = 'multipart/form-data';
+                    function ExportExcel() {
+                        console.log('Exportando para Excel...');
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/alunos-exportar-excel';
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
 
-      const formData = new FormData();
-      formData.append('arquivo', file);
+                    function ImportExcel() {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.name = 'arquivo';
+                        input.accept = '.xlsx,.xls';
+                        input.style.display = 'none';
 
-      fetch(form.action, {
-        method: 'POST',
-        body: formData
-      })
-        .then(async (response) => {
-          const text = await response.text();
-          if (!response.ok) {
-            throw new Error(text || 'Erro ao importar alunos');
-          }
-          alert('Importação concluída com sucesso.');
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.error(error);
-          alert(error.message || 'Erro ao importar alunos.');
-        });
-    });
+                        input.addEventListener('change', function () {
+                            const file = this.files && this.files[0];
+                            if (!file) return;
 
-    document.body.appendChild(input);
-    input.click();
-    setTimeout(() => input.remove(), 1000);
-  }
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = '/alunos-importar-excel';
+                            form.enctype = 'multipart/form-data';
 
-</script>
+                            const formData = new FormData();
+                            formData.append('arquivo', file);
+
+                            fetch(form.action, {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(async (response) => {
+                                    const text = await response.text();
+                                    if (!response.ok) {
+                                        throw new Error(text || 'Erro ao importar alunos');
+                                    }
+                                    alert('Importação concluída com sucesso.');
+                                    window.location.reload();
+                                })
+                                .catch((error) => {
+                                    console.error(error);
+                                    alert(error.message || 'Erro ao importar alunos.');
+                                });
+                        });
+
+                        document.body.appendChild(input);
+                        input.click();
+                        setTimeout(() => input.remove(), 1000);
+                    }
+
+                </script>
