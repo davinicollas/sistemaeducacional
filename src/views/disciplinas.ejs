@@ -8,25 +8,43 @@
 %>
 
 <div class="main-content">
-  <div class="page-header">
-    <div>
-      <h1>Configurações Acadêmicas</h1>
-      <p>Cadastre e gerencie as disciplinas.</p>
-    </div>
-  </div>
-
   <section class="config-card">
+    <div style="text-align: right;">
+      <button type="button" class="btn-primary series-new-btn" onclick="openDisciplinasModal(null)">+ Nova Disciplina</button>
+    </div>
     <div class="card-header">
-      <div class="card-icon">📅</div>
+      <div class="card-icon"><i class="bi bi-person-workspace"></i></div>
       <div>
         <h2>Disciplinas</h2>
-        <p>Gerencie as disciplinas oferecidas.</p>
+        <p>Cadastre, consulte e gerencie as disciplinas da instituição.</p>
       </div>
     </div>
-
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+        <div>
+            <span>Total de Disciplinas</span>
+            <span style="text-align: center;"><strong><%= disciplinasList.length %></strong></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
+        <div>
+          <span>Disciplinas Ativas</span>
+          <span style="text-align: center;"><strong><%= disciplinasList.filter(t => t.id_status).length %></strong></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
+        <div>
+          <span>Disciplinas Inativas</span>
+          <span style="text-align: center;"><strong><%= disciplinasList.filter(t => !t.id_status).length %></strong></span>
+        </div>
+      </div>
+    </div>
     <div class="card-body">
       <form id="disciplinas-form" action="/disciplinas" method="POST">
-        <table class="series-table">
+        <table class="disciplinas-table">
           <thead>
             <tr>
               <th>ID</th>
@@ -71,12 +89,18 @@
         <%- include('partials/botoes', { newAction: 'openDisciplinasModal(null)' }) %>
       </form>
     </div>
+     <div>
+      <%- include('partials/botoes', { showExport: true, exportAction: 'ExportExcel(null)', showImport: true, importAction: 'ImportExcel(null)' }) %>
+    </div>
+    <div class="form-actions" style="margin-top: 20px; text-align: center;">
+
     <%- include('partials/paginations', {
           pagination,
           filtros,
           rota: '/disciplinas',
           query: `busca=${encodeURIComponent(filtros?.busca || '')}`
       }) %>
+       </div>
   </section>
 </div>
 

@@ -172,10 +172,12 @@
     background: var(--bg-color);
 }
 
-/* Reserva espaço para o app-topbar não sobrepor o conteúdo das páginas */
+/* Reserva espaço para o app-topbar não sobrepor o conteúdo das páginas,
+   sem sobras de padding lateral/inferior (conteúdo encostado no menu/topo).
+   Não mexe em margin-left: isso é quem afasta o conteúdo da sidebar fixa. */
 body main.main-content,
 body div.main-content {
-    padding-top: 64px;
+    padding: 64px 0 0 0;
 }
 
 @media (max-width: 850px) {

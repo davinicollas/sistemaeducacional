@@ -16,22 +16,41 @@
 %>
 
 <div class="main-content">
-  <div class="page-header">
-    <div>
-      <h1>Configurações Acadêmicas</h1>
-      <p>Cadastre e gerencie as turmas.</p>
-    </div>
-  </div>
-
   <section class="config-card">
+    <div style="text-align: right;">
+      <button type="button" class="btn-primary series-new-btn" onclick="openTurmasModal(null)">+ Nova Turma</button>
+    </div>
     <div class="card-header">
-      <div class="card-icon">📅</div>
+      <div class="card-icon"><i class="bi bi-person-workspace"></i></div>
       <div>
         <h2>Turmas</h2>
-        <p>Gerencie as turmas cadastradas.</p>
+        <p>Cadastre, consulte e gerencie as turmas da instituição.</p>
       </div>
     </div>
 
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+        <div>
+            <span>Total de Turmas</span>
+            <span style="text-align: center;"><strong><%= turmasList.length %></strong></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
+        <div>
+          <span>Turmas Ativas</span>
+          <span style="text-align: center;"><strong><%= turmasList.filter(t => t.id_status).length %></strong></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
+        <div>
+          <span>Turmas Inativas</span>
+          <span style="text-align: center;"><strong><%= turmasList.filter(t => !t.id_status).length %></strong></span>
+        </div>
+      </div>
+    </div>
     <div class="card-body">
       <form id="turmas-form" action="/turmas" method="POST">
         <table class="turmas-table">
@@ -79,19 +98,22 @@
         </table>
 
         <% if (!turmasList.length) { %>
-          <p class="id_series-empty" id="turmas-empty">Nenhuma turma cadastrada ainda.</p>
+          <p class="series-empty" id="turmas-empty">Nenhuma turma cadastrada ainda.</p>
         <% } %>
-        <div id="to-delete"></div>
-        <%- include('partials/botoes', { newAction: 'openTurmasModal(null)' }) %>
       </form>
     </div>
+    <div>
+      <%- include('partials/botoes', { showExport: true, exportAction: 'ExportExcel(null)', showImport: true, importAction: 'ImportExcel(null)' }) %>
+    </div>
+                        <div class="form-actions" style="margin-top: 20px; text-align: center;">
     <%- include('partials/paginations', {
           pagination,
           filtros,
           rota: '/turmas',
           query: `busca=${encodeURIComponent(filtros?.busca || '')}`
       }) %>
-  </section>
+        </div>
+      </section>
 </div>
 
 <script>

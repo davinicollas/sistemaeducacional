@@ -3,30 +3,50 @@
     <%- include('partials/menu') %>
     <%
         professores = typeof professores !== 'undefined' ? professores : {};
+        statusProfessor = typeof statusProfessor !== 'undefined' ? statusProfessor : {};
         let professoresList = Array.isArray(professores.professores) ? professores.professores : [];
+        let statusProfessorList = Array.isArray(statusProfessor) ? statusProfessor : (statusProfessor ? [statusProfessor] : []);
         let estadoList = Array.isArray(estado) ? estado : (estado ? [estado] : []);
         let disciplinasCatalogo = typeof disciplinasList !== 'undefined' && Array.isArray(disciplinasList) ? disciplinasList : [];
         let formacaoCatalogo = typeof formacaoList !== 'undefined' && Array.isArray(formacaoList) ? formacaoList : [];
     %>
     <!-- Main Content -->
    <div class="main-content">
-        <div class="page-header">
-            <div>
-            <h1>Configurações Acadêmicas</h1>
-            <p>Cadastre e gerencie os professores.</p>
-            </div>
-        </div>
-
-        <section class="config-card">
-    <div class="card-header">
-      <div class="card-icon">📅</div>
-      <div>
-        <h2>Professores</h2>
-        <p>Gerencie os professores cadastrados.</p>
+    <section class="config-card">
+      <div style="text-align: right;">
+          <button type="button" class="btn-primary series-new-btn" onclick="openProfessorModal(null)">+ Novo Professor</button>
       </div>
-    </div>
-
-    <div class="card-body">
+      <div class="card-header">
+          <div class="card-icon"><i class="bi bi-person-workspace"></i></div>
+          <div>
+              <h2>Professores</h2>
+              <p>Cadastre, consulte e gerencie os professores da instituição.</p>
+          </div>
+      </div>
+     <div class="cards">
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+              <div>
+                  <span>Total de Professores</span>
+                  <span style="text-align: center;"><strong><%= professoresList.length %></strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
+              <div>
+                  <span>Professores Ativos</span>
+                  <span style="text-align: center;"><strong><%= statusProfessorList[0]?.total_ativos || 0 %></strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
+              <div>
+                  <span>Professores Inativos</span>
+                  <span style="text-align: center;"><strong><%= statusProfessorList[0]?.total_desativados || 0 %></strong></span>
+              </div>
+          </div>
+      </div>
+      <div class="card-body">
       <form id="professores-form" action="/professores" method="POST">
         <table class="professores-table">
           <thead>
@@ -86,21 +106,26 @@
         <% if (!professoresList.length) { %>
           <p class="series-empty" id="professores-empty">Nenhum professor cadastrado ainda.</p>
         <% } %>
-        <div id="to-delete"></div>
-        <%- include('partials/botoes', { newAction: 'openProfessorModal(null)',
+        </form>
+        </div>
+
+ <div>
+          <%- include('partials/botoes', { newAction: 'openProfessorModal(null)',
           showExport: true,
           exportAction: 'ExportExcel(null)',
           showImport: true,
           importAction: 'ImportExcel(null)'
         }) %>
-      </form>
+
     </div>
+     <div class="form-actions" style="margin-top: 20px; text-align: center;"></div>
      <%- include('partials/paginations', {
           pagination,
           filtros,
           rota: '/professores',
           query: `busca=${encodeURIComponent(filtros?.busca || '')}`
       }) %>
+    </div>
   </section>
 <script>
   const PROFESSOR_FIELDS = ['id','nome','nome_social','cpf','data_nascimento','sexo','id_disciplina','carga_horaria','id_status','email','telefone','celular','cep','endereco','numeros','complemento','bairro','cidade','id_estado','matricula','registro_profissional','data_admissao','idFormacao','area_formacao','observacoes'];

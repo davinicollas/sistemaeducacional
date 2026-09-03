@@ -25,7 +25,7 @@
                         <div class="card">
                             <div class="card-icon"><i class="bi bi-people-fill"></i></div>
                             <div>
-                                <span>Total de Usuários</span>
+                                <span>Total de Alunos</span>
                                 <span style="text-align: center;"><strong>
                                         <%= alunosList.length %>
                                     </strong></span>
@@ -34,14 +34,14 @@
                         <div class="card">
                             <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
                             <div>
-                                <span>Usuarios Ativos</span>
+                                <span>Alunos Ativos</span>
                                 <span style="text-align: center;"><strong><%= statusAlunoList[0]?.total_ativos || 0 %></strong></span>
                             </div>
                         </div>
                         <div class="card">
                             <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
                             <div>
-                                <span>Usuarios Inativos</span>
+                                <span>Alunos Inativos</span>
                                 <span style="text-align: center;"><strong><%= statusAlunoList[0]?.total_desativados || 0 %></strong></span>
                             </div>
                         </div>
@@ -196,15 +196,16 @@
                                 <% } %>
                         </form>
                     </div>
-                    <div>
-                    <%- include('partials/paginations', { pagination, filtros, rota: '/alunos' , query:
-                        `busca=${encodeURIComponent(filtros?.busca || '' )}` }) %>
-                        </div>
-                        <div class="form-actions" style="margin-top: 20px; text-align: center;">
+                    <div >
                             <%- include('partials/botoes', { showExport:
                                 true, exportAction: 'ExportExcel(null)' , showImport: true,
                                 importAction: 'ImportExcel(null)' }) %>
                         </div>
+                    <div class="form-actions" style="margin-top: 20px; text-align: center;">
+                    <%- include('partials/paginations', { pagination, filtros, rota: '/alunos' , query:
+                        `busca=${encodeURIComponent(filtros?.busca || '' )}` }) %>
+                        </div>
+                        
                 </section>
                 
                 <script>

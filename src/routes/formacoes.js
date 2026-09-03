@@ -73,7 +73,7 @@ router.get("/formacoes", async (req, res) => {
         );
 
         res.render("formacoes", {
-            formacao: rows,
+            formacoes: rows,
             filtros,
             pagination: {
                 page,

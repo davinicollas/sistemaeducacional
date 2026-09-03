@@ -7,25 +7,64 @@
     margin-bottom: 24px;
 }
 
-.data-table {
+.data-table,
+.alunos-table,
+.professores-table,
+.series-table,
+.turmas-table {
     width: 100%;
     border-collapse: collapse;
 }
 
 .data-table th,
-.data-table td {
+.data-table td,
+.alunos-table th,
+.alunos-table td,
+.professores-table th,
+.professores-table td,
+.series-table th,
+.series-table td,
+.turmas-table th,
+.turmas-table td {
     padding: 16px 24px;
     text-align: left;
     font-size: 14px;
 }
 
-.data-table th { font-weight: 600; color: var(--text-main); border-bottom: 1px solid var(--border-color); }
+.data-table th,
+.alunos-table thead th,
+.professores-table thead th,
+.series-table thead th,
+.turmas-table thead th {
+    font-weight: 600;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-color);
+    background: #fafbff;
+}
 
-.data-table td { color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
+.data-table td,
+.alunos-table tbody td,
+.professores-table tbody td,
+.series-table tbody td,
+.turmas-table tbody td {
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+}
 
-.data-table td:first-child { color: var(--text-main); font-weight: 500; }
+.data-table td:first-child,
+.alunos-table tbody td:first-child,
+.professores-table tbody td:first-child,
+.series-table tbody td:first-child {
+    color: var(--text-main);
+    font-weight: 500;
+}
 
-.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:last-child td,
+.alunos-table tbody tr:last-child td,
+.professores-table tbody tr:last-child td,
+.series-table tbody tr:last-child td {
+    border-bottom: none;
+}
 
 .action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 4px 8px; }
 .action-btn:hover { color: var(--text-main); }
@@ -72,5 +111,11 @@
     align-items: center;
     margin-bottom: 24px;
     gap: 16px;
+}
+
+.table-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
 

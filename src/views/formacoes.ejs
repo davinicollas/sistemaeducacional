@@ -51,6 +51,7 @@
                         </thead>
                         <tbody id="grid-params">
                             <% const itens = Array.isArray(formacoes) ? formacoes : [formacoes]; %>
+                            
                             <% itens.forEach((item) => { %>
                                 <tr data-id="<%= item.id || '' %>">
                                     <td>

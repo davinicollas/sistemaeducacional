@@ -28,6 +28,7 @@ router.get("/professores", async (req, res) => {
         const pageSize = parseInt(req.query.pageSize, 10) || 10;
         const offset = (page - 1) * pageSize;
         const professoresList = await professoresModel.getProfessores(where, params, pageSize, offset);
+        const statusProfessorList = await professoresModel.getStatusProfessor(where, params);
         const totalItems = professoresList.length;
         const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
@@ -36,6 +37,7 @@ router.get("/professores", async (req, res) => {
         const formacaoList = await formacoesModel.getFormacoes();
         res.render("professores", {
             professores: { professores: professoresList },
+            statusProfessor: statusProfessorList,
             estado: estadosList,
             disciplinasList,
             formacaoList,
