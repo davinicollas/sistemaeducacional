@@ -3,7 +3,7 @@ const db = require("../../database/mysql");
 const router = express.Router();
 
 // GET /TiposDocumentos - list with filters and pagination
-router.get("/TiposDocumentos", async (req, res) => {
+router.get("/tiposDocumentos", async (req, res) => {
     try {
         const filtros = {
           busca: req.query.busca || ""
@@ -30,7 +30,7 @@ router.get("/TiposDocumentos", async (req, res) => {
 
       
 
-        res.render("TiposDocumentos", {
+        res.render("tiposDocumentos", {
             tiposDocumentos: rows,
             filtros,
             pagination: {
@@ -42,12 +42,12 @@ router.get("/TiposDocumentos", async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.render("TiposDocumentos", { tiposDocumentos: [], filtros: {}, pagination: { page: 1, pageSize: 10, totalItems: 0, totalPages: 1 }, erro: 'Erro ao carregar tipos de documentos' });
+        res.render("tiposDocumentos", { tiposDocumentos: [], filtros: {}, pagination: { page: 1, pageSize: 10, totalItems: 0, totalPages: 1 }, erro: 'Erro ao carregar tipos de documentos' });
     }
 });
 
 
-router.post("/TiposDocumentos", async (req, res) => {
+router.post("/tiposDocumentos", async (req, res) => {
     try {
         const itens = req.body.itens || [];
         const deleteIds = req.body.deleteIds || [];
@@ -66,6 +66,7 @@ router.post("/TiposDocumentos", async (req, res) => {
            
             // Ignora linha completamente vazia
 
+            console.log(id)
 
             if (!text) continue; // skip empty rows
             if (id) {
@@ -75,10 +76,10 @@ router.post("/TiposDocumentos", async (req, res) => {
             }
         }
 
-        res.redirect('/TiposDocumentos');
+        res.redirect('/tiposDocumentos');
     } catch (err) {
         console.error(err);
-        res.redirect('/TiposDocumentos');
+        res.redirect('/tiposDocumentos');
     }
 });
 

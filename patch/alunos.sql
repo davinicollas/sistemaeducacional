@@ -25,8 +25,4 @@ CREATE TABLE IF NOT EXISTS `alunos` (
 	INDEX `FK_alunos_params_tipos_documentos` (`id_tipo_documento`) USING BTREE,
 	CONSTRAINT `FK_alunos_params_estados` FOREIGN KEY (`id_estado_nascimento`) REFERENCES `params_estados` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION,
 	CONSTRAINT `FK_alunos_params_tipos_documentos` FOREIGN KEY (`id_tipo_documento`) REFERENCES `params_tipos_documentos` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-COLLATE='utf8mb4_0900_ai_ci'
-ENGINE=InnoDB
-AUTO_INCREMENT=0
-;
+);

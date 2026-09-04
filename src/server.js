@@ -91,6 +91,10 @@ app.get('/termos', (req, res) => {
   res.render('termos');
 });
 
+app.get('/matricula', (req, res) => {
+  res.render('matricula');
+});
+
 
 
 

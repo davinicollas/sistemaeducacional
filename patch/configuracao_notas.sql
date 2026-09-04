@@ -9,8 +9,4 @@ CREATE TABLE IF NOT EXISTS `configuracao_notas` (
 	`excluido` INT NOT NULL DEFAULT '0',
 	`nota_maxima` DECIMAL(5,2) NULL DEFAULT NULL,
 	PRIMARY KEY (`id`) USING BTREE
-)
-COLLATE='utf8mb4_0900_ai_ci'
-ENGINE=InnoDB
-AUTO_INCREMENT=0
-;
+);

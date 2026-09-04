@@ -1,0 +1,77 @@
+  body {
+      background-color: #f5f7fa;
+  }
+
+  .page-title {
+      font-weight: 600;
+  }
+
+  .stat-card {
+      border: 0;
+      border-radius: 12px;
+      transition: .2s;
+  }
+
+  .stat-card:hover {
+      transform: translateY(-2px);
+  }
+
+  .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+  }
+
+  .turma-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      transition: .2s;
+      height: 100%;
+  }
+
+  .turma-card:hover {
+      border-color: #adb5bd;
+      box-shadow: 0 5px 18px rgba(0, 0, 0, .06);
+      transform: translateY(-2px);
+  }
+
+  .turma-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef2ff;
+      color: #4f46e5;
+      font-size: 20px;
+  }
+
+  .capacity-bar {
+      height: 7px;
+      border-radius: 10px;
+  }
+
+  .student-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #495057;
+  }
+
+  .modal-header {
+      border-bottom: 1px solid #eee;
+  }
+
+  .modal-footer {
+      border-top: 1px solid #eee;
+  }

@@ -11,7 +11,7 @@
 <div class="main-content">
 
     <%- include('partials/filtros', {
-            action: '/TiposDocumentos',
+            action: '/tiposDocumentos',
             filtros,
             fields: [
                 { name: 'busca', label: 'Descrição', placeholder: 'Buscar por palavra', col: 'col-md-6' }
@@ -19,7 +19,7 @@
     }) %>
 
 
-    <form id="formTiposDocumentos" action="/TiposDocumentos" method="POST">
+    <form id="formTiposDocumentos" action="/tiposDocumentos" method="POST">
 
         <section class="config-card">
 
@@ -51,11 +51,11 @@
                         </thead>
                         <tbody id="grid-params">
                             <% const itens = Array.isArray(tiposDocumentos) ? tiposDocumentos : [tiposDocumentos]; %>
-                            <% itens.forEach((item) => { %>
+                            <% itens.forEach((item, index) => { %>
                                 <tr data-id="<%= item.id || '' %>">
                                     <td>
-                                        <input type="hidden" name="itens[][id]" value="<%= item.id || '' %>">   
-                                        <input type="text" class="form-control" name="itens[][text]" value="<%= item.text || '' %>" placeholder="Ex: Documento de Identidade">
+                                        <input type="hidden" name="itens[<%= index %>][id]" value="<%= item.id || '' %>">   
+                                        <input type="text" class="form-control" name="itens[<%= index %>][text]" value="<%= item.text || '' %>" placeholder="Ex: Documento de Identidade">
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-danger" onclick="removeParamsRow(this)"><i class="bi bi-trash"></i></button>

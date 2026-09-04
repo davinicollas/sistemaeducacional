@@ -17,9 +17,7 @@
                 { name: 'busca', label: 'Descrição', placeholder: 'Buscar por palavra', col: 'col-md-6' }
             ]
     }) %>
-
-
-    <form id="formformacoes" action="/formacoes" method="POST">
+    <form id="formFormacoes" action="/formacoes" method="POST">
 
         <section class="config-card">
 
@@ -52,11 +50,11 @@
                         <tbody id="grid-params">
                             <% const itens = Array.isArray(formacoes) ? formacoes : [formacoes]; %>
                             
-                            <% itens.forEach((item) => { %>
+                            <% itens.forEach((item, index) => { %>
                                 <tr data-id="<%= item.id || '' %>">
                                     <td>
-                                        <input type="hidden" name="itens[][id]" value="<%= item.id || '' %>">   
-                                        <input type="text" class="form-control" name="itens[][text]" value="<%= item.text || '' %>" placeholder="Ex: Documento de Identidade">
+                                        <input type="hidden" name="itens[<%= index %>][id]" value="<%= item.id || '' %>">   
+                                        <input type="text" class="form-control" name="itens[<%= index %>][text]" value="<%= item.text || '' %>" placeholder="Ex: Documento de Identidade">
                                     </td>
                                  
                                     <td>
@@ -67,18 +65,18 @@
                               <!-- TR MODELO -->
                             <tr id="trClone" style="display: none;">
                                 <td>
-                                    <input type="hidden" data-field="id" name="itens[][id]" value="">
+                                    <input type="hidden" data-field="id">
 
                                     <input 
                                         type="text" 
                                         class="form-control" 
-                                        data-field="text" name="itens[][text]"
-                                        value="" 
+                                        data-field="text"
+                                        value=""
                                         placeholder="Ex: Documento de Identidade"
                                     >
                                 </td>
                                 <td>
-                                    <select id="modal-publico" name="itens[][idStatus]" class="form-select">
+                                    <select id="modal-publico" data-field="idStatus" class="form-select">
                                         <option value="1">Ativo</option>
                                         <option value="2">Inativo</option>
                                     </select>
@@ -115,7 +113,7 @@
 
         <button type="button" class="btn-secondary">Cancelar</button>
 
-        <button type="submit" form="formformacoes" class="btn-primary">Salvar alterações</button>
+        <button type="submit" form="formFormacoes" class="btn-primary">Salvar alterações</button>
 
     </div>
 

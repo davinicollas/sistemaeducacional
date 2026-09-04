@@ -1,0 +1,1350 @@
+<%- include('partials/header') %>
+    <!-- Sidebar -->
+    <%- include('partials/menu') %>
+
+
+<div class="container-fluid py-4 px-4">
+
+    <!-- ========================================================= -->
+    <!-- CABEÇALHO -->
+    <!-- ========================================================= -->
+
+    <div class="d-flex flex-column flex-md-row
+                justify-content-between
+                align-items-md-center
+                gap-3 mb-4">
+
+        <div>
+            <h3 class="page-title mb-1">
+                <i class="bi bi-person-vcard me-2"></i>
+                Matrículas
+            </h3>
+
+            <p class="text-muted mb-0">
+                Gerencie os alunos matriculados nas turmas.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <button
+                type="button"
+                class="btn btn-outline-secondary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalImportar"
+            >
+                <i class="bi bi-file-earmark-excel me-1"></i>
+                Importar
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalMatricula"
+            >
+                <i class="bi bi-plus-lg me-1"></i>
+                Nova matrícula
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- FILTROS -->
+    <!-- ========================================================= -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        Ano Letivo
+                    </label>
+
+                    <select class="form-select">
+                        <option selected>2026</option>
+                        <option>2025</option>
+                        <option>2024</option>
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        Série
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>Todas</option>
+
+                        <option>1º Ano Fundamental</option>
+                        <option>2º Ano Fundamental</option>
+                        <option>3º Ano Fundamental</option>
+                        <option>4º Ano Fundamental</option>
+                        <option>5º Ano Fundamental</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-2">
+
+                    <label class="form-label">
+                        Turno
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>Todos</option>
+                        <option>Manhã</option>
+                        <option>Tarde</option>
+                        <option>Noite</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-2">
+
+                    <label class="form-label">
+                        Status
+                    </label>
+
+                    <select class="form-select">
+
+                        <option selected>Ativos</option>
+                        <option>Todos</option>
+                        <option>Inativos</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-2">
+
+                    <label class="form-label">
+                        Buscar
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Turma..."
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- INDICADORES -->
+    <!-- ========================================================= -->
+
+    <div class="row g-3 mb-4">
+
+        <!-- Turmas -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card stat-card shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Turmas
+                            </small>
+
+                            <h3 class="mb-0 mt-1">
+                                18
+                            </h3>
+
+                        </div>
+
+                        <div class="stat-icon bg-primary-subtle text-primary">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Alunos -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card stat-card shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Alunos
+                            </small>
+
+                            <h3 class="mb-0 mt-1">
+                                526
+                            </h3>
+
+                        </div>
+
+                        <div class="stat-icon bg-success-subtle text-success">
+                            <i class="bi bi-people"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Matriculados -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card stat-card shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Matriculados
+                            </small>
+
+                            <h3 class="mb-0 mt-1">
+                                501
+                            </h3>
+
+                        </div>
+
+                        <div class="stat-icon bg-info-subtle text-info">
+                            <i class="bi bi-person-check"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Vagas -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card stat-card shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Vagas disponíveis
+                            </small>
+
+                            <h3 class="mb-0 mt-1">
+                                39
+                            </h3>
+
+                        </div>
+
+                        <div class="stat-icon bg-warning-subtle text-warning">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- TURMAS -->
+    <!-- ========================================================= -->
+
+    <div class="d-flex
+                justify-content-between
+                align-items-center
+                mb-3">
+
+        <div>
+
+            <h5 class="mb-1">
+                Turmas
+            </h5>
+
+            <small class="text-muted">
+                Selecione uma turma para visualizar os alunos.
+            </small>
+
+        </div>
+
+        <span class="badge text-bg-light">
+            18 turmas
+        </span>
+
+    </div>
+
+
+    <div class="row g-4">
+
+
+        <!-- ===================================================== -->
+        <!-- TURMA 1 -->
+        <!-- ===================================================== -->
+
+        <div class="col-xl-4 col-lg-6">
+
+            <div class="card turma-card shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-start">
+
+                        <div class="d-flex gap-3">
+
+                            <div class="turma-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+
+                            <div>
+
+                                <h5 class="mb-1">
+                                    1º Ano A
+                                </h5>
+
+                                <small class="text-muted">
+                                    1A • Ensino Fundamental
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        <span class="badge text-bg-success">
+                            Ativa
+                        </span>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <div class="row text-center mb-3">
+
+                        <div class="col-4">
+
+                            <strong class="d-block">
+                                24
+                            </strong>
+
+                            <small class="text-muted">
+                                Alunos
+                            </small>
+
+                        </div>
+
+
+                        <div class="col-4">
+
+                            <strong class="d-block">
+                                30
+                            </strong>
+
+                            <small class="text-muted">
+                                Capacidade
+                            </small>
+
+                        </div>
+
+
+                        <div class="col-4">
+
+                            <strong class="d-block">
+                                6
+                            </strong>
+
+                            <small class="text-muted">
+                                Vagas
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress capacity-bar mb-3">
+
+                        <div
+                            class="progress-bar"
+                            style="width: 80%;">
+                        </div>
+
+                    </div>
+
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center
+                                mb-3">
+
+                        <div class="text-muted small">
+
+                            <i class="bi bi-sun me-1"></i>
+                            Manhã
+
+                        </div>
+
+                        <div class="text-muted small">
+
+                            <i class="bi bi-door-open me-1"></i>
+                            Sala 01
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="btn btn-outline-primary w-100"
+                        onclick="abrirTurma('1º Ano A')"
+                    >
+
+                        <i class="bi bi-eye me-1"></i>
+                        Ver alunos
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- TURMA 2 -->
+        <!-- ===================================================== -->
+
+        <div class="col-xl-4 col-lg-6">
+
+            <div class="card turma-card shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-start">
+
+                        <div class="d-flex gap-3">
+
+                            <div class="turma-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+
+                            <div>
+
+                                <h5 class="mb-1">
+                                    1º Ano B
+                                </h5>
+
+                                <small class="text-muted">
+                                    1B • Ensino Fundamental
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        <span class="badge text-bg-success">
+                            Ativa
+                        </span>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <div class="row text-center mb-3">
+
+                        <div class="col-4">
+
+                            <strong class="d-block">
+                                28
+                            </strong>
+
+                            <small class="text-muted">
+                                Alunos
+                            </small>
+
+                        </div>
+
+
+                        <div class="col-4">
+
+                            <strong class="d-block">
+                                30
+                            </strong>
+
+                            <small class="text-muted">
+                                Capacidade
+                            </small>
+
+                        </div>
+
+
+                        <div class="col-4">
+
+                            <strong class="d-block">
+                                2
+                            </strong>
+
+                            <small class="text-muted">
+                                Vagas
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress capacity-bar mb-3">
+
+                        <div
+                            class="progress-bar"
+                            style="width: 93%;">
+                        </div>
+
+                    </div>
+
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center
+                                mb-3">
+
+                        <div class="text-muted small">
+
+                            <i class="bi bi-sun me-1"></i>
+                            Manhã
+
+                        </div>
+
+                        <div class="text-muted small">
+
+                            <i class="bi bi-door-open me-1"></i>
+                            Sala 02
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="btn btn-outline-primary w-100"
+                        onclick="abrirTurma('1º Ano B')"
+                    >
+
+                        <i class="bi bi-eye me-1"></i>
+                        Ver alunos
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- TURMA 3 -->
+        <!-- ===================================================== -->
+
+        <div class="col-xl-4 col-lg-6">
+
+            <div class="card turma-card shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-start">
+
+                        <div class="d-flex gap-3">
+
+                            <div class="turma-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+
+                            <div>
+
+                                <h5 class="mb-1">
+                                    2º Ano A
+                                </h5>
+
+                                <small class="text-muted">
+                                    2A • Ensino Fundamental
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        <span class="badge text-bg-success">
+                            Ativa
+                        </span>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <div class="row text-center mb-3">
+
+                        <div class="col-4">
+
+                            <strong class="d-block">
+                                19
+                            </strong>
+
+                            <small class="text-muted">
+                                Alunos
+                            </small>
+
+                        </div>
+
+
+                        <div class="col-4">
+
+                            <strong class="d-block">
+                                30
+                            </strong>
+
+                            <small class="text-muted">
+                                Capacidade
+                            </small>
+
+                        </div>
+
+
+                        <div class="col-4">
+
+                            <strong class="d-block">
+                                11
+                            </strong>
+
+                            <small class="text-muted">
+                                Vagas
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress capacity-bar mb-3">
+
+                        <div
+                            class="progress-bar"
+                            style="width: 63%;">
+                        </div>
+
+                    </div>
+
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center
+                                mb-3">
+
+                        <div class="text-muted small">
+
+                            <i class="bi bi-sun me-1"></i>
+                            Manhã
+
+                        </div>
+
+                        <div class="text-muted small">
+
+                            <i class="bi bi-door-open me-1"></i>
+                            Sala 03
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="btn btn-outline-primary w-100"
+                        onclick="abrirTurma('2º Ano A')"
+                    >
+
+                        <i class="bi bi-eye me-1"></i>
+                        Ver alunos
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- ÁREA DE ALUNOS DA TURMA -->
+    <!-- ========================================================= -->
+
+    <div
+        class="card shadow-sm border-0 mt-5"
+        id="painelAlunos"
+        style="display:none;"
+    >
+
+        <div class="card-header bg-white py-3">
+
+            <div class="d-flex
+                        flex-column flex-md-row
+                        justify-content-between
+                        align-items-md-center
+                        gap-3">
+
+                <div>
+
+                    <h5 class="mb-1" id="nomeTurmaSelecionada">
+                        1º Ano A
+                    </h5>
+
+                    <small class="text-muted">
+                        Alunos matriculados
+                    </small>
+
+                </div>
+
+
+                <button
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalMatricula"
+                >
+
+                    <i class="bi bi-person-plus me-1"></i>
+                    Matricular aluno
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <!-- Busca -->
+
+            <div class="row mb-3">
+
+                <div class="col-md-5">
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Buscar aluno..."
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Tabela -->
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Aluno</th>
+
+                            <th>Matrícula</th>
+
+                            <th>Data</th>
+
+                            <th>Status</th>
+
+                            <th class="text-end">
+                                Ações
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                01
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex align-items-center gap-2">
+
+                                    <div class="student-avatar">
+                                        AS
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Ana Silva
+                                        </strong>
+
+                                        <small class="d-block text-muted">
+                                            CPF: ***.***.***-**
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                2026-001
+                            </td>
+
+                            <td>
+                                03/02/2026
+                            </td>
+
+                            <td>
+                                <span class="badge text-bg-success">
+                                    Ativo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <button
+                                    class="btn btn-sm btn-outline-secondary"
+                                    title="Visualizar"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                </button>
+
+                                <button
+                                    class="btn btn-sm btn-outline-primary"
+                                    title="Editar"
+                                >
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+
+                                <button
+                                    class="btn btn-sm btn-outline-danger"
+                                    title="Cancelar matrícula"
+                                >
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                02
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex align-items-center gap-2">
+
+                                    <div class="student-avatar">
+                                        PS
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Pedro Santos
+                                        </strong>
+
+                                        <small class="d-block text-muted">
+                                            CPF: ***.***.***-**
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                2026-002
+                            </td>
+
+                            <td>
+                                03/02/2026
+                            </td>
+
+                            <td>
+                                <span class="badge text-bg-success">
+                                    Ativo
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+
+                                <button
+                                    class="btn btn-sm btn-outline-secondary"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                </button>
+
+                                <button
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+
+                                <button
+                                    class="btn btn-sm btn-outline-danger"
+                                >
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================= -->
+<!-- MODAL NOVA MATRÍCULA -->
+<!-- ============================================================= -->
+
+<div
+    class="modal fade"
+    id="modalMatricula"
+    tabindex="-1"
+>
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h5 class="modal-title mb-1">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Nova matrícula
+                    </h5>
+
+                    <small class="text-muted">
+                        Vincule um aluno a uma turma.
+                    </small>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                ></button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <form>
+
+                    <div class="row g-3">
+
+                        <!-- Aluno -->
+
+                        <div class="col-md-8">
+
+                            <label class="form-label">
+                                Aluno <span class="text-danger">*</span>
+                            </label>
+
+                            <select class="form-select">
+
+                                <option selected disabled>
+                                    Selecione o aluno
+                                </option>
+
+                                <option>
+                                    Ana Silva
+                                </option>
+
+                                <option>
+                                    Pedro Santos
+                                </option>
+
+                                <option>
+                                    João Oliveira
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Turma -->
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Turma <span class="text-danger">*</span>
+                            </label>
+
+                            <select class="form-select">
+
+                                <option selected>
+                                    1º Ano A
+                                </option>
+
+                                <option>
+                                    1º Ano B
+                                </option>
+
+                                <option>
+                                    2º Ano A
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Data -->
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Data da matrícula
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                class="form-control"
+                                value="2026-09-03"
+                            >
+
+                        </div>
+
+
+                        <!-- Status -->
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Status
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <select class="form-select">
+
+                                <option selected>
+                                    Ativo
+                                </option>
+
+                                <option>
+                                    Pendente
+                                </option>
+
+                                <option>
+                                    Cancelado
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Número -->
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Nº da matrícula
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Automático"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        <!-- Observações -->
+
+                        <div class="col-12">
+
+                            <label class="form-label">
+                                Observações
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                rows="3"
+                                placeholder="Digite alguma observação..."
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                >
+                    <i class="bi bi-check-lg me-1"></i>
+                    Matricular aluno
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================= -->
+<!-- MODAL IMPORTAÇÃO -->
+<!-- ============================================================= -->
+
+<div
+    class="modal fade"
+    id="modalImportar"
+    tabindex="-1"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    <i class="bi bi-file-earmark-excel me-2"></i>
+                    Importar matrículas
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                ></button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <div class="alert alert-info">
+
+                    <i class="bi bi-info-circle me-1"></i>
+
+                    Utilize uma planilha no formato
+                    <strong>.xlsx</strong>.
+
+                </div>
+
+
+                <label class="form-label">
+                    Arquivo
+                </label>
+
+                <input
+                    type="file"
+                    class="form-control"
+                    accept=".xlsx,.xls"
+                >
+
+                <div class="form-text mt-2">
+
+                    A planilha deve conter:
+                    aluno, turma, data da matrícula e status.
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-success"
+                >
+                    <i class="bi bi-upload me-1"></i>
+                    Importar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<script>
+
+function abrirTurma(nomeTurma) {
+
+    document.getElementById('nomeTurmaSelecionada').textContent = nomeTurma;
+
+    const painel = document.getElementById('painelAlunos');
+
+    painel.style.display = 'block';
+
+    painel.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
+</script>
+
+</body>
+</html>
