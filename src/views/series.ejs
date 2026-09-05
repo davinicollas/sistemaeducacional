@@ -9,22 +9,42 @@
 %>
 
 <div class="main-content">
-  <div class="page-header">
-    <div>
-      <h1>Configurações Acadêmicas</h1>
-      <p>Cadastre e gerencie as séries escolares.</p>
-    </div>
-  </div>
-
   <section class="config-card">
+    <div style="text-align: right;">
+      <button type="button" class="btn-primary series-new-btn" onclick="openSeriesModal(null)">+ Nova Série</button>
+    </div>
     <div class="card-header">
       <div class="card-icon">📚</div>
       <div>
         <h2>Séries</h2>
         <p>Nome, abreviação e demais parâmetros acadêmicos de cada série.</p>
       </div>
+      </div>
+      <div class="cards">
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+              <div>
+                  <span>Total de Alunos</span>
+                  <span style="text-align: center;"><strong>
+                          <%= seriesList.length %>
+                      </strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
+              <div>
+                  <span>Alunos Ativos</span>
+                  <span style="text-align: center;"><strong><%= seriesList || 0 %></strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
+              <div>
+                  <span>Alunos Inativos</span>
+                  <span style="text-align: center;"><strong><%= seriesList || 0 %></strong></span>
+              </div>
     </div>
-
+      </div>
     <div class="card-body">
       <form id="series-form" action="/series" method="POST">
         <table class="series-table">
@@ -319,6 +339,10 @@
 
     reindexSeries();
     closeSeriesModal();
+     const serieForm = document.getElementById('series-form');
+        if (serieForm) {
+            serieForm.submit();
+        }
   }
 
   function buildSeriesRow(idx, values) {

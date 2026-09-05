@@ -7,420 +7,414 @@
 
 <div class="main-content">
     <!-- CABEÇALHO -->
-    <div class="page-header">
-        <div>
-            <h1>Configurações</h1>
-            <p>Gerencie as informações e configurações da instituição.</p>
+    <section class="config-card">
+        <div style="text-align: right;">
+            <button type="submit" class="btn-primary" form="formConfiguracao">Salvar alterações</button>
+             <button type="button" class="btn-secondary">Cancelar</button>
         </div>
-
-        <div class="header-actions">
-            <button type="button" class="btn-secondary">
-                Cancelar
-            </button>
-
-            <button type="submit" form="formConfiguracao" class="btn-primary">
-                Salvar alterações
-            </button>
-        </div>
-
-    </div>
-
-
-    <form id="formConfiguracao" action="/configuracoes" method="POST">
-
-        <!-- DADOS DA INSTITUIÇÃO -->
-        <section class="config-card">
-
-            <div class="card-header">
-                <div class="card-icon">🏫</div>
-
-                <div>
-                    <h2>Dados da instituição</h2>
-                    <p>Informações principais da escola.</p>
-                </div>
+        <div class="card-header">
+        <div class="card-icon">🎨</div>
+            <div>
+                <h1>Configurações</h1>
+                <p>Gerencie as informações e configurações da instituição.</p>
             </div>
+        </div>
+        <form id="formConfiguracao" action="/configuracoes" method="POST">
 
-            <div class="form-grid">
+            <!-- DADOS DA INSTITUIÇÃO -->
+            <section class="config-card">
 
-                <div class="form-group">
-                    <label for="nome">Nome da instituição *</label>
-                    <input
-                        type="text"
-                        id="nome"
-                        name="nome"
-                        placeholder="Ex.: Escola Estadual Central",
-                        value="<%= config.nome || '' %>"
-                        required
-                    >
+                <div class="card-header">
+                    <div class="card-icon">🏫</div>
+
+                    <div>
+                        <h2>Dados da instituição</h2>
+                        <p>Informações principais da escola.</p>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="nome_fantasia">Nome fantasia *</label>
-                    <input
-                        type="text"
-                        id="nome_fantasia"
-                        name="nome_fantasia"
-                        placeholder="Ex.: Colégio Central"
-                        value="<%= config.nome_fantasia || '' %>"
-                        required
-                    >
-                </div>
+                <div class="form-grid">
 
-                <div class="form-group">
-                    <label for="cnpj">CNPJ *</label>
-                    <input
-                        type="text"
-                        id="cnpj"
-                        name="cnpj"
-                        placeholder="00.000.000/0000-00"
-                        maxlength="18"
-                        value="<%= config.cnpj || '' %>"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="email">E-mail *</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="contato@escola.com.br"
-                        value="<%= config.email || '' %>"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="telefone">Telefone *</label>
-                    <input
-                        type="text"
-                        id="telefone"
-                        name="telefone"
-                        placeholder="(31) 3333-3333"
-                        value="<%= config.telefone || '' %>"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="whatsapp">WhatsApp</label>
-                    <input
-                        type="text"
-                        id="whatsapp"
-                        name="whatsapp"
-                        value="<%= config.whatsapp || '' %>"
-                        placeholder="(31) 99999-9999"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="site">Site</label>
-                    <input
-                        type="url"
-                        id="site"
-                        name="site"
-                        value="<%= config.site || '' %>"
-
-                        placeholder="https://www.escola.com.br"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="logo">Logo da instituição</label>
-
-                    <div class="file-input">
+                    <div class="form-group">
+                        <label for="nome">Nome da instituição *</label>
                         <input
-                            type="file"
-                            id="logo"
-                            name="logo"
-                            value="<%= config.logo || '' %>"
-
-                            accept="image/png,image/jpeg,image/webp"
+                            type="text"
+                            id="nome"
+                            name="nome"
+                            placeholder="Ex.: Escola Estadual Central",
+                            value="<%= config.nome || '' %>"
+                            required
                         >
-
-                        <label for="logo" class="file-label">
-                            <span>📷</span>
-                            Selecionar imagem
-                        </label>
                     </div>
 
-                    <small>PNG, JPG ou WEBP. Recomendado 500x500px.</small>
-                </div>
+                    <div class="form-group">
+                        <label for="nome_fantasia">Nome fantasia *</label>
+                        <input
+                            type="text"
+                            id="nome_fantasia"
+                            name="nome_fantasia"
+                            placeholder="Ex.: Colégio Central"
+                            value="<%= config.nome_fantasia || '' %>"
+                            required
+                        >
+                    </div>
 
-            </div>
+                    <div class="form-group">
+                        <label for="cnpj">CNPJ *</label>
+                        <input
+                            type="text"
+                            id="cnpj"
+                            name="cnpj"
+                            placeholder="00.000.000/0000-00"
+                            maxlength="18"
+                            value="<%= config.cnpj || '' %>"
+                            required
+                        >
+                    </div>
 
-        </section>
+                    <div class="form-group">
+                        <label for="email">E-mail *</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="contato@escola.com.br"
+                            value="<%= config.email || '' %>"
+                            required
+                        >
+                    </div>
 
+                    <div class="form-group">
+                        <label for="telefone">Telefone *</label>
+                        <input
+                            type="text"
+                            id="telefone"
+                            name="telefone"
+                            placeholder="(31) 3333-3333"
+                            value="<%= config.telefone || '' %>"
+                            required
+                        >
+                    </div>
 
-        <!-- ENDEREÇO -->
-        <section class="config-card">
+                    <div class="form-group">
+                        <label for="whatsapp">WhatsApp</label>
+                        <input
+                            type="text"
+                            id="whatsapp"
+                            name="whatsapp"
+                            value="<%= config.whatsapp || '' %>"
+                            placeholder="(31) 99999-9999"
+                        >
+                    </div>
 
-            <div class="card-header">
-                <div class="card-icon">📍</div>
+                    <div class="form-group">
+                        <label for="site">Site</label>
+                        <input
+                            type="url"
+                            id="site"
+                            name="site"
+                            value="<%= config.site || '' %>"
 
-                <div>
-                    <h2>Endereço</h2>
-                    <p>Localização da instituição.</p>
-                </div>
-            </div>
+                            placeholder="https://www.escola.com.br"
+                        >
+                    </div>
 
-            <div class="form-grid">
+                    <div class="form-group">
+                        <label for="logo">Logo da instituição</label>
 
-                <div class="form-group small-field">
-                    <label for="cep">CEP *</label>
-                    <input
-                        type="text"
-                        id="cep"
-                        name="cep"
-                        placeholder="00000-000"
-                        maxlength="9"
-                        value="<%= config.cep || '' %>"
+                        <div class="file-input">
+                            <input
+                                type="file"
+                                id="logo"
+                                name="logo"
+                                value="<%= config.logo || '' %>"
 
-                        required
-                    >
-                </div>
-
-                <div class="form-group large-field">
-                    <label for="rua">Rua *</label>
-                    <input
-                        type="text"
-                        id="rua"
-                        name="rua"
-                        value="<%= config.rua || '' %>"
-                        placeholder="Nome da rua"
-                        required
-                    >
-                </div>
-
-                <div class="form-group small-field">
-                    <label for="numero">Número *</label>
-                    <input
-                        type="text"
-                        id="numero"
-                        name="numero"
-                        value="<%= config.numero || '' %>"
-                        placeholder="123"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="complemento">Complemento</label>
-                    <input
-                        type="text"
-                        id="complemento"
-                        name="complemento"
-                        value="<%= config.complemento || '' %>"
-                        placeholder="Sala, bloco, etc."
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="bairro">Bairro *</label>
-                    <input
-                        type="text"
-                        id="bairro"
-                        name="bairro"
-                        value="<%= config.bairro || '' %>"
-                        placeholder="Centro"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="cidade">Cidade *</label>
-                    <input
-                        type="text"
-                        id="cidade"
-                        name="cidade"
-                        value="<%= config.cidade || '' %>"
-                        placeholder="Belo Horizonte"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="estado">Estado *</label>
-                    <select class="form-select" id="estado" name="idEstado" required>
-                        <% const tiposLista = Array.isArray(estado) ? estado : (estado ? [estado] : []); %>
-                        <option value="">Selecione</option>
-                        <% tiposLista.forEach(({ id, uf, text }) => { %>
-                            <option 
-                                value="<%= id %>"
-                                <%= config.idEstado === id ? 'selected' : '' %>
+                                accept="image/png,image/jpeg,image/webp"
                             >
-                                <%= text %>
+
+                            <label for="logo" class="file-label">
+                                <span>📷</span>
+                                Selecionar imagem
+                            </label>
+                        </div>
+
+                        <small>PNG, JPG ou WEBP. Recomendado 500x500px.</small>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ENDEREÇO -->
+            <section class="config-card">
+
+                <div class="card-header">
+                    <div class="card-icon">📍</div>
+
+                    <div>
+                        <h2>Endereço</h2>
+                        <p>Localização da instituição.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group small-field">
+                        <label for="cep">CEP *</label>
+                        <input
+                            type="text"
+                            id="cep"
+                            name="cep"
+                            placeholder="00000-000"
+                            maxlength="9"
+                            value="<%= config.cep || '' %>"
+
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group large-field">
+                        <label for="rua">Rua *</label>
+                        <input
+                            type="text"
+                            id="rua"
+                            name="rua"
+                            value="<%= config.rua || '' %>"
+                            placeholder="Nome da rua"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group small-field">
+                        <label for="numero">Número *</label>
+                        <input
+                            type="text"
+                            id="numero"
+                            name="numero"
+                            value="<%= config.numero || '' %>"
+                            placeholder="123"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="complemento">Complemento</label>
+                        <input
+                            type="text"
+                            id="complemento"
+                            name="complemento"
+                            value="<%= config.complemento || '' %>"
+                            placeholder="Sala, bloco, etc."
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bairro">Bairro *</label>
+                        <input
+                            type="text"
+                            id="bairro"
+                            name="bairro"
+                            value="<%= config.bairro || '' %>"
+                            placeholder="Centro"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cidade">Cidade *</label>
+                        <input
+                            type="text"
+                            id="cidade"
+                            name="cidade"
+                            value="<%= config.cidade || '' %>"
+                            placeholder="Belo Horizonte"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estado">Estado *</label>
+                        <select class="form-select" id="estado" name="idEstado" required>
+                            <% const tiposLista = Array.isArray(estado) ? estado : (estado ? [estado] : []); %>
+                            <option value="">Selecione</option>
+                            <% tiposLista.forEach(({ id, uf, text }) => { %>
+                                <option 
+                                    value="<%= id %>"
+                                    <%= config.idEstado === id ? 'selected' : '' %>
+                                >
+                                    <%= text %>
+                                </option>
+                            <% }) %>
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONFIGURAÇÃO ACADÊMICA -->
+            <section class="config-card">
+
+                <div class="card-header">
+                    <div class="card-icon">📚</div>
+
+                    <div>
+                        <h2>Configuração acadêmica</h2>
+                        <p>Defina os parâmetros do ano letivo.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="ano_letivo_atual">Ano letivo atual *</label>
+
+                        <input
+                            type="number"
+                            id="ano_letivo_atual"
+                            name="ano_letivo_atual"
+                            value="<%= config.ano_letivo_atual || '2026' %>"
+                            min="2000"
+                            max="2100"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data_inicio">Data de início *</label>
+
+                        <input
+                            type="date"
+                            id="data_inicio"
+                            name="data_inicio"
+                            value="<%= config.data_inicio ? new Date(config.data_inicio).toISOString().split('T')[0] : '' %>"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data_fim">Data de término *</label>
+
+                        <input
+                            type="date"
+                            id="data_fim"
+                            name="data_fim"
+                            value="<%= config.data_fim ? new Date(config.data_fim).toISOString().split('T')[0] : '' %>"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="horario_funcionamento">
+                            Horário de funcionamento *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="horario_funcionamento"
+                            name="horario_funcionamento"
+                            placeholder="07:00 às 18:00"
+                            value="<%= config.horario_funcionamento || '' %>"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONFIGURAÇÕES GERAIS -->
+            <section class="config-card">
+
+                <div class="card-header">
+                    <div class="card-icon">⚙️</div>
+
+                    <div>
+                        <h2>Configurações gerais</h2>
+                        <p>Preferências de funcionamento do sistema.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="fuso_horario">Fuso horário *</label>
+
+                        <select
+                            id="fuso_horario"
+                            name="fuso_horario"
+                            required
+                        >
+                            <option value="America/Sao_Paulo" <%= config.fuso_horario === 'America/Sao_Paulo' ? 'selected' : '' %>>
+                                America/Sao_Paulo
                             </option>
-                        <% }) %>
-                    </select>
+
+                            <option value="America/Manaus" <%= config.fuso_horario === 'America/Manaus' ? 'selected' : '' %>>
+                                America/Manaus
+                            </option>
+
+                            <option value="America/Belem" <%= config.fuso_horario === 'America/Belem' ? 'selected' : '' %>>
+                                America/Belem
+                            </option>
+
+                            <option value="America/Fortaleza" <%= config.fuso_horario === 'America/Fortaleza' ? 'selected' : '' %>>
+                                America/Fortaleza
+                            </option>
+
+                            <option value="America/Recife" <%= config.fuso_horario === 'America/Recife' ? 'selected' : '' %>>
+                                America/Recife
+                            </option>
+
+                            <option value="America/Rio_Branco" <%= config.fuso_horario === 'America/Rio_Branco' ? 'selected' : '' %>>
+                                America/Rio_Branco
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="moeda">Moeda *</label>
+
+                        <select id="moeda" name="moeda" required>
+
+                            <option value="BRL" <%= config.moeda === 'BRL' ? 'selected' : '' %>>
+                                BRL - Real brasileiro
+                            </option>
+
+                            <option value="USD" <%= config.moeda === 'USD' ? 'selected' : '' %>>
+                                USD - Dólar americano
+                            </option>
+
+                            <option value="EUR" <%= config.moeda === 'EUR' ? 'selected' : '' %>>
+                                EUR - Euro
+                            </option>
+
+                        </select>
+                    </div>
 
                 </div>
+
+            </section>
+
+
+            <!-- BOTÕES MOBILE -->
+            <div class="mobile-actions">
+
+                <button type="button" class="btn-secondary">
+                    Cancelar
+                </button>
+
+                <button type="submit" class="btn-primary">
+                    Salvar alterações
+                </button>
 
             </div>
 
-        </section>
-
-
-        <!-- CONFIGURAÇÃO ACADÊMICA -->
-        <section class="config-card">
-
-            <div class="card-header">
-                <div class="card-icon">📚</div>
-
-                <div>
-                    <h2>Configuração acadêmica</h2>
-                    <p>Defina os parâmetros do ano letivo.</p>
-                </div>
-            </div>
-
-            <div class="form-grid">
-
-                <div class="form-group">
-                    <label for="ano_letivo_atual">Ano letivo atual *</label>
-
-                    <input
-                        type="number"
-                        id="ano_letivo_atual"
-                        name="ano_letivo_atual"
-                        value="<%= config.ano_letivo_atual || '2026' %>"
-                        min="2000"
-                        max="2100"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="data_inicio">Data de início *</label>
-
-                    <input
-                        type="date"
-                        id="data_inicio"
-                        name="data_inicio"
-                        value="<%= config.data_inicio ? new Date(config.data_inicio).toISOString().split('T')[0] : '' %>"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="data_fim">Data de término *</label>
-
-                    <input
-                        type="date"
-                        id="data_fim"
-                        name="data_fim"
-                        value="<%= config.data_fim ? new Date(config.data_fim).toISOString().split('T')[0] : '' %>"
-                        required
-                    >
-                </div>
-
-                  <div class="form-group">
-                    <label for="horario_funcionamento">
-                        Horário de funcionamento *
-                    </label>
-
-                    <input
-                        type="text"
-                        id="horario_funcionamento"
-                        name="horario_funcionamento"
-                        placeholder="07:00 às 18:00"
-                        value="<%= config.horario_funcionamento || '' %>"
-                        required
-                    >
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- CONFIGURAÇÕES GERAIS -->
-        <section class="config-card">
-
-            <div class="card-header">
-                <div class="card-icon">⚙️</div>
-
-                <div>
-                    <h2>Configurações gerais</h2>
-                    <p>Preferências de funcionamento do sistema.</p>
-                </div>
-            </div>
-
-            <div class="form-grid">
-
-                <div class="form-group">
-                    <label for="fuso_horario">Fuso horário *</label>
-
-                    <select
-                        id="fuso_horario"
-                        name="fuso_horario"
-                        required
-                    >
-                        <option value="America/Sao_Paulo" <%= config.fuso_horario === 'America/Sao_Paulo' ? 'selected' : '' %>>
-                            America/Sao_Paulo
-                        </option>
-
-                        <option value="America/Manaus" <%= config.fuso_horario === 'America/Manaus' ? 'selected' : '' %>>
-                            America/Manaus
-                        </option>
-
-                        <option value="America/Belem" <%= config.fuso_horario === 'America/Belem' ? 'selected' : '' %>>
-                            America/Belem
-                        </option>
-
-                        <option value="America/Fortaleza" <%= config.fuso_horario === 'America/Fortaleza' ? 'selected' : '' %>>
-                            America/Fortaleza
-                        </option>
-
-                        <option value="America/Recife" <%= config.fuso_horario === 'America/Recife' ? 'selected' : '' %>>
-                            America/Recife
-                        </option>
-
-                        <option value="America/Rio_Branco" <%= config.fuso_horario === 'America/Rio_Branco' ? 'selected' : '' %>>
-                            America/Rio_Branco
-                        </option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="moeda">Moeda *</label>
-
-                    <select id="moeda" name="moeda" required>
-
-                        <option value="BRL" <%= config.moeda === 'BRL' ? 'selected' : '' %>>
-                            BRL - Real brasileiro
-                        </option>
-
-                        <option value="USD" <%= config.moeda === 'USD' ? 'selected' : '' %>>
-                            USD - Dólar americano
-                        </option>
-
-                        <option value="EUR" <%= config.moeda === 'EUR' ? 'selected' : '' %>>
-                            EUR - Euro
-                        </option>
-
-                    </select>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- BOTÕES MOBILE -->
-        <div class="mobile-actions">
-
-            <button type="button" class="btn-secondary">
-                Cancelar
-            </button>
-
-            <button type="submit" class="btn-primary">
-                Salvar alterações
-            </button>
-
-        </div>
-
-    </form>
+        </form>
+    </section>
 
 </div>
 

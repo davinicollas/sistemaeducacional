@@ -6,14 +6,10 @@
 %>
 
 <div class="main-content">
-  <div class="page-header">
-    <div>
-      <h1>Configurações Acadêmicas</h1>
-      <p>Cadastre e gerencie os tipos de avaliação.</p>
-    </div>
-  </div>
-
   <section class="config-card">
+     <div style="text-align: right;">
+      <button type="button" class="btn-primary series-new-btn" onclick="openTiposModal(null)">+ Novo Tipo de Avaliação</button>
+    </div>
     <div class="card-header">
       <div class="card-icon">✅</div>
       <div>
@@ -21,7 +17,31 @@
         <p>Nome, sigla e nota máxima.</p>
       </div>
     </div>
-
+<div class="cards">
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+              <div>
+                  <span>Total de Alunos</span>
+                  <span style="text-align: center;"><strong>
+                          <%= tiposList.length %>
+                      </strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
+              <div>
+                  <span>Alunos Ativos</span>
+                  <span style="text-align: center;"><strong><%= tiposList || 0 %></strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
+              <div>
+                  <span>Alunos Inativos</span>
+                  <span style="text-align: center;"><strong><%= tiposList || 0 %></strong></span>
+              </div>
+    </div>
+      </div>  
     <div class="card-body">
       <form id="tipos-form" action="/tipos-avaliacao" method="POST">
         <table class="series-table">
@@ -157,6 +177,12 @@
     ModalHelper.applyValuesToRow('tipos', fields, displayMap, idx, values, 'openTiposModal', '/tipos-avaliacao/excluir');
     ModalHelper.reindex('tipos', fields, 'openTiposModal');
     closeTiposModal();
+
+    const tiposForm = document.getElementById('tipos-form');
+        if (tiposForm) {
+            tiposForm.submit();
+        }
+    
   }
 
   function excluirTipo(id) { ModalHelper.submitDelete(`/tipos-avaliacao/excluir/${id}`); }

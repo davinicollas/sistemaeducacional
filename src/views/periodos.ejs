@@ -7,14 +7,10 @@
 %>
 
 <div class="main-content">
-  <div class="page-header">
-    <div>
-      <h1>Configurações Acadêmicas</h1>
-      <p>Cadastre e gerencie os períodos / bimestres.</p>
-    </div>
-  </div>
-
   <section class="config-card">
+    <div style="text-align: right;">
+      <button type="button" class="btn-primary series-new-btn" onclick="openPeriodosModal(null)">+ Novo Período</button>
+    </div>
     <div class="card-header">
       <div class="card-icon">📐</div>
       <div>
@@ -22,7 +18,31 @@
         <p>Defina divisões do ano letivo (bimestre, semestre, personalizado).</p>
       </div>
     </div>
-
+<div class="cards">
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+              <div>
+                  <span>Total de Alunos</span>
+                  <span style="text-align: center;"><strong>
+                          <%= periodosList.length %>
+                      </strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
+              <div>
+                  <span>Alunos Ativos</span>
+                  <span style="text-align: center;"><strong><%= periodosList || 0 %></strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
+              <div>
+                  <span>Alunos Inativos</span>
+                  <span style="text-align: center;"><strong><%= periodosList || 0 %></strong></span>
+              </div>
+    </div>
+      </div>  
     <div class="card-body">
       <form id="periodos-form" action="/periodos" method="POST">
         <table class="series-table">
@@ -203,6 +223,11 @@
     ModalHelper.applyValuesToRow('periodos', fields, displayMap, idx, values, 'openPeriodosModal', '/periodos/excluir');
     ModalHelper.reindex('periodos', fields, 'openPeriodosModal');
     closePeriodosModal();
+    const periodoForm = document.getElementById('periodos-form');
+        if (periodoForm) {
+            periodoForm.submit();
+        }
+    
   }
 
   function excluirPeriodo(id) {

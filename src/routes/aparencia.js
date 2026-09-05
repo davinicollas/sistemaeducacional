@@ -20,32 +20,53 @@
 
     router.post("/aparencia", async(req,res)=>{
         const {
+
             tema_sistema,
             cor_principal,
             menu_lateral
         } = req.body;
 
+        const id = req.body.id ? Number(req.body.id) : null;
 
-        
-        await db.query(
+        console.log(id);
+        if(id){
+            await db.query(
 
-            `INSERT INTO sistema_aparencia
-            (tema_sistema,cor_principal,menu_lateral)
+                `INSERT INTO sistema_aparencia
+                (tema_sistema,cor_principal,menu_lateral)
 
-            VALUES(?,?,?)
+                VALUES(?,?,?)
 
-            ON DUPLICATE KEY UPDATE
+                ON DUPLICATE KEY UPDATE
 
-            tema_sistema=VALUES(tema_sistema),
-            cor_principal=VALUES(cor_principal),
-            menu_lateral=VALUES(menu_lateral)`,
-            [
-            tema_sistema,
-            cor_principal,
-            menu_lateral
-            ]
+                tema_sistema=VALUES(tema_sistema),
+                cor_principal=VALUES(cor_principal),
+                menu_lateral=VALUES(menu_lateral)`,
+                [
+                tema_sistema,
+                cor_principal,
+                menu_lateral
+                ]
 
-        );
+            );
+
+        }else{
+            await db.query(
+                `UPDATE sistema_aparencia
+                SET
+                tema_sistema=?,
+                cor_principal=?,
+                menu_lateral=?
+                WHERE id = ?`,
+                [
+                tema_sistema,
+                cor_principal,
+                menu_lateral,
+                id
+                ]
+
+            );
+        }
 
         res.redirect("/aparencia");
 

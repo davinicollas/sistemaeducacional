@@ -36,7 +36,7 @@
             fuso_horario,
             moeda,
             cep,
-            rua, numero, complemento, bairro, cidade, idEstado, data_inicio, data_fim,media_minima,frequencia_minima,nota_maxima,tema_sistema,idEscola
+            rua, numero, complemento, bairro, cidade, idEstado, data_inicio, data_fim
         } = req.body;
 
 
@@ -44,10 +44,9 @@
         await db.query(
 
             `INSERT INTO configuracoes
-            (idEscola,nome,nome_fantasia,cnpj,logo,telefone,whatsapp,email,site,ano_letivo_atual,horario_funcionamento,fuso_horario,moeda,cep,rua,numero,complemento,bairro,cidade,idEstado,data_inicio,data_fim,media_minima,frequencia_minima,nota_maxima,tema_sistema)
+            (nome,nome_fantasia,cnpj,logo,telefone,whatsapp,email,site,ano_letivo_atual,horario_funcionamento,fuso_horario,moeda,cep,rua,numero,complemento,bairro,cidade,idEstado,data_inicio,data_fim)
 
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-
+VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON DUPLICATE KEY UPDATE
 
             nome=VALUES(nome),
@@ -70,13 +69,8 @@
             cidade=VALUES(cidade),
             idEstado=VALUES(idEstado),
             data_inicio=VALUES(data_inicio),
-            data_fim=VALUES(data_fim),
-            media_minima=VALUES(media_minima),
-            frequencia_minima=VALUES(frequencia_minima),
-            nota_maxima=VALUES(nota_maxima),
-            tema_sistema=VALUES(tema_sistema)`,
+            data_fim=VALUES(data_fim)`,
             [
-            idEscola,
             nome,
             nome_fantasia,
             cnpj,
@@ -97,11 +91,7 @@
             cidade,
             idEstado,
             data_inicio,
-            data_fim,
-            media_minima,
-            frequencia_minima,
-            nota_maxima,
-            tema_sistema
+            data_fim
             ]
 
         );

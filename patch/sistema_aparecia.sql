@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `sistema_aparecia` (
+CREATE TABLE IF NOT EXISTS `sistema_aparencia` (
     id INT NOT NULL AUTO_INCREMENT,
     tema_sistema VARCHAR(20) NOT NULL,
     cor_principal VARCHAR(20) NOT NULL,

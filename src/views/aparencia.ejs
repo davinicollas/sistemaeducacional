@@ -4,14 +4,11 @@
     aparencia = typeof aparencia !== 'undefined' ? aparencia : {};
 %>
 <div class="main-content">
-  <div class="page-header">
-    <div>
-      <h1>Aparência</h1>
-      <p>Configurações visuais e temas da plataforma.</p>
-    </div>
-  </div>
-
   <section class="config-card">
+     <div style="text-align: right;">
+            <button type="submit" class="btn-primary" form="formConfiguracao">Salvar alterações</button>
+             <button type="button" class="btn-secondary">Cancelar</button>
+        </div>
     <div class="card-header">
       <div class="card-icon">🎨</div>
       <div>
@@ -20,7 +17,7 @@
       </div>
     </div>
     <div class="card-body">
-      <form action="/aparencia" method="POST">
+      <form id="formConfiguracao" action="/aparencia" method="POST">
         <div class="form-grid">
            <div class="form-group">
                 <label for="tema_sistema">Tema *</label>
@@ -85,7 +82,6 @@
                 </select>
             </div>
         </div>
-        <%- include('partials/botoes', { showNew: false }) %>
       </form>
     </div>
   </section>

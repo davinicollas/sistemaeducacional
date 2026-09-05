@@ -6,14 +6,10 @@
 %>
 
 <div class="main-content">
-  <div class="page-header">
-    <div>
-      <h1>Configurações Acadêmicas</h1>
-      <p>Cadastre e gerencie os anos letivos.</p>
-    </div>
-  </div>
-
   <section class="config-card">
+    <div style="text-align: right;">
+      <button type="button" class="btn-primary series-new-btn" onclick="openAnosModal(null)">+ Novo Ano Letivo</button>
+    </div>
     <div class="card-header">
       <div class="card-icon">📅</div>
       <div>
@@ -21,6 +17,31 @@
         <p>Períodos escolares com datas de início e fim.</p>
       </div>
     </div>
+    <div class="cards">
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+              <div>
+                  <span>Total de Alunos</span>
+                  <span style="text-align: center;"><strong>
+                          <%= anosList.length %>
+                      </strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
+              <div>
+                  <span>Alunos Ativos</span>
+                  <span style="text-align: center;"><strong><%= anosList || 0 %></strong></span>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
+              <div>
+                  <span>Alunos Inativos</span>
+                  <span style="text-align: center;"><strong><%= anosList || 0 %></strong></span>
+              </div>
+    </div>
+      </div>
 
     <div class="card-body">
       <form id="anos-form" action="/anos-letivos" method="POST">
@@ -176,6 +197,11 @@
     ModalHelper.applyValuesToRow('anos', fields, displayMap, idx, values, 'openAnosModal', '/anos-letivos/excluir');
     ModalHelper.reindex('anos', fields, 'openAnosModal');
     closeAnosModal();
+
+    const anosForm = document.getElementById('anos-form');
+        if (anosForm) {
+            anosForm.submit();
+        }
   }
 
   function excluirAno(id) { ModalHelper.submitDelete(`/anos-letivos/excluir/${id}`); }
