@@ -26,10 +26,10 @@
             menu_lateral
         } = req.body;
 
-        const id = req.body.id ? Number(req.body.id) : null;
+        const aparenciaData = await aparencia.getAparencia();
+        const id = aparenciaData ? aparenciaData.id : null;
 
-        console.log(id);
-        if(id){
+        if(!id){
             await db.query(
 
                 `INSERT INTO sistema_aparencia

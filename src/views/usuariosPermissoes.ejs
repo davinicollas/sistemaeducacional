@@ -2,21 +2,22 @@
     <%- include('partials/menu') %>
 
 <div class="main-content">
+    <section class="config-card">
+        <div style="text-align: right;">
+            <button type="submit" form="formUsuarioPermissoes" class="btn-primary">Salvar alterações</button>
+            <button type="button" class="btn-secondary"> <a href="/dashboard">Cancelar</a></button>
+
+        </div>
     <div class="page-header">
         <div>
             <h1>Usuários e Permissões</h1>
             <p>Gerencie papéis e suas permissões na plataforma.</p>
-        </div>
-        <div class="header-actions">
-            <button type="button" class="btn-secondary"> <a href="/dashboard">Cancelar</a></button>
-            <button type="submit" form="formUsuarioPermissoes" class="btn-primary">Salvar alterações</button>
         </div>
     </div>
 
     <% if (typeof erro !== 'undefined' && erro) { %>
         <div class="alert alert-error"><%= erro %></div>
     <% } %>
-    <section class="config-card">
         <div class="permissions-actions">
             <form action="/usuariosPermissoes/role" method="POST" class="form-group">
                 <input type="text" name="name" placeholder="Novo papel (ex: Coordenador)" required />

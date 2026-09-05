@@ -4,22 +4,20 @@
     configuracao_notas = typeof configuracao_notas !== 'undefined' ? configuracao_notas : {};
 %>
 <div class="main-content">
+    <section class="config-card">
+
+    <div style="text-align: right;">
+            <button type="submit" class="btn-primary" form="formConfiguracao">Salvar alterações</button>
+             <button type="button" class="btn-secondary">Cancelar</button>
+        </div>
   <div class="page-header">
     <div>
       <h1>Configuração de Notas</h1>
       <p>Parâmetros de avaliação e notas.</p>
     </div>
   </div>
-  <section class="config-card">
-    <div class="card-header">
-      <div class="card-icon">🧾</div>
-      <div>
-        <h2>Escalas e regras</h2>
-        <p>Placeholder: configurar escalas de notas.</p>
-      </div>
-    </div>
      <div class="card-body">
-      <form action="/configuracao_notas" method="POST">
+      <form id="formConfiguracao" action="/configuracao_notas" method="POST">
         <div class="form-grid">
            <div class="form-group">
                 <label for="tipo">Tipo *</label>
@@ -82,6 +80,7 @@
         </div>
         <%- include('partials/botoes', { showNew: false }) %>
       </form>
+
     </div>
   </section>
 
