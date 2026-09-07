@@ -9,7 +9,7 @@ async function getTurmas(where = '', params = [], pageSize, offset) {
         `SELECT t.*
          FROM turmas t
          WHERE t.excluido < 1 ${whereSql}
-         ORDER BY t.nome ASC
+         ORDER BY t.text ASC
          LIMIT ? OFFSET ?`,
         [...params, limit, off]
     );

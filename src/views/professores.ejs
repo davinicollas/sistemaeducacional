@@ -334,6 +334,11 @@
     ModalHelper.applyValuesToRow('professores', PROFESSOR_FIELDS, displayMap, idx, displayValues, 'openProfessorModal', '/professores/excluir');
     ModalHelper.reindex('professores', PROFESSOR_FIELDS, 'openProfessorModal');
     closeProfessorModal();
+
+    const professoresForm = document.getElementById('professores-form');
+          if (professoresForm) {
+              professoresForm.submit();
+          }
   }
 
   function excluirProfessor(id) { ModalHelper.submitDelete(`/professores/excluir/${id}`); }

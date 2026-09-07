@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS professores (
     bairro VARCHAR(255),
     cidade VARCHAR(255),
     id_estado INT,
+    idFormacao INT,
     matricula VARCHAR(50),
     registro_profissional VARCHAR(50),
     data_admissao DATE,
@@ -29,5 +30,6 @@ CREATE TABLE IF NOT EXISTS professores (
     excluido INT NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT fk_professores_disciplina FOREIGN KEY (id_disciplina) REFERENCES params_disciplina(id),
-    CONSTRAINT fk_professores_estado FOREIGN KEY (id_estado) REFERENCES params_estados(id)
+    CONSTRAINT fk_professores_estado FOREIGN KEY (id_estado) REFERENCES params_estados(id),
+    CONSTRAINT fk_professores_formacao FOREIGN KEY (idFormacao) REFERENCES params_formacao(id)
 );

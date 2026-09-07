@@ -1,275 +1,175 @@
 <%- include('partials/header') %>
-<%- include('partials/menu') %>
-<%
-    filtros = typeof filtros !== 'undefined' ? filtros : {};
-    pagination = typeof pagination !== 'undefined' ? pagination : {};
-    turmas = typeof turmas !== 'undefined' ? turmas : {};
-    let turmasList = Array.isArray(turmas.turmas) ? turmas.turmas : [];
-    salas = typeof salas !== 'undefined' ? salas : {};
-    turnos = typeof turnos !== 'undefined' ? turnos : {};
-    series = typeof series !== 'undefined' ? series : {};
-    anoLetivo = typeof anoLetivo !== 'undefined' ? anoLetivo : {};
-    let salasList = Array.isArray(salas) ? salas : [];
-    let turnosList = Array.isArray(turnos) ? turnos : [];
-    let seriesList = Array.isArray(series) ? series : [];
-    let anoLetivoList = Array.isArray(anoLetivo) ? anoLetivo : [];
-%>
+  <%- include('partials/menu') %>
+    <% const filtrosView=typeof filtros !=='undefined' ? filtros : {}; const paginationView=typeof pagination
+      !=='undefined' ? pagination : {}; const turmasList=Array.isArray(turmas?.turmas) ? turmas.turmas : []; const
+      salasList=Array.isArray(salas) ? salas : []; const turnosList=Array.isArray(turnos) ? turnos : []; const
+      seriesList=Array.isArray(series) ? series : []; const anoLetivoList=Array.isArray(anoLetivo) ? anoLetivo : [];
+      const fields=['id', 'text' , 'sigla' , 'id_ano_letivo' , 'id_serie' , 'id_turno' , 'id_salas' , 'id_status' ];
+      const findOption=(items, id)=> items.find(item => String(item.id) === String(id));
+      const optionName = (items, id) => findOption(items, id)?.text || findOption(items, id)?.nome || '-';
+      const activeCount = turmasList.filter(turma => Number(turma.id_status) === 1).length;
+      %>
 
-<div class="main-content">
-  <section class="config-card">
-    <div style="text-align: right;">
-      <button type="button" class="btn-primary series-new-btn" onclick="openTurmasModal(null)">+ Nova Turma</button>
-    </div>
-    <div class="card-header">
-      <div class="card-icon"><i class="bi bi-person-workspace"></i></div>
-      <div>
-        <h2>Turmas</h2>
-        <p>Cadastre, consulte e gerencie as turmas da instituição.</p>
-      </div>
-    </div>
+      <main class="main-content">
+        <section class="config-card">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+              <h1 class="page-title mb-1"><i class="bi bi-people me-2"></i>Turmas</h1>
+              <p class="text-muted mb-0">Selecione uma turma para visualizar os alunos.</p>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="openTurmasModal(null)"><i
+                class="bi bi-plus-lg me-1"></i>Nova turma</button>
+          </div>
 
-    <div class="cards">
-      <div class="card">
-        <div class="card-icon"><i class="bi bi-people-fill"></i></div>
-        <div>
-            <span>Total de Turmas</span>
-            <span style="text-align: center;"><strong><%= turmasList.length %></strong></span>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
-        <div>
-          <span>Turmas Ativas</span>
-          <span style="text-align: center;"><strong><%= turmasList.filter(t => t.id_status).length %></strong></span>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
-        <div>
-          <span>Turmas Inativas</span>
-          <span style="text-align: center;"><strong><%= turmasList.filter(t => !t.id_status).length %></strong></span>
-        </div>
-      </div>
-    </div>
-    <div class="card-body">
-      <form id="turmas-form" action="/turmas" method="POST">
-        <table class="turmas-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Turmas</th>
-              <th>Data Início</th>
-              <th>Data Término</th>
-              <th>Status</th>
-              <th style="width: 10%">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="turmas-tbody">
-           <% turmasList.forEach(function (s, idx) { %>             
-              <tr data-index="<%= idx %>" class="turmas-row">
-                <td><span class="turmas-id"><%= s.id || '' %></span></td>
-                <td><span class="turmas-nome"><%= s.nome || s.text || '' %></span></td>
-                <td><span class="turmas-sigla"><%= s.sigla || '' %></span></td>
-                <td><span class="turmas-data_inicio"><%= new Date(s.data_inicio).toLocaleDateString('pt-BR') %></span></td>
-                <td><span class="turmas-data_fim"><%= new Date(s.data_fim).toLocaleDateString('pt-BR') %></span></td>
-                <td><span class="turmas-id_status"><%= s.id_status ? 'Ativo' : 'Inativo' %></span></td>
-                <td class="turmas-actions">
-                  <button type="button" class="btn btn-sm btn-warning" onclick="openTurmasModal(<%= idx %>)"><i class="bi bi-pencil"></i></button>
-                  <button type="button" class="btn btn-sm btn-danger" onclick="excluirTurma(<%= s.id %>)"><i class="bi bi-trash"></i></button>
-                </td>
-                <td class="hidden-values" style="display:none">
-                  <input type="hidden" data-field="id" name="turmas[<%= idx %>][id]" value="<%= s.id || '' %>" />
-                  <input type="hidden" data-field="nome" name="turmas[<%= idx %>][nome]" value="<%= s.nome || s.text || '' %>" />
-                  <input type="hidden" data-field="sigla" name="turmas[<%= idx %>][sigla]" value="<%= s.sigla || '' %>" />
-                  <input type="hidden" data-field="id_ano_letivo" name="turmas[<%= idx %>][id_ano_letivo]" value="<%= s.id_ano_letivo || '' %>" />
-                  <input type="hidden" data-field="id_serie" name="turmas[<%= idx %>][id_serie]" value="<%= s.id_serie || '' %>" />
-                  <input type="hidden" data-field="id_turno" name="turmas[<%= idx %>][id_turno]" value="<%= s.id_turno || '' %>" />
-                  <input type="hidden" data-field="id_salas" name="turmas[<%= idx %>][id_salas]" value="<%= s.id_salas || '' %>" />
-                  <input type="hidden" data-field="capacidade" name="turmas[<%= idx %>][capacidade]" value="<%= s.capacidade || '' %>" />
-                  <input type="hidden" data-field="data_inicio" name="turmas[<%= idx %>][data_inicio]" value="<%= s.data_inicio ? new Date(s.data_inicio).toISOString().slice(0,10) : '' %>" />
-                  <input type="hidden" data-field="data_fim" name="turmas[<%= idx %>][data_fim]" value="<%= s.data_fim ? new Date(s.data_fim).toISOString().slice(0,10) : '' %>" />
-                  <input type="hidden" data-field="id_status" name="turmas[<%= idx %>][id_status]" value="<%= s.id_status || '1' %>" />
-                  <input type="hidden" data-field="observacoes" name="turmas[<%= idx %>][observacoes]" value="<%= s.observacoes || '' %>" />
-                </td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
+          <form class="card border-0 shadow-sm mb-4" method="get" action="/turmas">
+            <div class="card-body row g-3 align-items-end">
+              <div class="col-md-8"><label class="form-label" for="busca">Buscar turma</label>
+                <div class="input-group"><span class="input-group-text"><i class="bi bi-search"></i></span><input
+                    id="busca" name="busca" class="form-control" value="<%= filtrosView.busca || '' %>"
+                    placeholder="Nome ou sigla"></div>
+              </div>
+              <div class="col-md-4 d-flex gap-2"><button class="btn btn-outline-primary flex-grow-1"
+                  type="submit">Buscar</button><a class="btn btn-outline-secondary" href="/turmas" title="Limpar busca"
+                  aria-label="Limpar busca"><i class="bi bi-x-lg"></i></a></div>
+            </div>
+          </form>
 
-        <% if (!turmasList.length) { %>
-          <p class="series-empty" id="turmas-empty">Nenhuma turma cadastrada ainda.</p>
-        <% } %>
-      </form>
-    </div>
-    <div>
-      <%- include('partials/botoes', { showExport: true, exportAction: 'ExportExcel(null)', showImport: true, importAction: 'ImportExcel(null)' }) %>
-    </div>
-                        <div class="form-actions" style="margin-top: 20px; text-align: center;">
-    <%- include('partials/paginations', {
-          pagination,
-          filtros,
-          rota: '/turmas',
-          query: `busca=${encodeURIComponent(filtros?.busca || '')}`
-      }) %>
-        </div>
-      </section>
-</div>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="card stat-card shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div><small class="text-muted">Turmas na página</small>
+                    <h2 class="mb-0 mt-1">
+                      <%= turmasList.length %>
+                    </h2>
+                  </div>
+                  <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-building"></i></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card stat-card shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div><small class="text-muted">Ativas</small>
+                    <h2 class="mb-0 mt-1">
+                      <%= activeCount %>
+                    </h2>
+                  </div>
+                  <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-check-circle"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-<script>
-  function getOrCreateTurmasModal() {
-    let modal = document.getElementById('turmas-modal');
-    if (modal) return modal;
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h2 class="h5 mb-1">Turmas cadastradas</h2><small class="text-muted">Selecione uma turma para visualizar
+                os alunos.</small>
+            </div><span class="badge text-bg-light">
+              <%= paginationView.totalItems || turmasList.length %> registros
+            </span>
+          </div>
 
-    modal = document.createElement('div');
-    modal.id = 'turmas-modal';
-    modal.innerHTML = `
-      <div class="modal-panel">
-        <h3>Turma</h3>
-        <input type="hidden" id="modal-index" value="-1">
-        <input type="hidden" id="modal-id" value="">
+          <form id="turmas-form" action="/turmas" method="post">
+            <div class="row g-4" id="turmas-cards">
+              <% turmasList.forEach(function (turma, idx) { const capacidade=Number(turma.capacidade) || 0; const
+                alunos=Number(turma.alunos || turma.total_alunos) || 0; const vagas=Math.max(capacidade - alunos, 0);
+                const ocupacao=capacidade ? Math.min(Math.round((alunos / capacidade) * 100), 100) : 0; %>
+                <div class="col-xl-4 col-lg-6 turma-card-wrapper">
+                  <article class="card turma-card shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+                      <div class="d-flex justify-content-between align-items-start">
+                        <div class="d-flex gap-3">
+                          <div class="turma-icon"><i class="bi bi-people"></i></div>
+                          <div>
+                            <h3 class="h5 mb-1">
+                              <%= turma.text || '-' %>
+                            </h3><small class="text-muted">
+                              <%= turma.sigla || '-' %> • <%= optionName(seriesList, turma.id_serie) %>
+                            </small>
+                          </div>
+                        </div><span
+                          class="badge <%= Number(turma.id_status) === 1 ? 'text-bg-success' : 'text-bg-secondary' %>">
+                          <%= Number(turma.id_status)===1 ? 'Ativa' : 'Inativa' %>
+                        </span>
+                      </div>
+                      <hr>
+                      <div class="row text-center mb-3">
+                        <div class="col-4"><strong class="d-block">
+                            <%= alunos %>
+                          </strong><small class="text-muted">Alunos</small></div>
+                        <div class="col-4"><strong class="d-block">
+                            <%= capacidade %>
+                          </strong><small class="text-muted">Capacidade</small></div>
+                        <div class="col-4"><strong class="d-block">
+                            <%= vagas %>
+                          </strong><small class="text-muted">Vagas</small></div>
+                      </div>
+                      <div class="progress capacity-bar mb-3" role="progressbar" aria-label="Ocupação da turma"
+                        aria-valuenow="<%= ocupacao %>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="width:<%= ocupacao %>%"></div>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center mb-3 text-muted small"><span><i
+                            class="bi bi-sun me-1"></i>
+                          <%= optionName(turnosList, turma.id_turno) %>
+                        </span><span><i class="bi bi-door-open me-1"></i>
+                          <%= optionName(salasList, turma.id_salas) %>
+                        </span></div>
+                      <a class="btn btn-outline-primary w-100 mt-auto" href="/alunos?turma=<%= turma.id %>"><i
+                          class="bi bi-eye me-1"></i>Ver alunos</a>
+                      <div class="mt-2 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                          onclick="openTurmasModal(<%= idx %>)" title="Editar turma" aria-label="Editar turma"><i
+                            class="bi bi-pencil"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                          onclick="excluirTurma(<%= turma.id %>)" title="Excluir turma" aria-label="Excluir turma"><i
+                            class="bi bi-trash"></i></button>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+                <% }) %>
+            </div>
+            <table class="d-none">
+              <tbody id="turmas-tbody">
+                <% turmasList.forEach(function (turma, idx) { %>
+                  <tr data-index="<%= idx %>" class="turmas-row">
+                    <td class="hidden-values">
+                      <% fields.forEach(function (field) { %><input type="hidden" data-field="<%= field %>"
+                          name="turmas[<%= idx %>][<%= field %>]"
+                          value="<%= field === 'id_status' ? (turma[field] ?? 1) : (turma[field] ?? '') %>">
+                        <% }) %>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+          </form>
 
-        <div class="form-group">
-          <label for="modal-nome">Nome *</label>
-          <input id="modal-nome" type="text" placeholder="Ex: 1º Ano A" />
-        </div>
-        <div class="form-group">
-          <label for="modal-sigla">Sigla *</label>
-          <input id="modal-sigla" type="text" placeholder="Ex: 1A" />
-        </div>
-        <div class="form-group">
-          <label for="modal-id_ano_letivo">Ano Letivo</label>
-          <select id="modal-id_ano_letivo">
-            <option value="">Selecione</option>
-            <% anoLetivoList.forEach(function (ano) { %>
-              <option value="<%= ano.id %>"><%= ano.text %></option>
-            <% }) %>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="modal-id_serie">Série</label>
-          <select id="modal-id_serie">
-            <option value="">Selecione</option>
-            <% seriesList.forEach(function (serie) { %>
-              <option value="<%= serie.id %>"><%= serie.nome %></option>
-            <% }) %>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="modal-id_turno">Turno</label>
-          <select id="modal-id_turno">
-            <option value="">Selecione</option>
-            <% turnosList.forEach(function (turno) { %>
-              <option value="<%= turno.id %>"><%= turno.nome %></option>
-            <% }) %>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="modal-id_salas">Sala</label>
-          <select id="modal-id_salas">
-            <option value="">Selecione</option>
-            <% salasList.forEach(function (d) { %>
-              <option value="<%= d.id %>"><%= d.nome %></option>
-            <% }) %>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="modal-capacidade">Capacidade</label>
-          <input id="modal-capacidade" type="number" min="0" placeholder="Ex: 30" />
-        </div>
-        <div class="form-group">
-          <label for="modal-data_inicio">Data Início</label>
-          <input id="modal-data_inicio" type="date" />
-        </div>
-        <div class="form-group">
-          <label for="modal-data_fim">Data Fim</label>
-          <input id="modal-data_fim" type="date" />
-        </div>
-        <div class="form-group">
-          <label for="modal-id_status">Status *</label>
-          <select id="modal-id_status">
-            <option value="1">Ativo</option>
-            <option value="0">Inativo</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="modal-observacoes">Observações</label>
-          <textarea id="modal-observacoes" placeholder="Ex: Turma com reforço de matemática"></textarea>
-        </div>
-        <div class="actions">
-          <button type="button" class="btn-secondary" onclick="closeTurmasModal()">Cancelar</button>
-          <button type="button" class="btn-primary" onclick="saveTurmasModal()">Salvar</button>
-        </div>
-      </div>
-    `;
-    modal.addEventListener('click', function (e) { if (e.target === modal) closeTurmasModal(); });
-    document.body.appendChild(modal);
-    return modal;
-  }
+          <% if (!turmasList.length) { %>
+            <p class="series-empty text-center py-4" id="turmas-empty">Nenhuma turma encontrada.</p>
+            <% } %>
+              <div class="mt-4"><%- include('partials/paginations', { pagination: paginationView, filtros: filtrosView,
+                  rota: '/turmas' }) %></div>
+        </section>
+      </main>
 
-  function openTurmasModal(index) {
-    const modal = getOrCreateTurmasModal();
-    const fields = ['id', 'nome', 'sigla', 'id_ano_letivo', 'id_serie', 'id_turno', 'id_salas', 'capacidade', 'data_inicio', 'data_fim', 'id_status', 'observacoes'];
+      <script>
+        const TURMAS_FIELDS = ['id', 'text', 'sigla', 'id_ano_letivo', 'id_serie', 'id_turno', 'id_salas', 'id_status'];
 
-    ModalHelper.openModal(modal, 'turmas', fields, index, { id_status: '1' });
+        function getOrCreateTurmasModal() {
+          let modal = document.getElementById('turmas-modal');
+          if (modal) return modal;
+          modal = document.createElement('div');
+          modal.id = 'turmas-modal';
+          modal.innerHTML = '<div class="modal-panel"><h3>Turma</h3><input type="hidden" id="modal-index" value="-1"><input type="hidden" id="modal-id"><div class="form-group"><label for="modal-text">Nome *</label><input id="modal-text" type="text" required></div><div class="form-group"><label for="modal-sigla">Sigla</label><input id="modal-sigla" type="text"></div><div class="form-group"><label for="modal-id_ano_letivo">Ano letivo</label><select id="modal-id_ano_letivo"><option value="">Selecione</option><% anoLetivoList.forEach(function (item) { %><option value="<%= item.id %>"><%= item.text || item.nome %></option><% }) %></select></div><div class="form-group"><label for="modal-id_serie">Série</label><select id="modal-id_serie"><option value="">Selecione</option><% seriesList.forEach(function (item) { %><option value="<%= item.id %>"><%= item.text || item.nome %></option><% }) %></select></div><div class="form-group"><label for="modal-id_turno">Turno</label><select id="modal-id_turno"><option value="">Selecione</option><% turnosList.forEach(function (item) { %><option value="<%= item.id %>"><%= item.text || item.nome %></option><% }) %></select></div><div class="form-group"><label for="modal-id_salas">Sala</label><select id="modal-id_salas"><option value="">Selecione</option><% salasList.forEach(function (item) { %><option value="<%= item.id %>"><%= item.text || item.nome %></option><% }) %></select></div><div class="form-group"><label for="modal-id_status">Status *</label><select id="modal-id_status"><option value="1">Ativa</option><option value="0">Inativa</option></select></div><div class="actions"><button type="button" class="btn-secondary" onclick="closeTurmasModal()">Cancelar</button><button type="button" class="btn-primary" onclick="saveTurmasModal()">Salvar</button></div></div>';
+          modal.addEventListener('click', event => { if (event.target === modal) closeTurmasModal(); });
+          document.body.appendChild(modal);
+          return modal;
+        }
 
-    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
-  }
-
-  function closeTurmasModal() {
-    const modal = document.getElementById('turmas-modal');
-    if (!modal) return;
-    modal.classList.remove('open');
-  }
-
-  function saveTurmasModal() {
-    const modal = document.getElementById('turmas-modal');
-    if (!modal) return;
-
-    const nome = modal.querySelector('#modal-nome').value.trim();
-    if (!nome) { modal.querySelector('#modal-nome').focus(); return; }
-
-    const values = {
-      id: modal.querySelector('#modal-id').value.trim(),
-      nome: nome,
-      sigla: modal.querySelector('#modal-sigla').value.trim(),
-      id_ano_letivo: modal.querySelector('#modal-id_ano_letivo').value.trim(),
-      id_serie: modal.querySelector('#modal-id_serie').value.trim(),
-      id_turno: modal.querySelector('#modal-id_turno').value.trim(),
-      id_salas: modal.querySelector('#modal-id_salas').value.trim(),
-      capacidade: modal.querySelector('#modal-capacidade').value.trim(),
-      id_status: modal.querySelector('#modal-id_status').value,
-      data_inicio: modal.querySelector('#modal-data_inicio').value.trim(),
-      data_fim: modal.querySelector('#modal-data_fim').value.trim(),
-      observacoes: modal.querySelector('#modal-observacoes').value.trim()
-    };
-
-    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
-
-    const fields = ['id', 'nome', 'text', 'sigla', 'id_ano_letivo', 'id_serie', 'id_turno', 'id_salas', 'capacidade', 'data_inicio', 'data_fim', 'id_status', 'observacoes'];
-    const displayMap = [
-      { field: 'nome', cls: 'turmas-nome' },
-      { field: 'sigla', cls: 'turmas-sigla' },
-      { field: 'id_ano_letivo', cls: 'turmas-id_ano_letivo' },
-      { field: 'id_serie', cls: 'turmas-id_serie' },
-      { field: 'id_turno', cls: 'turmas-id_turno' },
-      { field: 'id_salas', cls: 'turmas-id_salas' },
-      { field: 'capacidade', cls: 'turmas-capacidade' },
-      { field: 'data_inicio', cls: 'turmas-data_inicio' },
-      { field: 'data_fim', cls: 'turmas-data_fim' },
-      { field: 'id_status', cls: 'turmas-id_status' },
-      { field: 'observacoes', cls: 'turmas-observacoes' }
-    ];
-
-    ModalHelper.applyValuesToRow('turmas', fields, displayMap, idx, values, 'openTurmasModal', '/turmas/excluir');
-    ModalHelper.reindex('turmas', fields, 'openTurmasModal');
-    closeTurmasModal();
-
-  }
-
-  function excluirTurma(id) { ModalHelper.submitDelete(`/turmas/excluir/${id}`); }
-
-  function removeTurmasRow(btn) { ModalHelper.removeRow(btn, 'turmas', ['id','nome','text','sigla','id_ano_letivo','id_serie','id_turno','id_salas','capacidade','data_inicio','data_fim','id_status','observacoes'], 'openTurmasModal'); }
-
-  function reindexTurmas() { ModalHelper.reindex('turmas', ['id','nome','text','sigla','id_ano_letivo','id_serie','id_turno','id_salas','capacidade','data_inicio','data_fim','id_status','observacoes'], 'openTurmasModal'); }
-</script>
+        function openTurmasModal(index) { const modal = getOrCreateTurmasModal(); ModalHelper.openModal(modal, 'turmas', TURMAS_FIELDS, index, { id_status: '1' }); modal.querySelector('#modal-text')?.focus(); }
+        function closeTurmasModal() { document.getElementById('turmas-modal')?.classList.remove('open'); }
+        function saveTurmasModal() { const modal = document.getElementById('turmas-modal'); const values = ModalHelper.collectModalValues('turmas-modal', TURMAS_FIELDS); if (!modal || !values.text) { modal?.querySelector('#modal-text')?.focus(); return; } const idx = Number(modal.querySelector('#modal-index').value); ModalHelper.applyValuesToRow('turmas', TURMAS_FIELDS, [], idx, values, 'openTurmasModal', '/turmas/excluir'); ModalHelper.reindex('turmas', TURMAS_FIELDS, 'openTurmasModal'); closeTurmasModal(); document.getElementById('turmas-form').submit(); }
+        function excluirTurma(id) { if (confirm('Tem certeza que deseja excluir esta turma?')) ModalHelper.submitDelete(`/turmas/excluir/${id}`); }
+      </script>
