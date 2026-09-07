@@ -1,6 +1,8 @@
 
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
+            <%- include("partials/css") %>
+
 <%
     documentos = typeof documentos !== 'undefined' ? documentos : {};
     let documentosList = Array.isArray(documentos) ? documentos : [];

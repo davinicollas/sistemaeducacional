@@ -1,5 +1,7 @@
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
+            <%- include("partials/css") %>
+
 <%
     salas = typeof salas !== 'undefined' ? salas : {};
     let salasList = Array.isArray(salas.salas) ? salas.salas : [];

@@ -1,5 +1,7 @@
 <%- include('partials/header') %>
   <%- include('partials/menu') %>
+              <%- include("partials/css") %>
+
     <% const filtrosView=typeof filtros !=='undefined' ? filtros : {}; const paginationView=typeof pagination
       !=='undefined' ? pagination : {}; const turmasList=Array.isArray(turmas?.turmas) ? turmas.turmas : []; const
       salasList=Array.isArray(salas) ? salas : []; const turnosList=Array.isArray(turnos) ? turnos : []; const

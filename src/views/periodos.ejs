@@ -1,5 +1,7 @@
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
+            <%- include("partials/css") %>
+
 <%
     periodos = typeof periodos !== 'undefined' ? periodos : {};
     let periodosList = Array.isArray(periodos.periodos) ? periodos.periodos : [];
