@@ -83,7 +83,7 @@ body {
 }
 
 .dia {
-    min-height: 110px;
+    min-height: 130px;
     padding: 10px;
     border-right: 1px solid #eee;
     border-bottom: 1px solid #eee;
@@ -101,6 +101,7 @@ body {
 .vazio {
     background: #fafafa;
 }
+
 
 .evento {
     display: flex;
@@ -131,14 +132,12 @@ body {
     line-height: 1;
     font-size: 13px;
 }
-
-.evento-aula { background: #2563eb; }
-.evento-feriado { background: #dc2626; }
-.evento-recesso { background: #ea580c; }
-.evento-evento { background: #4f46e5; }
-.evento-reuniao { background: #059669; }
-.evento-avaliacao { background: #7c3aed; }
-
+.dias .evento-aula { background: #2563eb; }
+.dias .evento-feriado { background: #dc2626; }
+.dias .evento-recesso { background: #ea580c; }
+.dias .evento-evento { background: #4f46e5; }
+.dias .evento-reuniao { background: #059669; }
+.dias .evento-avaliacao { background: #7c3aed; }
 
 /* MODAL */
 
@@ -226,7 +225,8 @@ body {
     flex-wrap: wrap;
     gap: 10px;
 }
-.evento {
+
+.legenda-item {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -240,7 +240,14 @@ body {
     font-weight: 500;
 }
 
-.evento::before {
+.legenda-item.evento-aula { color: #2563eb; }
+.legenda-item.evento-feriado { color: #dc2626; }
+.legenda-item.evento-recesso { color: #d97706; }
+.legenda-item.evento-evento { color: #7c3aed; }
+.legenda-item.evento-reuniao { color: #16a34a; }
+.legenda-item.evento-avaliacao { color: #db2777; }
+
+.legenda-item::before {
     content: "";
     width: 9px;
     height: 9px;
@@ -248,29 +255,7 @@ body {
     background: currentColor;
 }
 
-.evento-aula {
-    color: #2563eb;
-}
 
-.evento-feriado {
-    color: #dc2626;
-}
-
-.evento-recesso {
-    color: #d97706;
-}
-
-.evento-evento {
-    color: #7c3aed;
-}
-
-.evento-reuniao {
-    color: #16a34a;
-}
-
-.evento-avaliacao {
-    color: #db2777;
-}
 
 .detalhes-lista {
     display: flex;
@@ -294,4 +279,38 @@ body {
 #detalhes-tipo {
     align-self: flex-start;
     text-transform: capitalize;
+}
+
+@media (max-width: 700px) {
+    .config-card {
+        padding: 16px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .dias-semana div {
+        padding: 10px 4px;
+        font-size: 12px;
+    }
+
+    .dia {
+        min-height: 92px;
+        padding: 6px;
+    }
+
+    .evento {
+        padding: 3px;
+        font-size: 10px;
+    }
+
+    .evento button {
+        display: none;
+    }
+
+    .legenda-container {
+        padding: 14px;
+    }
 }

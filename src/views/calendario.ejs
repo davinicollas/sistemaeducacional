@@ -1,391 +1,236 @@
 <%- include('partials/header') %>
-            <%- include("partials/css") %>
+    <%- include("partials/css") %>
 
-<%- include('partials/menu') %>
- <%     let eventoList=Array.isArray(evento) ? evento : (evento ? [evento] : []);  %>
-<div class="main-content">
-    <section class="config-card">
-        <div style="text-align: right;">
-            <button type="button" class="btn-primary series-new-btn" onclick="abrirModal(null)">+ Novo Aluno</button>
-        </div>
-        <div class="card-header">
-            <div class="card-icon">📅</div>
-            <div>
-                <h2>Calendário Escolar</h2>
-                <p>Gerencie os eventos e datas do calendário letivo.</p>
-            </div>
-        </div>
-        <div class="cards">
-            <div class="card">
-                <div class="card-icon"><i class="bi bi-people-fill"></i></div>
-                <div>
-                    <span>Total de Alunos</span>
-                    <span style="text-align: center;"><strong>
-                            <%= eventoList.length %>
-                        </strong></span>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
-                <div>
-                    <span>Alunos Ativos</span>
-                    <span style="text-align: center;"><strong><%= eventoList[0]?.total_ativos || 0 %></strong></span>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
-                <div>
-                    <span>Alunos Inativos</span>
-                    <span style="text-align: center;"><strong><%= eventoList[0]?.total_desativados || 0 %></strong></span>
-                </div>
-            </div>
-        </div>
-        <div class="filtros">
+        <%- include('partials/menu') %>
+            <script>
+                window.calendarioEventos = <% - JSON.stringify(Array.isArray(evento) ? evento : []).replace(/</g, '\\u003c') %>;
+            </script>
+            <%- include("partials/javascript", { javascript: ["calendarios"] }) %>
+                <div class="main-content">
+                    <section class="config-card">
+                        <div style="text-align: right;">
+                            <button type="button" class="btn-primary series-new-btn" onclick="abrirModal()">+ Novo
+                                evento</button>
+                        </div>
+                        <div class="card-header">
+                            <div class="card-icon">📅</div>
+                            <div>
+                                <h2>Calendário Escolar</h2>
+                                <p>Gerencie os eventos e datas do calendário letivo.</p>
+                            </div>
+                        </div>
+                        <div class="cards">
+                            <div class="card">
+                                <div class="card-icon"><i class="bi bi-calendar-event"></i></div>
+                                <div>
+                                    <span>Eventos no mês</span>
+                                    <span style="text-align: center;"><strong>
+                                            <%= Array.isArray(evento) ? evento.length : 0 %>
+                                        </strong></span>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon"><i class="bi bi-calendar2-check"></i></div>
+                                <div>
+                                    <span>Eventos de hoje</span>
+                                    <span style="text-align: center;"><strong>
+                                            <%= Array.isArray(evento) ? evento.filter(ev=> { const hoje = new Date();
+                                                const inicio = new Date(ev.data_inicio); const fim = ev.data_fim ? new
+                                                Date(ev.data_fim) : inicio; return hoje >= new
+                                                Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate()) && hoje
+                                                <= new Date(fim.getFullYear(), fim.getMonth(), fim.getDate(), 23, 59,
+                                                    59); }).length : 0 %>
+                                        </strong></span>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon"><i class="bi bi-tags"></i></div>
+                                <div>
+                                    <span>Tipos cadastrados</span>
+                                    <span style="text-align: center;"><strong>
+                                            <%= Array.isArray(evento) ? new Set(evento.map(ev=> ev.tipo)).size : 0 %>
+                                        </strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filtros">
+                            <select id="ano">
+                                <option value="2026" <%=filtros && filtros.ano==2026 ? 'selected' : '' %>>2026</option>
+                                <option value="2027" <%=filtros && filtros.ano==2027 ? 'selected' : '' %>>2027</option>
+                            </select>
 
-            <select id="ano">
-                <option value="2026" <%= filtros && filtros.ano == 2026 ? 'selected' : '' %>>2026</option>
-                <option value="2027" <%= filtros && filtros.ano == 2027 ? 'selected' : '' %>>2027</option>
-            </select>
+                            <select id="mes">
+                                <option value="0" <%=filtros && filtros.mes==0 ? 'selected' : '' %>>Janeiro</option>
+                                <option value="1" <%=filtros && filtros.mes==1 ? 'selected' : '' %>>Fevereiro</option>
+                                <option value="2" <%=filtros && filtros.mes==2 ? 'selected' : '' %>>Março</option>
+                                <option value="3" <%=filtros && filtros.mes==3 ? 'selected' : '' %>>Abril</option>
+                                <option value="4" <%=filtros && filtros.mes==4 ? 'selected' : '' %>>Maio</option>
+                                <option value="5" <%=filtros && filtros.mes==5 ? 'selected' : '' %>>Junho</option>
+                                <option value="6" <%=filtros && filtros.mes==6 ? 'selected' : '' %>>Julho</option>
+                                <option value="7" <%=filtros && filtros.mes==7 ? 'selected' : '' %>>Agosto</option>
+                                <option value="8" <%=filtros && filtros.mes==8 ? 'selected' : '' %>>Setembro</option>
+                                <option value="9" <%=filtros && filtros.mes==9 ? 'selected' : '' %>>Outubro</option>
+                                <option value="10" <%=filtros && filtros.mes==10 ? 'selected' : '' %>>Novembro</option>
+                                <option value="11" <%=filtros && filtros.mes==11 ? 'selected' : '' %>>Dezembro</option>
+                            </select>
 
-            <select id="mes">
-                <option value="0" <%= filtros && filtros.mes == 0 ? 'selected' : '' %>>Janeiro</option>
-                <option value="1" <%= filtros && filtros.mes == 1 ? 'selected' : '' %>>Fevereiro</option>
-                <option value="2" <%= filtros && filtros.mes == 2 ? 'selected' : '' %>>Março</option>
-                <option value="3" <%= filtros && filtros.mes == 3 ? 'selected' : '' %>>Abril</option>
-                <option value="4" <%= filtros && filtros.mes == 4 ? 'selected' : '' %>>Maio</option>
-                <option value="5" <%= filtros && filtros.mes == 5 ? 'selected' : '' %>>Junho</option>
-                <option value="6" <%= filtros && filtros.mes == 6 ? 'selected' : '' %>>Julho</option>
-                <option value="7" <%= filtros && filtros.mes == 7 ? 'selected' : '' %>>Agosto</option>
-                <option value="8" <%= filtros && filtros.mes == 8 ? 'selected' : '' %>>Setembro</option>
-                <option value="9" <%= filtros && filtros.mes == 9 ? 'selected' : '' %>>Outubro</option>
-                <option value="10" <%= filtros && filtros.mes == 10 ? 'selected' : '' %>>Novembro</option>
-                <option value="11" <%= filtros && filtros.mes == 11 ? 'selected' : '' %>>Dezembro</option>
-            </select>
+                        </div>
 
-        </div>
+                        <div class="calendario">
 
-        <div class="calendario">
+                            <div class="dias-semana">
+                                <div>Dom</div>
+                                <div>Seg</div>
+                                <div>Ter</div>
+                                <div>Qua</div>
+                                <div>Qui</div>
+                                <div>Sex</div>
+                                <div>Sáb</div>
+                            </div>
 
-            <div class="dias-semana">
-                <div>Dom</div>
-                <div>Seg</div>
-                <div>Ter</div>
-                <div>Qua</div>
-                <div>Qui</div>
-                <div>Sex</div>
-                <div>Sáb</div>
-            </div>
+                            <div id="dias" class="dias"></div>
 
-            <div id="dias" class="dias"></div>
+                            <div class="legenda-container">
+                                <h2>Legenda</h2>
 
-            <div class="legenda-container">
-                <h2>Legenda</h2>
+                                <div class="legenda">
+                                    <div class="legenda-item evento-aula">Aula</div>
+                                    <div class="legenda-item evento-feriado">Feriado</div>
+                                    <div class="legenda-item evento-recesso">Recesso</div>
+                                    <div class="legenda-item evento-evento">Evento escolar</div>
+                                    <div class="legenda-item evento-reuniao">Reunião</div>
+                                    <div class="legenda-item evento-avaliacao">Avaliação</div>
+                                </div>
+                            </div>
 
-                <div class="legenda">
-                    <div class="evento evento-aula">Aula</div>
-                    <div class="evento evento-feriado">Feriado</div>
-                    <div class="evento evento-recesso">Recesso</div>
-                    <div class="evento evento-evento">Evento escolar</div>
-                    <div class="evento evento-reuniao">Reunião</div>
-                    <div class="evento evento-avaliacao">Avaliação</div>
-                </div>
-            </div>
-            
-        </div>
+                        </div>
 
-    </div>
-
-
-    <!-- MODAL DETALHES DO EVENTO -->
-
-    <div id="modal-detalhes" class="modal">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h2 id="detalhes-titulo">Evento</h2>
-
-                <button onclick="fecharDetalhesModal()">×</button>
-            </div>
-
-            <div class="detalhes-lista">
-                <div class="detalhes-item">
-                    <span class="detalhes-label">Tipo</span>
-                    <span id="detalhes-tipo" class="evento"></span>
-                </div>
-                <div class="detalhes-item">
-                    <span class="detalhes-label">Data inicial</span>
-                    <span id="detalhes-data-inicio"></span>
-                </div>
-                <div class="detalhes-item">
-                    <span class="detalhes-label">Data final</span>
-                    <span id="detalhes-data-fim"></span>
-                </div>
-                <div class="detalhes-item">
-                    <span class="detalhes-label">Descrição</span>
-                    <span id="detalhes-descricao"></span>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn-secondary"
-                    onclick="fecharDetalhesModal()">
-                    Fechar
-                </button>
-
-                <button
-                    type="button"
-                    class="btn-primary"
-                    id="detalhes-excluir">
-                    Excluir evento
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- MODAL -->
-
-    <div id="modal" class="modal">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h2>Novo evento</h2>
-
-                <button onclick="fecharModal()">×</button>
-            </div>
-
-            <form action="/calendario" method="POST">
-
-                <div class="form-group">
-                    <label>Nome do evento</label>
-
-                    <input
-                        type="text"
-                        name="titulo"
-                        placeholder="Ex: Reunião de pais"
-                        required
-                    >
                 </div>
 
-                <div class="form-group">
-                    <label>Tipo</label>
 
-                    <select name="tipo">
-                        <option value="aula">Aula</option>
-                        <option value="feriado">Feriado</option>
-                        <option value="recesso">Recesso</option>
-                        <option value="evento">Evento escolar</option>
-                        <option value="reuniao">Reunião</option>
-                        <option value="avaliacao">Avaliação</option>
-                    </select>
-                </div>
+                <!-- MODAL DETALHES DO EVENTO -->
 
-                <div class="form-row">
+                <div id="modal-detalhes" class="modal">
 
-                    <div class="form-group">
-                        <label>Data inicial</label>
+                    <div class="modal-content">
 
-                        <input
-                            type="date"
-                            name="data_inicio"
-                            required
-                        >
-                    </div>
+                        <div class="modal-header">
+                            <h2 id="detalhes-titulo">Evento</h2>
 
-                    <div class="form-group">
-                        <label>Data final</label>
+                            <button type="button" aria-label="Fechar detalhes"
+                                onclick="fecharDetalhesModal()">×</button>
+                        </div>
 
-                        <input
-                            type="date"
-                            name="data_fim"
-                        >
+                        <div class="detalhes-lista">
+                            <div class="detalhes-item">
+                                <span class="detalhes-label">Tipo</span>
+                                <span id="detalhes-tipo" class="evento"></span>
+                            </div>
+                            <div class="detalhes-item">
+                                <span class="detalhes-label">Data inicial</span>
+                                <span id="detalhes-data-inicio"></span>
+                            </div>
+                            <div class="detalhes-item">
+                                <span class="detalhes-label">Data final</span>
+                                <span id="detalhes-data-fim"></span>
+                            </div>
+                            <div class="detalhes-item">
+                                <span class="detalhes-label">Descrição</span>
+                                <span id="detalhes-descricao"></span>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn-secondary" onclick="fecharDetalhesModal()">
+                                Fechar
+                            </button>
+
+                            <button type="button" class="btn-primary" id="detalhes-excluir">
+                                Excluir evento
+                            </button>
+
+                        </div>
+
                     </div>
 
                 </div>
 
-                <div class="form-group">
-                    <label>Descrição</label>
 
-                    <textarea
-                        name="descricao"
-                        rows="4"
-                        placeholder="Descrição do evento..."
-                    ></textarea>
+                <!-- MODAL -->
+
+                <div id="modal" class="modal">
+
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h2>Novo evento</h2>
+
+                            <button type="button" aria-label="Fechar formulário" onclick="fecharModal()">×</button>
+                        </div>
+
+                        <form action="/calendario" method="POST">
+
+                            <div class="form-group">
+                                <label>Nome do evento</label>
+
+                                <input type="text" name="titulo" placeholder="Ex: Reunião de pais" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tipo</label>
+
+                                <select name="tipo">
+                                    <option value="aula">Aula</option>
+                                    <option value="feriado">Feriado</option>
+                                    <option value="recesso">Recesso</option>
+                                    <option value="evento">Evento escolar</option>
+                                    <option value="reuniao">Reunião</option>
+                                    <option value="avaliacao">Avaliação</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row">
+
+                                <div class="form-group">
+                                    <label>Data inicial</label>
+
+                                    <input type="date" name="data_inicio" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Data final</label>
+
+                                    <input type="date" name="data_fim">
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Descrição</label>
+
+                                <textarea name="descricao" rows="4" placeholder="Descrição do evento..."></textarea>
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button type="button" class="btn-secondary" onclick="fecharModal()">
+                                    Cancelar
+                                </button>
+
+                                <button type="submit" class="btn-primary">
+                                    Salvar evento
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
                 </div>
 
-                <div class="modal-footer">
+                </section>
+                </body>
 
-                    <button
-                        type="button"
-                        class="btn-secondary"
-                        onclick="fecharModal()">
-                        Cancelar
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="btn-primary">
-                        Salvar evento
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
-    </div>
-
-    </section>
-
-<script>
-
-const dias = document.getElementById('dias');
-const ano = document.getElementById('ano');
-const mes = document.getElementById('mes');
-
-// Eventos carregados do servidor para o mês/ano selecionados
-const eventos = <%- JSON.stringify(evento || []).replace(/</g, '\\u003c') %>;
-
-// Datas vêm do servidor em ISO UTC; usar os componentes UTC evita que o fuso
-// horário do navegador desloque o dia (ex: meia-noite UTC virando o dia anterior).
-function paraDataLocalSemHora(str) {
-    const d = new Date(str);
-    return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()).getTime();
-}
-
-function eventosDoDia(anoSelecionado, mesSelecionado, dia) {
-    const dataAlvo = new Date(anoSelecionado, mesSelecionado, dia).getTime();
-
-    return eventos.filter(ev => {
-        const inicio = paraDataLocalSemHora(ev.data_inicio);
-        const fim = ev.data_fim ? paraDataLocalSemHora(ev.data_fim) : inicio;
-        return dataAlvo >= inicio && dataAlvo <= fim;
-    });
-}
-
-function excluirEvento(id) {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = `/calendario/excluir/${id}`;
-    document.body.appendChild(form);
-    form.submit();
-}
-
-function formatarData(str) {
-    if (!str) return '-';
-    const d = new Date(str);
-    return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()).toLocaleDateString('pt-BR');
-}
-
-function abrirDetalhesEvento(id) {
-    const ev = eventos.find(e => e.id === id);
-    if (!ev) return;
-
-    document.getElementById('detalhes-titulo').textContent = ev.titulo;
-
-    const tipoEl = document.getElementById('detalhes-tipo');
-    tipoEl.textContent = ev.tipo;
-    tipoEl.className = `evento evento-${ev.tipo}`;
-
-    document.getElementById('detalhes-data-inicio').textContent = formatarData(ev.data_inicio);
-    document.getElementById('detalhes-data-fim').textContent = formatarData(ev.data_fim);
-    document.getElementById('detalhes-descricao').textContent = ev.descricao || '-';
-
-    document.getElementById('detalhes-excluir').onclick = () => excluirEvento(ev.id);
-
-    document.getElementById('modal-detalhes').classList.add('ativo');
-}
-
-function fecharDetalhesModal() {
-    document.getElementById('modal-detalhes').classList.remove('ativo');
-}
-
-function gerarCalendario() {
-
-    dias.innerHTML = '';
-
-    const anoSelecionado = parseInt(ano.value);
-    const mesSelecionado = parseInt(mes.value);
-
-    const primeiroDia = new Date(
-        anoSelecionado,
-        mesSelecionado,
-        1
-    ).getDay();
-
-    const quantidadeDias = new Date(
-        anoSelecionado,
-        mesSelecionado + 1,
-        0
-    ).getDate();
-
-    // Espaços antes do primeiro dia
-    for (let i = 0; i < primeiroDia; i++) {
-
-        const vazio = document.createElement('div');
-
-        vazio.classList.add('dia', 'vazio');
-
-        dias.appendChild(vazio);
-    }
-
-    // Dias do mês
-    for (let dia = 1; dia <= quantidadeDias; dia++) {
-
-        const elemento = document.createElement('div');
-
-        elemento.classList.add('dia');
-
-        const eventosDia = eventosDoDia(anoSelecionado, mesSelecionado, dia);
-        const eventosHtml = eventosDia.map(ev => `
-            <div class="evento evento-${ev.tipo}" title="${ev.descricao || ''}" onclick="abrirDetalhesEvento(${ev.id})">
-                <span>${ev.titulo}</span>
-                <button type="button" onclick="event.stopPropagation(); excluirEvento(${ev.id})">×</button>
-            </div>
-        `).join('');
-
-        elemento.innerHTML = `
-            <span class="numero">${dia}</span>
-            ${eventosHtml}
-        `;
-
-        dias.appendChild(elemento);
-    }
-}
-
-ano.addEventListener('change', () => {
-    window.location.href = `/calendario?ano=${ano.value}&mes=${mes.value}`;
-});
-mes.addEventListener('change', () => {
-    window.location.href = `/calendario?ano=${ano.value}&mes=${mes.value}`;
-});
-
-function abrirModal() {
-
-    document.getElementById('modal')
-        .classList.add('ativo');
-
-}
-
-function fecharModal() {
-
-    document.getElementById('modal')
-        .classList.remove('ativo');
-
-}
-
-gerarCalendario();
-
-</script>
-
-</body>
-</html>
+                </html>
