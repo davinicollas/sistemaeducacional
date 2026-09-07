@@ -258,3 +258,71 @@ function removeParamsRow(button) {
     tr.remove();
 }
 
+function ExportExcel(url) {
+    console.log('Exportando para Excel...');
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/' + url;
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function ImportExcel(path) {
+    const url = '/' + path;
+    let modal = document.getElementById('modalImportar');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'modalImportar';
+        modal.className = 'modal fade';
+        modal.tabIndex = -1;
+        modal.style.zIndex = '1060';
+        modal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-file-earmark-excel me-2"></i>Importar dados</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info">Selecione uma planilha <strong>.xlsx</strong> ou <strong>.xls</strong>.</div>
+                        <label class="form-label" for="arquivoImportar">Arquivo</label>
+                        <input id="arquivoImportar" class="form-control" type="file" accept=".xlsx,.xls">
+                        <div class="form-text">O arquivo deve conter uma coluna com o nome dos dados.</div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="confirmarImportacao"><i class="bi bi-upload me-1"></i>Importar</button>
+
+                    </div>
+                </div>
+            </div>`;
+        document.body.appendChild(modal);
+        modal.addEventListener('shown.bs.modal', () => {
+            modal.querySelector('#arquivoImportar')?.focus();
+        });
+        modal.querySelector('#confirmarImportacao').addEventListener('click', async () => {
+            const input = modal.querySelector('#arquivoImportar');
+            const file = input.files?.[0];
+            if (!file) { input.focus(); return; }
+            const formData = new FormData();
+            formData.append('arquivo', file);
+            const button = modal.querySelector('#confirmarImportacao');
+            button.disabled = true;
+            try {
+                const response = await fetch(url, { method: 'POST', body: formData });
+                const result = await response.json();
+                if (!response.ok || !result.sucesso) throw new Error(result.mensagem || 'Erro ao importar dados.');
+                bootstrap.Modal.getOrCreateInstance(modal).hide();
+                alert(`${result.importados || 0} aluno(s) importado(s) com sucesso.`);
+                window.location.reload();
+            } catch (error) {
+                console.error(error);
+                alert(error.message || 'Erro ao importar dados.');
+            } finally {
+                button.disabled = false;
+            }
+        });
+    }
+    bootstrap.Modal.getOrCreateInstance(modal).show();
+}

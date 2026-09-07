@@ -4,9 +4,9 @@ const router = express.Router();
 router.get("/professores", controller.index);
 router.post("/professores/excluir/:id", controller.remove);
 router.post("/professores", controller.save);
-router.post("/professor-exportar-excel", controller.exportExcel);
+router.post("/professores-exportar-excel", controller.exportExcel);
 router.post(
-  "/professor-importar-excel",
+  "/professores-importar-excel",
   controller.upload.single("arquivo"),
   controller.importExcel,
 );

@@ -91,13 +91,7 @@
           <p class="series-empty" id="series-empty">Nenhuma série cadastrada ainda.</p>
         <% } %>
         <div id="to-delete"></div>
-        <%- include('partials/botoes', {
-          newAction: 'openSeriesModal(null)',
-          showExport: true,
-          exportAction: 'ExportExcel(null)',
-          showImport: true,
-          importAction: 'ImportExcel(null)'
-        }) %>
+        <%- include('partials/botoes', { newAction: 'openSeriesModal(null)' }) %>
       </form>
     </div>
   </section>
