@@ -1,0 +1,16 @@
+<%
+const jsGlobais = [
+"script",
+"modalHelper"
+];
+
+const jsPagina = typeof javascript === "undefined" ? [] : javascript;
+%>
+
+<% jsGlobais.forEach(arquivo => { %>
+<script src="/javascript/<%= arquivo %>.js"></script>
+<% }); %>
+
+<% jsPagina.forEach(arquivo => { %>
+<script src="/javascript/<%= arquivo %>.js"></script>
+<% }); %>

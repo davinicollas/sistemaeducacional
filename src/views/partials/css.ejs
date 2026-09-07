@@ -1,0 +1,30 @@
+
+<%
+// CSS globais
+const cssGlobais = [
+"base",
+"menu",
+"filtros"
+];
+
+
+const cssPagina = [
+    "alunos",
+    "cadastro",
+    "configuracoes",
+    "dashboard",
+    "login",
+    "professores",
+    "estados",
+    "calendario",
+    "notificacoes",
+    "turmas"
+]
+%>
+<% cssGlobais.forEach(arquivo => { %>
+<link rel="stylesheet" href="/css/<%= arquivo %>.css">
+<% }); %>
+
+<% cssPagina.forEach(arquivo => { %>
+<link rel="stylesheet" href="/css/<%= arquivo %>.css">
+<% }); %>

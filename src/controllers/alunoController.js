@@ -15,31 +15,55 @@ async function index(req, res) {
       : "1=1";
     const page = parseInt(req.query.page, 10) || 1;
     const pageSize = parseInt(req.query.pageSize, 10) || 10;
-    const list = await alunosModel.getAlunos(
+    const alunosList = await alunosModel.getAlunos(
       where,
       params,
       pageSize,
       (page - 1) * pageSize,
     );
+    const estado = await estadoModel.getEstados();
+    const tiposDocumentos = await tipoDocumentoModel.getTiposDocumentos();
+    const statusAluno = await alunosModel.getStatusAluno(where, params);
+    const estadoList = Array.isArray(estado) ? estado : estado ? [estado] : [];
+    const tiposDocumentosCatalogo = Array.isArray(tiposDocumentos)
+      ? tiposDocumentos
+      : tiposDocumentos
+        ? [tiposDocumentos]
+        : [];
+    const statusAlunoList = Array.isArray(statusAluno)
+      ? statusAluno
+      : statusAluno
+        ? [statusAluno]
+        : [];
+    const pagination = {
+      page,
+      pageSize,
+      totalItems: alunosList.length,
+      totalPages: Math.max(1, Math.ceil(alunosList.length / pageSize)),
+    };
+
     res.render("alunos", {
-      alunos: { alunos: list },
-      estado: await estadoModel.getEstados(),
-      tipoDocumento: await tipoDocumentoModel.getTiposDocumentos(),
-      statusAluno: await alunosModel.getStatusAluno(where, params),
+      alunosList,
+      estadoList,
+      tiposDocumentosCatalogo,
+      statusAlunoList,
       filtros,
-      pagination: {
-        page,
-        pageSize,
-        totalItems: list.length,
-        totalPages: Math.max(1, Math.ceil(list.length / pageSize)),
-      },
+      pagination,
     });
   } catch (e) {
     console.error(e);
     res.render("alunos", {
-      alunos: { alunos: [] },
-      estado: [],
-      tipoDocumento: [],
+      alunosList: [],
+      estadoList: [],
+      tiposDocumentosCatalogo: [],
+      statusAlunoList: [],
+      filtros: { busca: "" },
+      pagination: {
+        page: 1,
+        pageSize: 10,
+        totalItems: 0,
+        totalPages: 1,
+      },
       erro: "Erro ao carregar alunos",
     });
   }
