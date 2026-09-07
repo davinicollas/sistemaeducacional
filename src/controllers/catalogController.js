@@ -12,74 +12,128 @@ function createCatalogController({
   return {
     async index(req, res) {
       try {
-        const filtros = { busca: req.query.busca || "" };
-        const params = filtros.busca
-          ? searchColumns.map(() => `%${filtros.busca}%`)
-          : [];
-        const where = filtros.busca
-          ? `1=1 AND (${searchColumns.map((column) => `${column} LIKE ?`).join(" OR ")})`
-          : "1=1";
+        // Filtros
+        const busca = req.query.busca || "";
+        const filtros = { busca };
+
+        // Pesquisa
+        let where = "excluido < 1";
+        let params = [];
+
+        if (busca) {
+          const conditions = searchColumns.map((column) => `${column} LIKE ?`);
+
+          where = `excluido < 1 AND (${conditions.join(" OR ")})`;
+          params = searchColumns.map(() => `%${busca}%`);
+        }
+
+        // Paginação
         const page = parseInt(req.query.page, 10) || 1;
         const pageSize = parseInt(req.query.pageSize, 10) || 10;
         const offset = (page - 1) * pageSize;
+
+        // Total de registros
         const [[count]] = await db.query(
-          `SELECT COUNT(*) AS cnt FROM ${table} WHERE ${where}`,
+          `SELECT COUNT(*) AS cnt
+           FROM ${table}
+           WHERE ${where}`,
           params,
         );
+
+        const totalItems = count?.cnt || 0;
+        const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+        // Registros
         const [rows] = await db.query(
-          `SELECT * FROM ${table} WHERE ${where} ORDER BY text LIMIT ? OFFSET ?`,
+          `SELECT *
+           FROM ${table}
+           WHERE ${where}
+           ORDER BY text
+           LIMIT ? OFFSET ?`,
           [...params, pageSize, offset],
         );
+
+        // Renderização
         res.render(view, {
           [listKey]: rows,
           filtros,
           pagination: {
             page,
             pageSize,
-            totalItems: count?.cnt || 0,
-            totalPages: Math.max(1, Math.ceil((count?.cnt || 0) / pageSize)),
+            totalItems,
+            totalPages,
           },
         });
       } catch (error) {
         console.error(error);
+
         res.render(view, {
           [listKey]: [],
           filtros: {},
-          pagination: { page: 1, pageSize: 10, totalItems: 0, totalPages: 1 },
+          pagination: {
+            page: 1,
+            pageSize: 10,
+            totalItems: 0,
+            totalPages: 1,
+          },
           erro: `Erro ao carregar ${view}`,
         });
       }
     },
+
     async save(req, res) {
       try {
-        const ids = (
-          Array.isArray(req.body.deleteIds)
-            ? req.body.deleteIds
-            : [req.body.deleteIds]
-        )
-          .filter(Boolean)
-          .map(Number)
-          .filter(Boolean);
-        if (ids.length)
-          await db.query(
-            `DELETE FROM ${table} WHERE id IN (${ids.map(() => "?").join(",")})`,
-            ids,
-          );
-        for (const raw of Array.isArray(req.body.itens) ? req.body.itens : []) {
+        // Exclusao ocorre no endpoint proprio; este handler apenas salva dados.
+        const itens = Array.isArray(req.body.itens)
+          ? req.body.itens
+          : Object.values(req.body.itens || {});
+
+        for (const raw of itens) {
           const item = mapItem(raw);
-          if (!item) continue;
+
+          if (!item) {
+            continue;
+          }
+
           const values = columns.map((column) => item[column]);
-          if (item.id)
+
+          // Atualizar
+          if (item.id) {
+            const updates = columns.map((column) => `${column} = ?`).join(", ");
+
             await db.query(
-              `UPDATE ${table} SET ${columns.map((column) => `${column} = ?`).join(", ")} WHERE id = ?`,
+              `UPDATE ${table}
+               SET ${updates}
+               WHERE id = ?`,
               [...values, item.id],
             );
-          else
-            await db.query(
-              `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`,
-              values,
-            );
+
+            continue;
+          }
+
+          // Inserir
+          const columnNames = columns.join(", ");
+          const placeholders = columns.map(() => "?").join(", ");
+
+          await db.query(
+            `INSERT INTO ${table}
+             (${columnNames})
+             VALUES (${placeholders})`,
+            values,
+          );
         }
+      } catch (error) {
+        console.error(error);
+      }
+
+      res.redirect(redirectPath);
+    },
+
+    async remove(req, res) {
+      try {
+        const id = Number(req.params.id);
+        if (!Number.isInteger(id) || id <= 0) return res.redirect(redirectPath);
+        await db.query(`UPDATE ${table} SET excluido = 1 WHERE id = ?`, [id]);
       } catch (error) {
         console.error(error);
       }

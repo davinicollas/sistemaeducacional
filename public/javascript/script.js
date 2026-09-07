@@ -243,15 +243,17 @@ function removeParamsRow(button) {
     if (!tr) return;
     const id = tr.getAttribute('data-id');
     if (id) {
-        // mark for deletion
-        const container = document.getElementById('to-delete');
-        if (container) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'deleteIds[]';
-            input.value = id;
-            container.appendChild(input);
-        }
+        const form = button.closest('form');
+        const deleteUrl = form?.dataset.deleteUrl;
+        if (!deleteUrl) return;
+        if (!window.confirm('Deseja excluir este registro?')) return;
+
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'POST';
+        deleteForm.action = `${deleteUrl}/${encodeURIComponent(id)}`;
+        document.body.appendChild(deleteForm);
+        deleteForm.submit();
+        return;
     }
     tr.remove();
 }
