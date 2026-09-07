@@ -2,7 +2,13 @@ const db = require("../../database/mysql");
 const model = require("../model/aparencia");
 async function index(req, res) {
   try {
-    res.render("aparencia", { aparencia: await model.getAparencia() });
+    const aparencia = await model.getAparencia();
+    const aparenciaList = Array.isArray(aparencia)
+      ? aparencia
+      : aparencia
+        ? [aparencia]
+        : [];
+    res.render("aparencia", { aparencia: aparenciaList });
   } catch (e) {
     console.error(e);
     res.render("aparencia", {

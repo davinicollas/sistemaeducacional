@@ -1,7 +1,10 @@
 <%- include('partials/header') %>
-    <!-- Sidebar -->
-    <%- include('partials/menu') %>
-            <%- include("partials/css") %>
+<!-- Sidebar -->
+<%- include('partials/menu') %>
+<%- include("partials/css") %>
+<%- include("partials/javascript", {
+    javascript: ["alunos"]
+}) %>
     <template id="alunos-estados-options">
         <option value="">Selecione</option>
         <% estadoList.forEach(function (estado) { %>
@@ -14,9 +17,7 @@
             <option value="<%= tipoDocumento.id %>"><%= tipoDocumento.text %></option>
         <% }) %>
     </template>
-    <%- include("partials/javascript", {
-        javascript: ["alunos"]
-    }) %>
+
             <!-- Main Content -->
             <div class="main-content">
                 <section class="config-card">

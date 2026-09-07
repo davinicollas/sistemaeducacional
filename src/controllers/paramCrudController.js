@@ -26,7 +26,7 @@ function createParamController({
           [viewKey]: { [viewKey]: list },
           ...(getExtraData ? await getExtraData() : {}),
         };
-        res.render(view, data);
+        res.render(view, data[viewKey]);
       } catch (error) {
         console.error(error);
         const data = {
@@ -34,7 +34,7 @@ function createParamController({
           ...(getExtraData ? await getExtraData(true) : {}),
           erro: `Erro ao carregar ${view}`,
         };
-        res.render(view, data);
+        res.render(view, data[viewKey]);
       }
     },
 
