@@ -18,9 +18,11 @@
     "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "express-mysql-session": "^3.0.3",
+    "express-rate-limit": "^8.7.0",
     "express-session": "^1.19.0",
-    "multer": "^2.2.0",
-    "mysql2": "^3.23.3"
+    "helmet": "^8.3.0",
+    "multer": "^2.3.0",
+    "mysql2": "^3.24.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

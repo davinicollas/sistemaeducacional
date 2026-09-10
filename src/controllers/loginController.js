@@ -11,6 +11,9 @@ async function login(req, res) {
     const usuario = await Usuario.getUsuario(email);
     if (!usuario || !(await bcrypt.compare(senha, usuario.senha)))
       return res.render("login", { erro: "Email ou senha inválidos." });
+    await new Promise((resolve, reject) => {
+      req.session.regenerate((error) => (error ? reject(error) : resolve()));
+    });
     req.session.usuario = {
       id: usuario.id,
       nome: usuario.nome,

@@ -167,6 +167,7 @@
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = action;
+    if (window.addCsrfToken) window.addCsrfToken(form);
     document.body.appendChild(form);
     form.submit();
   };

@@ -1,7 +1,10 @@
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
+const crypto = require("crypto");
+const helmet = require("helmet");
 require("dotenv").config(); // Carrega as variáveis do .env
+const rateLimit = require("express-rate-limit");
 
 const MySQLStore = require("express-mysql-session")(session);
 
@@ -30,14 +33,24 @@ const alunos = require("./routes/alunos");
 const turmas = require("./routes/turmas");
 
 const authMid = require("./middleware/auth");
+const csrfProtection = require("./middleware/csrf");
+
+const isProduction = process.env.NODE_ENV === "production";
+const sessionSecret =
+  process.env.SESSION_SECRET || crypto.randomBytes(32).toString("hex");
+if (isProduction && !process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET deve ser configurado em produção.");
+}
 
 const app = express();
+app.disable("x-powered-by");
+app.use(helmet({ contentSecurityPolicy: false }));
 // Configura o EJS como view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
+app.use(express.json({ limit: "1mb" }));
 // Serve arquivos estáticos a partir da pasta `public` na raiz do projeto
 app.use(express.static(path.join(__dirname, "..", "public")));
 const sessionStore = new MySQLStore({
@@ -51,7 +64,7 @@ const sessionStore = new MySQLStore({
 app.use(
   session({
     name: process.env.SESSION_NAME || "sistema_session",
-    secret: process.env.SESSION_SECRET || "dev_secret_change_me",
+    secret: sessionSecret,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
@@ -61,13 +74,21 @@ app.use(
       httpOnly: true,
       sameSite: "lax",
       // Apenas cookies seguros em produção (HTTPS)
-      secure: process.env.NODE_ENV === "production",
+      secure: isProduction,
     },
   }),
 );
 app.use((req, res, next) => {
   res.locals.usuario = req.session.usuario || null;
   res.locals.isTabbed = req.query && req.query.tabbed === "1";
+  next();
+});
+app.use(csrfProtection);
+app.use((req, res, next) => {
+  const invalidId = Object.entries(req.params || {}).some(
+    ([name, value]) => /^id/i.test(name) && !/^\d+$/.test(String(value)),
+  );
+  if (invalidId) return res.status(400).send("Identificador inválido.");
   next();
 });
 
@@ -79,9 +100,6 @@ app.get("/", (req, res) => {
 app.get("/cadastro", (req, res) => {
   res.render("cadastro");
 });
-app.get("/dashboard", (req, res) => {
-  res.render("dashboard");
-});
 app.get("/privacidade", (req, res) => {
   res.render("privacidade");
 });
@@ -91,6 +109,10 @@ app.get("/termos", (req, res) => {
 
 app.use(usuario);
 app.use(login);
+app.use(authMid);
+app.get("/dashboard", (req, res) => {
+  res.render("dashboard");
+});
 app.use(configuracoes);
 app.use(estados);
 app.use(usuarioPermissoes);
@@ -112,6 +134,12 @@ app.use(professores);
 app.use(formacoes);
 app.use(alunos);
 app.use(turmas);
+
+app.use((error, req, res, next) => {
+  console.error(error);
+  if (res.headersSent) return next(error);
+  res.status(500).send("Ocorreu um erro ao processar a solicitação.");
+});
 
 // Inicia o servidor
 const server = app.listen(process.env.PORT || 3000, "0.0.0.0", () => {

@@ -4,6 +4,7 @@ node_modules/
 # Ambiente
 .env
 .env.*
+container/mysql.env
 
 # Arquivos temporários
 *.log

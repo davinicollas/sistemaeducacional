@@ -50,7 +50,7 @@ async function addAluno(req, res) {
   } catch (error) {
     console.error(error);
     res.redirect(
-      `/turmas/${req.params.id}?erro=${encodeURIComponent(error.message)}`,
+      `/turmas/${req.params.id}?erro=${encodeURIComponent("Não foi possível adicionar o aluno.")}`,
     );
   }
 }
@@ -65,7 +65,7 @@ async function addProfessor(req, res) {
   } catch (error) {
     console.error(error);
     res.redirect(
-      `/turmas/${req.params.id}?erro=${encodeURIComponent(error.message)}`,
+      `/turmas/${req.params.id}?erro=${encodeURIComponent("Não foi possível adicionar o professor.")}`,
     );
   }
 }
@@ -250,7 +250,6 @@ async function importExcel(req, res) {
     res.status(500).json({
       sucesso: false,
       mensagem: "Erro ao importar turmas.",
-      erro: error.message,
     });
   }
 }

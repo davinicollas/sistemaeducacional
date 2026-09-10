@@ -35,6 +35,9 @@ async function save(req, res) {
       ],
     );
     const usuario = await Usuario.getUsuario(email);
+    await new Promise((resolve, reject) => {
+      req.session.regenerate((error) => (error ? reject(error) : resolve()));
+    });
     req.session.usuario = {
       id: usuario.id,
       nome: usuario.nome,

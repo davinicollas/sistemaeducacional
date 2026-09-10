@@ -3,8 +3,6 @@
       build:
         context: ..
         dockerfile: container/Dockerfile
-      container_name: sistema_educacional
-      restart: always
       ports:
         - "3000:3000"
       env_file:
@@ -22,16 +20,15 @@
       image: mysql:8.0
       container_name: sistema_educacional-mysql
       restart: always
-      environment:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: sistema_educacional
+      env_file:
+        - mysql.env
       
       ports:
         - "3306:3306"
       volumes:
         - mysql_data:/var/lib/mysql
       healthcheck:
-        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+        test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
         timeout: 5s
         interval: 10s
         retries: 5
