@@ -2,28 +2,52 @@
 
 Sistema de gestão escolar para administração acadêmica, alunos, professores, turmas, notas, frequência, documentos e demais processos da instituição.
 
+## Inicialização do Docker
+
+Ao criar o volume MySQL pela primeira vez, o Compose executa automaticamente, nesta ordem:
+
+1. `patch/patch-geral.sql`
+2. `patch/turmas.sql`
+3. `patch/turma_vinculos.sql`
+4. `patch/seed.sql`
+
+O arquivo `container/init-db.sql` coordena essa sequência. O `patch-geral.sql` não contém sozinho as tabelas de turmas e vínculos, por isso os dois patches complementares são executados antes do seed.
+
+Para iniciar normalmente:
+
+```bash
+docker compose -f container/docker-compose.yml up --build
+```
+
+Os scripts de `/docker-entrypoint-initdb.d/` são executados somente quando o volume `mysql_data` está vazio. Para recriar o banco de desenvolvimento e executar o patch/seed novamente, o comando abaixo remove os dados persistidos:
+
+```bash
+docker compose -f container/docker-compose.yml down -v
+docker compose -f container/docker-compose.yml up --build
+```
+
 ---
 
 ## 🎯 Objetivo
 
 Centralizar a gestão da instituição de ensino em um único sistema, permitindo controlar:
 
-* Configurações da escola
-* Parâmetros acadêmicos
-* Professores
-* Alunos
-* Turmas
-* Matrículas
-* Disciplinas
-* Grade horária
-* Frequência
-* Avaliações
-* Notas
-* Boletins
-* Documentos
-* Financeiro
-* Notificações
-* Usuários e permissões
+- Configurações da escola
+- Parâmetros acadêmicos
+- Professores
+- Alunos
+- Turmas
+- Matrículas
+- Disciplinas
+- Grade horária
+- Frequência
+- Avaliações
+- Notas
+- Boletins
+- Documentos
+- Financeiro
+- Notificações
+- Usuários e permissões
 
 ---
 
@@ -31,22 +55,22 @@ Centralizar a gestão da instituição de ensino em um único sistema, permitind
 
 ## Backend
 
-* Node.js
-* Express
-* JavaScript
-* MySQL
+- Node.js
+- Express
+- JavaScript
+- MySQL
 
 ## Frontend
 
-* EJS
-* HTML
-* CSS
-* JavaScript
-* Bootstrap Icons
+- EJS
+- HTML
+- CSS
+- JavaScript
+- Bootstrap Icons
 
 ## Banco de dados
 
-* MySQL
+- MySQL
 
 ---
 
@@ -100,12 +124,12 @@ Todos esses parâmetros já foram criados.
 
 ### Status
 
-* [x] Séries
-* [x] Turnos
-* [x] Anos Letivos
-* [x] Períodos / Bimestres
-* [x] Salas
-* [x] Tipos de Avaliação
+- [x] Séries
+- [x] Turnos
+- [x] Anos Letivos
+- [x] Períodos / Bimestres
+- [x] Salas
+- [x] Tipos de Avaliação
 
 ---
 
@@ -130,7 +154,7 @@ Biologia
 
 ### Status
 
-* [x] Tela de Disciplinas
+- [x] Tela de Disciplinas
 
 ---
 
@@ -142,35 +166,35 @@ O cadastro possui três grupos principais:
 
 ### Dados pessoais
 
-* Nome
-* Nome social
-* CPF
-* Data de nascimento
-* Sexo
+- Nome
+- Nome social
+- CPF
+- Data de nascimento
+- Sexo
 
 ### Contato
 
-* E-mail
-* Telefone
-* Celular
-* CEP
-* Endereço
-* Número
-* Complemento
-* Bairro
-* Cidade
-* Estado
+- E-mail
+- Telefone
+- Celular
+- CEP
+- Endereço
+- Número
+- Complemento
+- Bairro
+- Cidade
+- Estado
 
 ### Dados profissionais
 
-* Matrícula
-* Registro profissional
-* Data de admissão
-* Formação
-* Área de formação
-* Carga horária
-* Status
-* Observações
+- Matrícula
+- Registro profissional
+- Data de admissão
+- Formação
+- Área de formação
+- Carga horária
+- Status
+- Observações
 
 ### Importação
 
@@ -178,13 +202,13 @@ Professores poderão ser cadastrados individualmente ou através de arquivo Exce
 
 Planejado:
 
-* [ ] Importação de Professores via Excel
-* [ ] Modelo/template Excel
-* [ ] Validação dos dados
-* [ ] Pré-visualização
-* [ ] Identificação de duplicados
-* [ ] Relatório de erros
-* [ ] Confirmação da importação
+- [ ] Importação de Professores via Excel
+- [ ] Modelo/template Excel
+- [ ] Validação dos dados
+- [ ] Pré-visualização
+- [ ] Identificação de duplicados
+- [ ] Relatório de erros
+- [ ] Confirmação da importação
 
 ---
 
@@ -196,15 +220,15 @@ O cadastro deverá permitir inclusão individual e importação em massa atravé
 
 Planejado:
 
-* [ ] Tela de Alunos
-* [ ] Cadastro individual
-* [ ] Importação via Excel
-* [ ] Modelo/template Excel
-* [ ] Validação dos dados
-* [ ] Pré-visualização
-* [ ] Identificação de duplicados
-* [ ] Relatório de erros
-* [ ] Confirmação da importação
+- [ ] Tela de Alunos
+- [ ] Cadastro individual
+- [ ] Importação via Excel
+- [ ] Modelo/template Excel
+- [ ] Validação dos dados
+- [ ] Pré-visualização
+- [ ] Identificação de duplicados
+- [ ] Relatório de erros
+- [ ] Confirmação da importação
 
 ---
 
@@ -234,13 +258,13 @@ A turma deverá utilizar os parâmetros já cadastrados, evitando duplicação d
 
 Planejado:
 
-* [ ] Cadastro de Turmas
-* [ ] Vincular Ano Letivo
-* [ ] Vincular Série
-* [ ] Vincular Turno
-* [ ] Vincular Sala
-* [ ] Vincular Disciplinas
-* [ ] Vincular Professores
+- [ ] Cadastro de Turmas
+- [ ] Vincular Ano Letivo
+- [ ] Vincular Série
+- [ ] Vincular Turno
+- [ ] Vincular Sala
+- [ ] Vincular Disciplinas
+- [ ] Vincular Professores
 
 ---
 
@@ -262,12 +286,12 @@ Turma 1º Ano A
 
 Planejado:
 
-* [ ] Cadastro de matrícula
-* [ ] Situação da matrícula
-* [ ] Histórico de turmas
-* [ ] Transferência
-* [ ] Cancelamento
-* [ ] Remanejamento
+- [ ] Cadastro de matrícula
+- [ ] Situação da matrícula
+- [ ] Histórico de turmas
+- [ ] Transferência
+- [ ] Cancelamento
+- [ ] Remanejamento
 
 ---
 
@@ -288,14 +312,14 @@ Sala: 01
 
 Planejado:
 
-* [ ] Cadastro de horários
-* [ ] Dias da semana
-* [ ] Horários
-* [ ] Disciplina
-* [ ] Professor
-* [ ] Turma
-* [ ] Sala
-* [ ] Validação de conflitos
+- [ ] Cadastro de horários
+- [ ] Dias da semana
+- [ ] Horários
+- [ ] Disciplina
+- [ ] Professor
+- [ ] Turma
+- [ ] Sala
+- [ ] Validação de conflitos
 
 ---
 
@@ -305,11 +329,11 @@ Responsável pelo acompanhamento das aulas.
 
 Planejado:
 
-* [ ] Registro de aula
-* [ ] Conteúdo ministrado
-* [ ] Frequência
-* [ ] Observações
-* [ ] Professor responsável
+- [ ] Registro de aula
+- [ ] Conteúdo ministrado
+- [ ] Frequência
+- [ ] Observações
+- [ ] Professor responsável
 
 ---
 
@@ -338,14 +362,14 @@ Depois serão utilizados no lançamento das avaliações.
 
 Planejado:
 
-* [ ] Criar avaliação
-* [ ] Vincular disciplina
-* [ ] Vincular turma
-* [ ] Vincular período
-* [ ] Vincular tipo de avaliação
-* [ ] Lançar notas
-* [ ] Recuperação
-* [ ] Cálculo de médias
+- [ ] Criar avaliação
+- [ ] Vincular disciplina
+- [ ] Vincular turma
+- [ ] Vincular período
+- [ ] Vincular tipo de avaliação
+- [ ] Lançar notas
+- [ ] Recuperação
+- [ ] Cálculo de médias
 
 ---
 
@@ -355,13 +379,13 @@ Responsável pelo calendário acadêmico da instituição.
 
 Planejado:
 
-* [ ] Eventos escolares
-* [ ] Feriados
-* [ ] Recessos
-* [ ] Dias letivos
-* [ ] Reuniões
-* [ ] Avaliações
-* [ ] Início e fim dos períodos
+- [ ] Eventos escolares
+- [ ] Feriados
+- [ ] Recessos
+- [ ] Dias letivos
+- [ ] Reuniões
+- [ ] Avaliações
+- [ ] Início e fim dos períodos
 
 ---
 
@@ -371,12 +395,12 @@ Planejado:
 
 Planejado:
 
-* [ ] Receitas
-* [ ] Despesas
-* [ ] Mensalidades
-* [ ] Pagamentos
-* [ ] Inadimplência
-* [ ] Relatórios financeiros
+- [ ] Receitas
+- [ ] Despesas
+- [ ] Mensalidades
+- [ ] Pagamentos
+- [ ] Inadimplência
+- [ ] Relatórios financeiros
 
 ---
 
@@ -386,17 +410,17 @@ Controle de acesso ao sistema.
 
 Já existem configurações relacionadas a:
 
-* Permissões
-* Usuários e permissões
-* Perfis de acesso
+- Permissões
+- Usuários e permissões
+- Perfis de acesso
 
 Planejado:
 
-* [ ] Perfis
-* [ ] Permissões por módulo
-* [ ] Permissões por ação
-* [ ] Controle de acesso
-* [ ] Auditoria
+- [ ] Perfis
+- [ ] Permissões por módulo
+- [ ] Permissões por ação
+- [ ] Controle de acesso
+- [ ] Auditoria
 
 ---
 
@@ -406,12 +430,12 @@ Planejado:
 
 Planejado:
 
-* [ ] Tipos de documentos
-* [ ] Upload
-* [ ] Documentos de alunos
-* [ ] Documentos de professores
-* [ ] Documentos institucionais
-* [ ] Controle de validade
+- [ ] Tipos de documentos
+- [ ] Upload
+- [ ] Documentos de alunos
+- [ ] Documentos de professores
+- [ ] Documentos institucionais
+- [ ] Controle de validade
 
 ---
 
@@ -421,11 +445,11 @@ Responsável pelas notificações do sistema.
 
 Planejado:
 
-* [ ] Notificações internas
-* [ ] Alertas
-* [ ] Avisos acadêmicos
-* [ ] Avisos financeiros
-* [ ] Configuração de notificações
+- [ ] Notificações internas
+- [ ] Alertas
+- [ ] Avisos acadêmicos
+- [ ] Avisos financeiros
+- [ ] Configuração de notificações
 
 ---
 
@@ -533,38 +557,38 @@ A importação não deve inserir registros automaticamente sem validação e con
 
 ## Cadastros
 
-* [x] Séries
-* [x] Turnos
-* [x] Anos Letivos
-* [x] Períodos / Bimestres
-* [x] Salas
-* [x] Tipos de Avaliação
-* [x] Disciplinas
-* [ ] Professores
-* [ ] Alunos
-* [ ] Turmas
-* [ ] Matrículas
-* [ ] Grade Horária
+- [x] Séries
+- [x] Turnos
+- [x] Anos Letivos
+- [x] Períodos / Bimestres
+- [x] Salas
+- [x] Tipos de Avaliação
+- [x] Disciplinas
+- [ ] Professores
+- [ ] Alunos
+- [ ] Turmas
+- [ ] Matrículas
+- [ ] Grade Horária
 
 ## Importação
 
-* [ ] Importação de Professores via Excel
-* [ ] Importação de Alunos via Excel
-* [ ] Templates Excel
-* [ ] Validação
-* [ ] Pré-visualização
-* [ ] Duplicidades
-* [ ] Relatório de erros
+- [ ] Importação de Professores via Excel
+- [ ] Importação de Alunos via Excel
+- [ ] Templates Excel
+- [ ] Validação
+- [ ] Pré-visualização
+- [ ] Duplicidades
+- [ ] Relatório de erros
 
 ## Acadêmico
 
-* [ ] Diário
-* [ ] Frequência
-* [ ] Avaliações
-* [ ] Notas
-* [ ] Recuperação
-* [ ] Boletim
-* [ ] Conselho de Classe
+- [ ] Diário
+- [ ] Frequência
+- [ ] Avaliações
+- [ ] Notas
+- [ ] Recuperação
+- [ ] Boletim
+- [ ] Conselho de Classe
 
 ---
 
@@ -609,29 +633,29 @@ Evitar duplicação de lógica, tabelas, componentes e regras.
 
 Concluídos:
 
-* Séries
-* Turnos
-* Anos Letivos
-* Períodos / Bimestres
-* Salas
-* Tipos de Avaliação
+- Séries
+- Turnos
+- Anos Letivos
+- Períodos / Bimestres
+- Salas
+- Tipos de Avaliação
 
 ### Cadastros
 
 Concluído:
 
-* Disciplinas
+- Disciplinas
 
 Em desenvolvimento:
 
-* Professores
+- Professores
 
 Próximos:
 
-* Alunos
-* Turmas
-* Matrículas
-* Grade Horária
+- Alunos
+- Turmas
+- Matrículas
+- Grade Horária
 
 ---
 
