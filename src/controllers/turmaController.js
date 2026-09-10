@@ -6,6 +6,84 @@ const turmasModel = require("../model/turmas");
 const anoLetivoModel = require("../model/anosLetivos");
 const salasModel = require("../model/salas");
 const turnosModel = require("../model/turnos");
+const turmaVinculosModel = require("../model/turmaVinculos");
+
+function idInteiro(valor) {
+  const id = Number.parseInt(valor, 10);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+async function detail(req, res) {
+  const idTurma = idInteiro(req.params.id);
+  if (!idTurma) return res.status(400).send("Turma inválida");
+  try {
+    const turma = await turmaVinculosModel.getTurmaDetalhe(idTurma);
+    if (!turma) return res.status(404).send("Turma não encontrada");
+    const [alunos, professores, alunosElegiveis, professoresElegiveis] =
+      await Promise.all([
+        turmaVinculosModel.getAlunosDaTurma(idTurma),
+        turmaVinculosModel.getProfessoresDaTurma(idTurma),
+        turmaVinculosModel.getAlunosElegiveis(idTurma),
+        turmaVinculosModel.getProfessoresElegiveis(idTurma),
+      ]);
+    res.render("turma-detalhe", {
+      turma,
+      alunos,
+      professores,
+      alunosElegiveis,
+      professoresElegiveis,
+      erro: req.query.erro || "",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao carregar a turma");
+  }
+}
+
+async function addAluno(req, res) {
+  try {
+    await turmaVinculosModel.vincularAluno(
+      idInteiro(req.params.id),
+      idInteiro(req.body.id_aluno),
+    );
+    res.redirect(`/turmas/${req.params.id}`);
+  } catch (error) {
+    console.error(error);
+    res.redirect(
+      `/turmas/${req.params.id}?erro=${encodeURIComponent(error.message)}`,
+    );
+  }
+}
+
+async function addProfessor(req, res) {
+  try {
+    await turmaVinculosModel.vincularProfessor(
+      idInteiro(req.params.id),
+      idInteiro(req.body.id_professor),
+    );
+    res.redirect(`/turmas/${req.params.id}`);
+  } catch (error) {
+    console.error(error);
+    res.redirect(
+      `/turmas/${req.params.id}?erro=${encodeURIComponent(error.message)}`,
+    );
+  }
+}
+
+async function removeAluno(req, res) {
+  await turmaVinculosModel.removerAluno(
+    idInteiro(req.params.id),
+    idInteiro(req.params.idAluno),
+  );
+  res.redirect(`/turmas/${req.params.id}`);
+}
+async function removeProfessor(req, res) {
+  await turmaVinculosModel.removerProfessor(
+    idInteiro(req.params.id),
+    idInteiro(req.params.idProfessor),
+  );
+  res.redirect(`/turmas/${req.params.id}`);
+}
 
 async function index(req, res) {
   try {
@@ -134,12 +212,10 @@ async function exportExcel(req, res) {
 async function importExcel(req, res) {
   try {
     if (!req.file)
-      return res
-        .status(400)
-        .json({
-          sucesso: false,
-          mensagem: "Nenhum arquivo Excel foi enviado.",
-        });
+      return res.status(400).json({
+        sucesso: false,
+        mensagem: "Nenhum arquivo Excel foi enviado.",
+      });
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(req.file.buffer);
     const worksheet = workbook.worksheets[0];
@@ -171,14 +247,24 @@ async function importExcel(req, res) {
     res.json({ sucesso: true, mensagem: "Importação concluída.", importados });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        sucesso: false,
-        mensagem: "Erro ao importar turmas.",
-        erro: error.message,
-      });
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao importar turmas.",
+      erro: error.message,
+    });
   }
 }
 
-module.exports = { index, remove, save, exportExcel, importExcel, upload };
+module.exports = {
+  index,
+  detail,
+  addAluno,
+  addProfessor,
+  removeAluno,
+  removeProfessor,
+  remove,
+  save,
+  exportExcel,
+  importExcel,
+  upload,
+};

@@ -75,3 +75,45 @@ body {
 .modal-footer {
     border-top: 1px solid #eee;
 }
+
+.turma-detail-card-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    margin-bottom: 0;
+}
+
+.turma-detail-card {
+    display: block;
+    min-height: 0;
+    padding: 0;
+}
+
+.turma-detail-card-title {
+    flex: 1 1 150px;
+    min-width: 0;
+    text-align: left;
+}
+
+.turma-detail-card > .table-responsive {
+    display: block;
+    flex: none;
+    text-align: left;
+}
+
+.btn.btn-sm.turma-detail-action {
+    flex: 0 0 auto;
+    width: auto;
+    height: auto;
+    min-height: 38px;
+    padding: 0.375rem 0.75rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+    .btn.btn-sm.turma-detail-action {
+        width: 100%;
+    }
+}

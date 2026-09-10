@@ -1,0 +1,58 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%- include('partials/css') %>
+<%- include('partials/javascript', { javascript: ['turmas'] }) %>
+
+
+<main class="main-content">
+  <section class="config-card">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+      <div>
+        <a href="/turmas" class="text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Voltar para turmas</a>
+        <h1 class="page-title mt-2 mb-1"><i class="bi bi-people me-2"></i><%= turma.text %></h1>
+        <p class="text-muted mb-0"><%= turma.serie_nome || 'Série não definida' %> · Ano letivo <%= turma.ano_letivo || '-' %> · Faixa etária: <%= turma.idade_minima ?? '-' %> a <%= turma.idade_maxima ?? '-' %> anos</p>
+      </div>
+      <span class="badge <%= Number(turma.id_status) === 1 ? 'text-bg-success' : 'text-bg-secondary' %> fs-6"><%= Number(turma.id_status) === 1 ? 'Ativa' : 'Inativa' %></span>
+    </div>
+
+    <% if (erro) { %><div class="alert alert-warning" role="alert"><i class="bi bi-exclamation-triangle me-2"></i><%= erro %></div><% } %>
+
+    <div class="row g-4">
+      <div class="col-12 col-xl-7">
+        <div class="card border-0 shadow-sm h-100 turma-detail-card">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center gap-3 turma-detail-card-header">
+            <div class="turma-detail-card-title"><h2 class="h5 mb-1">Alunos da turma</h2><small class="text-muted"><%= alunos.length %><%= turma.capacidade ? ` de ${turma.capacidade}` : '' %> alunos vinculados</small></div>
+            <button class="btn btn-primary btn-sm turma-detail-action" type="button" data-bs-toggle="modal" data-bs-target="#modalAdicionarAluno" <%= turma.capacidade && alunos.length >= turma.capacidade ? 'disabled' : '' %>><i class="bi bi-person-plus me-1"></i>Adicionar alunos</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead><tr><th>Nome</th><th>Nascimento</th><th>Idade</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <% alunos.forEach(function (aluno) { %><tr><td><%= aluno.nome_social || aluno.nome %><small class="d-block text-muted"><%= aluno.matricula || 'Sem matrícula' %></small></td><td><%= aluno.data_nascimento ? new Date(aluno.data_nascimento).toLocaleDateString('pt-BR') : '-' %></td><td><%= aluno.idade ?? '-' %></td><td><span class="badge text-bg-success">Ativo</span></td><td><form method="post" action="/turmas/<%= turma.id %>/alunos/<%= aluno.id %>/remover" onsubmit="return confirmarRemocao('aluno')"><button class="btn btn-outline-danger btn-sm" type="submit" title="Remover aluno" aria-label="Remover aluno"><i class="bi bi-person-dash"></i></button></form></td></tr><% }) %>
+                <% if (!alunos.length) { %><tr><td colspan="5" class="text-center text-muted py-4">Nenhum aluno vinculado.</td></tr><% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-5">
+        <div class="card border-0 shadow-sm h-100 turma-detail-card">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center gap-3 turma-detail-card-header">
+            <div class="turma-detail-card-title"><h2 class="h5 mb-1">Professores da turma</h2><small class="text-muted"><%= professores.length %> vinculados</small></div>
+            <button class="btn btn-outline-primary btn-sm turma-detail-action" type="button" data-bs-toggle="modal" data-bs-target="#modalAdicionarProfessor"><i class="bi bi-person-workspace me-1"></i>Adicionar professores</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0"><thead><tr><th>Nome</th><th>E-mail</th><th>Área de formação</th><th>Status</th><th></th></tr></thead><tbody>
+              <% professores.forEach(function (professor) { %><tr><td><%= professor.nome_social || professor.nome %><small class="d-block text-muted"><%= professor.matricula || 'Sem matrícula' %></small></td><td><%= professor.email || '-' %></td><td><%= professor.area_formacao || '-' %></td><td><span class="badge text-bg-success">Ativo</span></td><td><form method="post" action="/turmas/<%= turma.id %>/professores/<%= professor.id %>/remover" onsubmit="return confirmarRemocao('professor')"><button class="btn btn-outline-danger btn-sm" type="submit" title="Remover professor" aria-label="Remover professor"><i class="bi bi-person-dash"></i></button></form></td></tr><% }) %>
+              <% if (!professores.length) { %><tr><td colspan="4" class="text-center text-muted py-4">Nenhum professor vinculado.</td></tr><% } %>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal fade" id="modalAdicionarAluno" tabindex="-1" aria-labelledby="modalAdicionarAlunoLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h2 class="modal-title h5" id="modalAdicionarAlunoLabel">Adicionar aluno elegível</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button></div><form method="post" action="/turmas/<%= turma.id %>/alunos"><div class="modal-body"><p class="small text-muted">Somente alunos ativos, dentro da faixa etária da série e sem vínculo em outra turma do mesmo ano letivo aparecem aqui.</p><label class="form-label" for="id_aluno">Aluno</label><select class="form-select" id="id_aluno" name="id_aluno" required><option value="">Selecione um aluno</option><% alunosElegiveis.forEach(function (aluno) { %><option value="<%= aluno.id %>"><%= aluno.nome_social || aluno.nome %> · <%= aluno.idade %> anos · nascimento <%= new Date(aluno.data_nascimento).toLocaleDateString('pt-BR') %></option><% }) %></select><% if (!alunosElegiveis.length) { %><div class="alert alert-light mt-3 mb-0">Nenhum aluno atende aos critérios desta turma.</div><% } %></div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary" type="submit" <%= !alunosElegiveis.length ? 'disabled' : '' %>><i class="bi bi-person-plus me-1"></i>Vincular aluno</button></div></form></div></div></div>
+<div class="modal fade" id="modalAdicionarProfessor" tabindex="-1" aria-labelledby="modalAdicionarProfessorLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h2 class="modal-title h5" id="modalAdicionarProfessorLabel">Adicionar professor elegível</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button></div><form method="post" action="/turmas/<%= turma.id %>/professores"><div class="modal-body"><label class="form-label" for="id_professor">Professor</label><select class="form-select" id="id_professor" name="id_professor" required><option value="">Selecione um professor</option><% professoresElegiveis.forEach(function (professor) { %><option value="<%= professor.id %>"><%= professor.nome_social || professor.nome %><%= professor.matricula ? ` · ${professor.matricula}` : '' %></option><% }) %></select><% if (!professoresElegiveis.length) { %><div class="alert alert-light mt-3 mb-0">Nenhum professor ativo disponível.</div><% } %></div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary" type="submit" <%= !professoresElegiveis.length ? 'disabled' : '' %>><i class="bi bi-person-workspace me-1"></i>Vincular professor</button></div></form></div></div></div>

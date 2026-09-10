@@ -452,7 +452,7 @@ tbody tr:last-child td {
    MODAL
 ============================== */
 
-.modal {
+#modal {
     position: fixed;
 
     inset: 0;
@@ -470,11 +470,11 @@ tbody tr:last-child td {
     z-index: 999;
 }
 
-.modal.ativo {
+#modal.ativo {
     display: flex;
 }
 
-.modal-content {
+#modal .modal-content {
     width: 100%;
     max-width: 600px;
 
@@ -489,7 +489,7 @@ tbody tr:last-child td {
     box-shadow: 0 20px 50px rgba(0, 0, 0, .15);
 }
 
-.modal-header {
+#modal .modal-header {
     display: flex;
 
     align-items: flex-start;
@@ -501,11 +501,11 @@ tbody tr:last-child td {
     border-bottom: 1px solid #eee;
 }
 
-.modal-header h2 {
+#modal .modal-header h2 {
     font-size: 20px;
 }
 
-.modal-header p {
+#modal .modal-header p {
     margin-top: 5px;
 
     color: #777;
@@ -513,7 +513,7 @@ tbody tr:last-child td {
     font-size: 13px;
 }
 
-.btn-close {
+#modal .btn-close {
     border: none;
 
     background: transparent;
@@ -527,7 +527,7 @@ tbody tr:last-child td {
     line-height: 1;
 }
 
-.btn-close:hover {
+#modal .btn-close:hover {
     color: #111;
 }
 
@@ -536,7 +536,7 @@ tbody tr:last-child td {
    FORMULÁRIO DO MODAL
 ============================== */
 
-.modal form {
+#modal form {
     padding: 22px;
 }
 
@@ -593,7 +593,7 @@ select[multiple] {
    RODAPÉ DO MODAL
 ============================== */
 
-.modal-footer {
+#modal .modal-footer {
     display: flex;
 
     justify-content: flex-end;
@@ -662,11 +662,11 @@ select[multiple] {
         grid-template-columns: 1fr;
     }
 
-    .modal {
+    #modal {
         padding: 10px;
     }
 
-    .modal-content {
+    #modal .modal-content {
         max-height: 95vh;
     }
 }
