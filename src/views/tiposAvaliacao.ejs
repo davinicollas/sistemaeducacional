@@ -1,6 +1,7 @@
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
             <%- include("partials/css") %>
+<%- include("partials/javascript", { javascript: ["tiposAvaliacao"] }) %>
 
 <%
     tipos = typeof tipos !== 'undefined' ? tipos : {};
@@ -23,7 +24,7 @@
           <div class="card">
               <div class="card-icon"><i class="bi bi-people-fill"></i></div>
               <div>
-                  <span>Total de Alunos</span>
+                  <span>Total de tipos</span>
                   <span style="text-align: center;"><strong>
                           <%= tiposList.length %>
                       </strong></span>
@@ -32,15 +33,15 @@
           <div class="card">
               <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
               <div>
-                  <span>Alunos Ativos</span>
-                  <span style="text-align: center;"><strong><%= tiposList || 0 %></strong></span>
+                  <span>Tipos ativos</span>
+                  <span style="text-align: center;"><strong><%= tiposList.filter(t => String(t.status) !== '0').length %></strong></span>
               </div>
           </div>
           <div class="card">
               <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
               <div>
-                  <span>Alunos Inativos</span>
-                  <span style="text-align: center;"><strong><%= tiposList || 0 %></strong></span>
+                  <span>Tipos inativos</span>
+                  <span style="text-align: center;"><strong><%= tiposList.filter(t => String(t.status) === '0').length %></strong></span>
               </div>
     </div>
       </div>  
@@ -90,106 +91,3 @@
   </section>
 </div>
 
-<script>
-  function getOrCreateTiposModal() {
-    let modal = document.getElementById('tipos-modal');
-    if (modal) return modal;
-
-    modal = document.createElement('div');
-    modal.id = 'tipos-modal';
-    modal.innerHTML = `
-      <div class="modal-panel">
-        <h3>Tipo de Avaliação</h3>
-        <input type="hidden" id="modal-index" value="-1">
-        <input type="hidden" id="modal-id" value="">
-
-        <div class="form-group">
-          <label for="modal-nome">Nome *</label>
-          <input id="modal-nome" type="text" placeholder="Ex: Prova" />
-        </div>
-
-        <div class="form-group">
-          <label for="modal-sigla">Sigla</label>
-          <input id="modal-sigla" type="text" placeholder="Ex: P" />
-        </div>
-
-        <div class="form-group">
-          <label for="modal-notaMaxima">Nota máxima</label>
-          <input id="modal-notaMaxima" type="number" step="0.01" />
-        </div>
-
-        <div class="form-group">
-          <label for="modal-status">Status *</label>
-          <select id="modal-status">
-            <option value="1">Ativo</option>
-            <option value="0">Inativo</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="modal-text">Descrição</label>
-          <textarea id="modal-text" rows="3"></textarea>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="btn-secondary" onclick="closeTiposModal()">Cancelar</button>
-          <button type="button" class="btn-primary" onclick="saveTiposModal()">Salvar</button>
-        </div>
-      </div>
-    `;
-    modal.addEventListener('click', function (e) { if (e.target === modal) closeTiposModal(); });
-    document.body.appendChild(modal);
-    return modal;
-  }
-
-  function openTiposModal(index) {
-    const modal = getOrCreateTiposModal();
-    const fields = ['id','nome','sigla','notaMaxima','status','text'];
-
-    ModalHelper.openModal(modal, 'tipos', fields, index, { status: '1' });
-
-    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
-  }
-
-  function closeTiposModal() { const modal = document.getElementById('tipos-modal'); if (!modal) return; modal.classList.remove('open'); }
-
-  function saveTiposModal() {
-    const modal = document.getElementById('tipos-modal');
-    if (!modal) return;
-    const nome = modal.querySelector('#modal-nome').value.trim(); if (!nome) { modal.querySelector('#modal-nome').focus(); return; }
-
-    const values = {
-      id: modal.querySelector('#modal-id').value.trim(),
-      nome,
-      sigla: modal.querySelector('#modal-sigla').value.trim(),
-      notaMaxima: modal.querySelector('#modal-notaMaxima').value.trim(),
-      status: modal.querySelector('#modal-status').value,
-      text: modal.querySelector('#modal-text').value.trim()
-    };
-
-    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
-
-    const fields = ['id','nome','sigla','notaMaxima','status','text'];
-    const displayMap = [
-      { field: 'nome', cls: 'tipo-nome' },
-      { field: 'sigla', cls: 'tipo-sigla' },
-      { field: 'notaMaxima', cls: 'tipo-nota' }
-    ];
-
-    ModalHelper.applyValuesToRow('tipos', fields, displayMap, idx, values, 'openTiposModal', '/tipos-avaliacao/excluir');
-    ModalHelper.reindex('tipos', fields, 'openTiposModal');
-    closeTiposModal();
-
-    const tiposForm = document.getElementById('tipos-form');
-        if (tiposForm) {
-            tiposForm.submit();
-        }
-    
-  }
-
-  function excluirTipo(id) { ModalHelper.submitDelete(`/tipos-avaliacao/excluir/${id}`); }
-
-  function removeTiposRow(btn) { ModalHelper.removeRow(btn, 'tipos', ['id','nome','sigla','notaMaxima','status','text'], 'openTiposModal'); }
-
-  function reindexTipos() { ModalHelper.reindex('tipos', ['id','nome','sigla','notaMaxima','status','text'], 'openTiposModal'); }
-</script>

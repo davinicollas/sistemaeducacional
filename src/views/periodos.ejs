@@ -1,12 +1,17 @@
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
             <%- include("partials/css") %>
-
 <%
     periodos = typeof periodos !== 'undefined' ? periodos : {};
     let periodosList = Array.isArray(periodos.periodos) ? periodos.periodos : [];
     anos = typeof anos !== 'undefined' ? anos : [];
 %>
+<script>
+  window.periodosConfig = {
+    anos: <%- JSON.stringify((Array.isArray(anos) ? anos : []).map(a => ({ value: a.ano_letivo || a.ano || a.id, label: a.ano_letivo || a.ano || a.id }))).replace(/</g, '\\u003c') %>
+  };
+</script>
+<%- include("partials/javascript", { javascript: ["periodos"] }) %>
 
 <div class="main-content">
   <section class="config-card">
@@ -24,7 +29,7 @@
           <div class="card">
               <div class="card-icon"><i class="bi bi-people-fill"></i></div>
               <div>
-                  <span>Total de Alunos</span>
+                  <span>Total de períodos</span>
                   <span style="text-align: center;"><strong>
                           <%= periodosList.length %>
                       </strong></span>
@@ -33,15 +38,15 @@
           <div class="card">
               <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
               <div>
-                  <span>Alunos Ativos</span>
-                  <span style="text-align: center;"><strong><%= periodosList || 0 %></strong></span>
+                  <span>Períodos ativos</span>
+                  <span style="text-align: center;"><strong><%= periodosList.filter(p => String(p.status) !== '0').length %></strong></span>
               </div>
           </div>
           <div class="card">
               <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
               <div>
-                  <span>Alunos Inativos</span>
-                  <span style="text-align: center;"><strong><%= periodosList || 0 %></strong></span>
+                  <span>Períodos inativos</span>
+                  <span style="text-align: center;"><strong><%= periodosList.filter(p => String(p.status) === '0').length %></strong></span>
               </div>
     </div>
       </div>  
@@ -99,7 +104,7 @@
   </section>
 </div>
 
-<script>
+<script type="text/plain">
   function getOrCreatePeriodosModal() {
     let modal = document.getElementById('periodos-modal');
     if (modal) return modal;

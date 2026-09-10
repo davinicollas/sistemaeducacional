@@ -3,7 +3,8 @@
 
         <%- include('partials/menu') %>
             <script>
-                window.calendarioEventos = <% - JSON.stringify(Array.isArray(evento) ? evento : []).replace(/</g, '\\u003c') %>;
+
+                window.calendarioEventos = <%- JSON.stringify(Array.isArray(evento) ? evento : []).replace(/</g, '\\u003c') %>;
             </script>
             <%- include("partials/javascript", { javascript: ["calendarios"] }) %>
                 <div class="main-content">

@@ -1,6 +1,8 @@
 
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
+<%- include("partials/css") %>
+
 <%
     series = typeof series !== 'undefined' ? series : {};
     let seriesList = Array.isArray(series.series) ? series.series : [];

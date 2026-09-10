@@ -1,6 +1,7 @@
 <%- include('partials/header') %>
 <%- include('partials/menu') %>
             <%- include("partials/css") %>
+<%- include("partials/javascript", { javascript: ["turnos"] }) %>
 
 <%
     turnos = typeof turnos !== 'undefined' ? turnos : {};
@@ -23,7 +24,7 @@
           <div class="card">
               <div class="card-icon"><i class="bi bi-people-fill"></i></div>
               <div>
-                  <span>Total de Alunos</span>
+                  <span>Total de turnos</span>
                   <span style="text-align: center;"><strong>
                           <%= turnosList.length %>
                       </strong></span>
@@ -32,15 +33,15 @@
           <div class="card">
               <div class="card-icon"><i class="bi bi-person-check-fill"></i></div>
               <div>
-                  <span>Alunos Ativos</span>
-                  <span style="text-align: center;"><strong><%= turnosList || 0 %></strong></span>
+                  <span>Turnos ativos</span>
+                  <span style="text-align: center;"><strong><%= turnosList.filter(t => String(t.status) !== '0').length %></strong></span>
               </div>
           </div>
           <div class="card">
               <div class="card-icon"><i class="bi bi-person-x-fill"></i></div>
               <div>
-                  <span>Alunos Inativos</span>
-                  <span style="text-align: center;"><strong><%= turnosList || 0 %></strong></span>
+                  <span>Turnos inativos</span>
+                  <span style="text-align: center;"><strong><%= turnosList.filter(t => String(t.status) === '0').length %></strong></span>
               </div>
     </div>
       </div> 
@@ -93,124 +94,3 @@
   </section>
 </div>
 
-<script>
-  function getOrCreateTurnosModal() {
-    let modal = document.getElementById('turnos-modal');
-    if (modal) return modal;
-
-    modal = document.createElement('div');
-    modal.id = 'turnos-modal';
-    modal.innerHTML = `
-      <div class="modal-panel">
-        <h3>Turno</h3>
-        <input type="hidden" id="modal-index" value="-1">
-        <input type="hidden" id="modal-id" value="">
-
-        <div class="form-group">
-          <label for="modal-nome">Nome *</label>
-          <input id="modal-nome" type="text" placeholder="Ex: Manhã" />
-        </div>
-
-        <div class="form-group">
-          <label for="modal-sigla">Sigla</label>
-          <input id="modal-sigla" type="text" placeholder="Ex: MAN" />
-        </div>
-
-        <div class="form-group">
-          <label for="modal-horarioInicio">Horário inicial</label>
-          <input id="modal-horarioInicio" type="time" />
-        </div>
-
-        <div class="form-group">
-          <label for="modal-horarioFinal">Horário final</label>
-          <input id="modal-horarioFinal" type="time" />
-        </div>
-
-        <div class="form-group">
-          <label for="modal-status">Status *</label>
-          <select id="modal-status">
-            <option value="1">Ativo</option>
-            <option value="0">Inativo</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="modal-text">Descrição</label>
-          <textarea id="modal-text" rows="3" placeholder="Informações do turno"></textarea>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="btn-secondary" onclick="closeTurnosModal()">Cancelar</button>
-          <button type="button" class="btn-primary" onclick="saveTurnosModal()">Salvar</button>
-        </div>
-      </div>
-    `;
-    modal.addEventListener('click', function (e) { if (e.target === modal) closeTurnosModal(); });
-    document.body.appendChild(modal);
-    return modal;
-  }
-
-  function openTurnosModal(index) {
-    const modal = getOrCreateTurnosModal();
-    const fields = ['id', 'nome', 'sigla', 'horarioInicio', 'horarioFinal', 'status', 'text'];
-
-    ModalHelper.openModal(modal, 'turnos', fields, index, { status: '1' });
-
-    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
-  }
-
-  function closeTurnosModal() {
-    const modal = document.getElementById('turnos-modal');
-    if (!modal) return;
-    modal.classList.remove('open');
-  }
-
-  function saveTurnosModal() {
-    const modal = document.getElementById('turnos-modal');
-    if (!modal) return;
-
-    const nome = modal.querySelector('#modal-nome').value.trim();
-    if (!nome) { modal.querySelector('#modal-nome').focus(); return; }
-
-    const values = {
-      id: modal.querySelector('#modal-id').value.trim(),
-      nome,
-      sigla: modal.querySelector('#modal-sigla').value.trim(),
-      horarioInicio: modal.querySelector('#modal-horarioInicio').value.trim(),
-      horarioFinal: modal.querySelector('#modal-horarioFinal').value.trim(),
-      status: modal.querySelector('#modal-status').value,
-      text: modal.querySelector('#modal-text').value.trim()
-    };
-
-    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
-
-    const fields = ['id','nome','sigla','horarioInicio','horarioFinal','status','text'];
-    const displayMap = [
-      { field: 'nome', cls: 'turno-nome' },
-      { field: 'sigla', cls: 'turno-sigla' },
-      { field: 'horarioInicio', cls: 'turno-inicio' },
-      { field: 'horarioFinal', cls: 'turno-fim' }
-    ];
-
-    ModalHelper.applyValuesToRow('turnos', fields, displayMap, idx, values, 'openTurnosModal', '/turnos/excluir');
-    ModalHelper.reindex('turnos', fields, 'openTurnosModal');
-    closeTurnosModal();
-
-       const turnosForm = document.getElementById('turnos-form');
-        if (turnosForm) {
-            turnosForm.submit();
-        }
-  }
-
-  function excluirTurno(id) {
-    ModalHelper.submitDelete(`/turnos/excluir/${id}`);
-  }
-
-  function removeTurnoRow(btn) {
-    ModalHelper.removeRow(btn, 'turnos', ['id','nome','sigla','horarioInicio','horarioFinal','status','text'], 'openTurnosModal');
-  }
-
-  function reindexTurnos() {
-    ModalHelper.reindex('turnos', ['id','nome','sigla','horarioInicio','horarioFinal','status','text'], 'openTurnosModal');
-  }
-</script>

@@ -7,8 +7,10 @@ async function index(req, res) {
   const mes =
     req.query.mes !== undefined ? parseInt(req.query.mes, 10) : hoje.getMonth();
   try {
+    const evento = await calendarioModel.getEventos(ano, mes);
+
     res.render("calendario", {
-      evento: await calendarioModel.getEventos(ano, mes),
+      evento: evento,
       filtros: { ano, mes },
     });
   } catch (error) {
