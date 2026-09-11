@@ -31,6 +31,7 @@ const professores = require("./routes/professores");
 const formacoes = require("./routes/formacoes");
 const alunos = require("./routes/alunos");
 const turmas = require("./routes/turmas");
+const frequencia = require("./routes/frequencia");
 
 const authMid = require("./middleware/auth");
 const csrfProtection = require("./middleware/csrf");
@@ -134,6 +135,7 @@ app.use(professores);
 app.use(formacoes);
 app.use(alunos);
 app.use(turmas);
+app.use(frequencia);
 
 app.use((error, req, res, next) => {
   console.error(error);

@@ -1,0 +1,18 @@
+.frequencia-status-select.status-presente {
+  border-color: #198754;
+  color: #198754;
+}
+
+.frequencia-status-select.status-falta {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.frequencia-status-select.status-falta_justificada {
+  border-color: #fd7e14;
+  color: #fd7e14;
+}
+
+#frequencia-resumo .stat-card h3 {
+  font-weight: 600;
+}

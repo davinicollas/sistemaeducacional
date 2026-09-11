@@ -1,0 +1,161 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%- include('partials/css') %>
+<%- include('partials/javascript', { javascript: ['frequencia'] }) %>
+
+<main class="main-content">
+  <section class="config-card">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+      <div>
+        <h1 class="page-title mb-1"><i class="bi bi-clipboard-check me-2"></i>Frequência</h1>
+        <p class="text-muted mb-0">Registre e consulte a frequência dos alunos por turma, disciplina e data.</p>
+      </div>
+    </div>
+
+    <% if (typeof erro !== 'undefined' && erro) { %>
+      <div class="alert alert-warning" role="alert"><i class="bi bi-exclamation-triangle me-2"></i><%= erro %></div>
+    <% } %>
+
+    <div id="frequencia-alerta" class="alert d-none" role="alert"></div>
+
+    <form class="card border-0 shadow-sm mb-4" id="frequencia-filtros" onsubmit="return false;">
+      <div class="card-body row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label" for="filtro-ano-letivo">Ano Letivo</label>
+          <select id="filtro-ano-letivo" class="form-select">
+            <option value="">Selecione</option>
+            <% (anoLetivo || []).forEach(function (item) { %>
+              <option value="<%= item.id %>"><%= item.ano_letivo || item.text %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="filtro-turma">Turma</label>
+          <select id="filtro-turma" class="form-select" disabled>
+            <option value="">Selecione o ano letivo</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="filtro-disciplina">Disciplina</label>
+          <select id="filtro-disciplina" class="form-select">
+            <option value="">Geral / Não se aplica</option>
+            <% (disciplinas || []).forEach(function (item) { %>
+              <option value="<%= item.id %>"><%= item.text %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="filtro-data">Data</label>
+          <input type="date" id="filtro-data" class="form-control">
+        </div>
+      </div>
+    </form>
+
+    <div class="row g-3 mb-4" id="frequencia-resumo">
+      <div class="col-6 col-md-2">
+        <div class="card stat-card shadow-sm">
+          <div class="card-body">
+            <small class="text-muted">Total</small>
+            <h3 class="mb-0 mt-1" id="resumo-total">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card stat-card shadow-sm">
+          <div class="card-body">
+            <small class="text-muted">Presentes</small>
+            <h3 class="mb-0 mt-1 text-success" id="resumo-presentes">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div class="card stat-card shadow-sm">
+          <div class="card-body">
+            <small class="text-muted">Faltas</small>
+            <h3 class="mb-0 mt-1 text-danger" id="resumo-faltas">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card stat-card shadow-sm">
+          <div class="card-body">
+            <small class="text-muted">Faltas justificadas</small>
+            <h3 class="mb-0 mt-1 text-warning" id="resumo-justificadas">0</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card stat-card shadow-sm">
+          <div class="card-body">
+            <small class="text-muted">Presença</small>
+            <h3 class="mb-0 mt-1" id="resumo-percentual">0%</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center gap-3">
+        <h2 class="h5 mb-0">Chamada</h2>
+        <button type="button" class="btn btn-primary" id="btn-salvar-frequencia" disabled>
+          <i class="bi bi-save me-1"></i>Salvar frequência
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Aluno</th>
+              <th style="width: 220px;">Situação</th>
+              <th>Observação</th>
+              <th style="width: 60px;"></th>
+            </tr>
+          </thead>
+          <tbody id="frequencia-tbody">
+            <tr id="frequencia-vazio">
+              <td colspan="4" class="text-center text-muted py-4">Selecione a turma, a disciplina e a data para carregar os alunos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal fade" id="modalMotivoAlteracao" tabindex="-1" aria-labelledby="modalMotivoAlteracaoLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title h5" id="modalMotivoAlteracaoLabel">Alterar frequência</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <p>Esta frequência já foi registrada.</p>
+        <label class="form-label" for="motivo-alteracao">Informe o motivo da alteração *</label>
+        <textarea class="form-control" id="motivo-alteracao" rows="3" required></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" id="btn-cancelar-motivo" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btn-confirmar-motivo" disabled>Confirmar alteração</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalHistoricoFrequencia" tabindex="-1" aria-labelledby="modalHistoricoFrequenciaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title h5" id="modalHistoricoFrequenciaLabel">Histórico da frequência</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body" id="historico-frequencia-conteudo">
+        <p class="text-muted mb-0">Carregando...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.FREQUENCIA_STATUS = <%- JSON.stringify(statusValidos || []) %>;
+</script>
