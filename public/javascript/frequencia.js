@@ -136,6 +136,15 @@ document.addEventListener("DOMContentLoaded", function () {
       atualizarResumo();
       return;
     }
+    const hojeIso = new Date().toISOString().slice(0, 10);
+    if (inputData.value > hojeIso) {
+      mostrarAlerta("Não é possível lançar frequência para datas futuras.", "danger");
+      tbody.innerHTML =
+        '<tr id="frequencia-vazio"><td colspan="4" class="text-center text-muted py-4">Selecione uma data válida.</td></tr>';
+      btnSalvar.disabled = true;
+      atualizarResumo();
+      return;
+    }
     const parametros = new URLSearchParams({
       id_turma: selTurma.value,
       data: inputData.value,

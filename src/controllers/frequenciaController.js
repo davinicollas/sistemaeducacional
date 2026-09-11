@@ -10,7 +10,12 @@ function dataValida(valor) {
   if (typeof valor !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(valor))
     return null;
   const data = new Date(`${valor}T00:00:00`);
-  return Number.isNaN(data.getTime()) ? null : valor;
+  if (Number.isNaN(data.getTime())) return null;
+  // Regra atual: não permite lançar frequência para datas futuras.
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  if (data.getTime() > hoje.getTime()) return null;
+  return valor;
 }
 
 async function index(req, res) {
@@ -89,7 +94,11 @@ async function registro(req, res) {
       .status(400)
       .json({ sucesso: false, mensagem: "Disciplina inválida." });
   if (!data)
-    return res.status(400).json({ sucesso: false, mensagem: "Data inválida." });
+    return res.status(400).json({
+      sucesso: false,
+      mensagem:
+        "Data inválida ou futura. Não é possível lançar frequência para datas futuras.",
+    });
 
   try {
     if (!(await frequenciasModel.turmaExiste(idTurma)))
@@ -144,7 +153,11 @@ async function salvar(req, res) {
       .status(400)
       .json({ sucesso: false, mensagem: "Disciplina inválida." });
   if (!data)
-    return res.status(400).json({ sucesso: false, mensagem: "Data inválida." });
+    return res.status(400).json({
+      sucesso: false,
+      mensagem:
+        "Data inválida ou futura. Não é possível lançar frequência para datas futuras.",
+    });
   if (!registros.length)
     return res
       .status(400)
@@ -171,12 +184,10 @@ async function salvar(req, res) {
           .status(400)
           .json({ sucesso: false, mensagem: "Aluno inválido." });
       if (!idsValidos.has(idAluno))
-        return res
-          .status(400)
-          .json({
-            sucesso: false,
-            mensagem: "Aluno não pertence a esta turma.",
-          });
+        return res.status(400).json({
+          sucesso: false,
+          mensagem: "Aluno não pertence a esta turma.",
+        });
       if (!frequenciasModel.STATUS_VALIDOS.includes(item.status))
         return res
           .status(400)
