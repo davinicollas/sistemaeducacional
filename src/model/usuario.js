@@ -1,69 +1,61 @@
 const db = require("../../database/mysql.js");
 const bcrypt = require("bcrypt");
 
-
 async function getUsuario(email) {
-    const [usuario] = await db.query(
-        "SELECT * FROM usuarios WHERE email = ? AND excluido = 0",
-        [email]
-    );
+  const [usuario] = await db.query(
+    "SELECT * FROM usuarios WHERE email = ? AND excluido = 0",
+    [email],
+  );
 
-    return usuario[0];
+  return usuario[0];
 }
 
 async function getUsuarioPorId(id) {
-    const [usuario] = await db.query(
-        "SELECT * FROM usuarios WHERE id = ? AND excluido = 0",
-        [id]
-    );
+  const [usuario] = await db.query(
+    "SELECT * FROM usuarios WHERE id = ? AND excluido = 0",
+    [id],
+  );
 
-    return usuario[0];
+  return usuario[0];
 }
 
 function construirAtualizacaoPerfil({ nome, email, telefone, avatar, senha }) {
-    const campos = [];
-    const valores = [];
+  const campos = [];
+  const valores = [];
 
-    if (nome) {
-        campos.push("nome = ?");
-        valores.push(nome);
-    }
+  if (nome) {
+    campos.push("nome = ?");
+    valores.push(nome);
+  }
 
-    if (email) {
-        campos.push("email = ?");
-        valores.push(email);
-    }
+  if (email) {
+    campos.push("email = ?");
+    valores.push(email);
+  }
 
-    if (telefone) {
-        campos.push("telefone = ?");
-        valores.push(telefone);
-    }
+  if (telefone) {
+    campos.push("telefone = ?");
+    valores.push(telefone);
+  }
 
-   /* if (avatar) {
+  /* if (avatar) {
         campos.push("avatar = ?");
         valores.push(avatar);
     }*/
 
-    if (senha) {
-        campos.push("senha = ?");
-        valores.push(senha);
-    }
+  if (senha) {
+    campos.push("senha = ?");
+    valores.push(senha);
+  }
 
-    return {
-        campos,
-        valores
-    };
-}
-
-
-async function gerarPassword() {
-    const senha = Math.random().toString(36).slice(-10);
-    const hash = await bcrypt.hash(senha, 10);
-    return hash;
+  return {
+    campos,
+    valores,
+  };
 }
 
 module.exports = {
-    getUsuario,
-    getUsuarioPorId,
-    construirAtualizacaoPerfil
+  getUsuario,
+  getUsuarioPorId,
+  construirAtualizacaoPerfil,
 };

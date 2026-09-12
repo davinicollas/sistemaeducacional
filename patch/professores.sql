@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS professores (
     id_estado INT,
     idFormacao INT,
     matricula VARCHAR(50),
+    senha VARCHAR(255),
     registro_profissional VARCHAR(50),
     data_admissao DATE,
     formacao VARCHAR(255),

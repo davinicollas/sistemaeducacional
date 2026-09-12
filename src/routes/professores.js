@@ -4,6 +4,7 @@ const router = express.Router();
 router.get("/professores", controller.index);
 router.post("/professores/excluir/:id", controller.remove);
 router.post("/professores", controller.save);
+router.post("/professores/:id/senha", controller.setSenha);
 router.post("/professores-exportar-excel", controller.exportExcel);
 router.post(
   "/professores-importar-excel",

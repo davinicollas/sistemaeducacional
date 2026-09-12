@@ -1,20 +1,16 @@
 <%- include('partials/header') %>
     <!-- Sidebar -->
     <%- include('partials/menu') %>
-                <%- include("partials/css") %>
+    <%- include("partials/css") %>
+<%- include("partials/javascript", {
+    javascript: ["professores"]
+}) %>
+   
+  <div class="main-content">
 
-    <%
-        professores = typeof professores !== 'undefined' ? professores : {};
-        statusProfessor = typeof statusProfessor !== 'undefined' ? statusProfessor : {};
-        let professoresList = Array.isArray(professores.professores) ? professores.professores : [];
-        let statusProfessorList = Array.isArray(statusProfessor) ? statusProfessor : (statusProfessor ? [statusProfessor] : []);
-        let estadoList = Array.isArray(estado) ? estado : (estado ? [estado] : []);
-        let disciplinasCatalogo = typeof disciplinasList !== 'undefined' && Array.isArray(disciplinasList) ? disciplinasList : [];
-        let formacaoCatalogo = typeof formacaoList !== 'undefined' && Array.isArray(formacaoList) ? formacaoList : [];
-    %>
-    <!-- Main Content -->
-   <div class="main-content">
-    <section class="config-card">
+   <%- include('partials/filtros', { action: '/professores', filtros, pageSizes: [10,25,50] }) %>
+
+   <section class="config-card">
       <div style="text-align: right;">
           <button type="button" class="btn-primary series-new-btn" onclick="openProfessorModal(null)">+ Novo Professor</button>
       </div>
@@ -84,6 +80,7 @@
                   <input type="hidden" data-field="carga_horaria" name="professores[<%= idx %>][carga_horaria]" value="<%= s.carga_horaria || '' %>" />
                   <input type="hidden" data-field="id_status" name="professores[<%= idx %>][id_status]" value="<%= s.id_status || '1' %>" />
                   <input type="hidden" data-field="email" name="professores[<%= idx %>][email]" value="<%= s.email || '' %>" />
+                  <input type="hidden" data-field="has_senha" name="professores[<%= idx %>][has_senha]" value="<%= s.has_senha ? 1 : '' %>" />
                   <input type="hidden" data-field="telefone" name="professores[<%= idx %>][telefone]" value="<%= s.telefone || '' %>" />
                   <input type="hidden" data-field="celular" name="professores[<%= idx %>][celular]" value="<%= s.celular || '' %>" />
                   <input type="hidden" data-field="cep" name="professores[<%= idx %>][cep]" value="<%= s.cep || '' %>" />
@@ -130,224 +127,6 @@
     </div>
   </section>
 <script>
-  const PROFESSOR_FIELDS = ['id','nome','nome_social','cpf','data_nascimento','sexo','id_disciplina','carga_horaria','id_status','email','telefone','celular','cep','endereco','numeros','complemento','bairro','cidade','id_estado','matricula','registro_profissional','data_admissao','idFormacao','area_formacao','observacoes'];
-  const PROFESSOR_DISCIPLINAS = <%- JSON.stringify(disciplinasCatalogo.reduce(function (acc, d) { acc[d.id] = d.text; return acc; }, {})) %>;
-
-  function getOrCreateProfessorModal() {
-    let modal = document.getElementById('professor-modal');
-    if (modal) return modal;
-
-    modal = document.createElement('div');
-    modal.id = 'professor-modal';
-    modal.innerHTML = `
-      <div class="modal-panel">
-        <section class="config-card">
-            <h3>Professor</h3>
-            <input type="hidden" id="modal-index" value="-1">
-            <input type="hidden" id="modal-id" value="">
-
-            <div class="form-group">
-            <label for="modal-nome">Nome *</label>
-            <input id="modal-nome" type="text" placeholder="Ex: Maria" />
-            </div>
-
-            <div class="form-group">
-            <label for="modal-nome_social">Nome Social</label>
-            <input id="modal-nome_social" type="text" placeholder="Ex: Maria" />
-            </div>
-
-            <div class="form-group">
-            <label for="modal-cpf">CPF</label>
-            <input id="modal-cpf" type="text" placeholder="Ex: 123.456.789-00" />
-            </div>
-
-            <div class="form-group">
-            <label for="modal-data_nascimento">Data de Nascimento</label>
-            <input id="modal-data_nascimento" type="date" />
-            </div>
-
-            <div class="form-group">
-            <label for="modal-sexo">Sexo</label>
-            <select id="modal-sexo">
-                <option value="M">Masculino</option>
-                <option value="F">Feminino</option>
-                <option value="O">Outro</option>
-            </select>
-            </div>
-        </section>
-
-        <section class="config-card">
-            <h3>Contato</h3>
-            <div class="form-group">
-                <label for="modal-email">Email</label>
-                <input id="modal-email" type="email" placeholder="Ex: maria@example.com" />
-            </div>
-
-            <div class="form-group">
-                <label for="modal-telefone">Telefone</label>
-                <input id="modal-telefone" type="text" placeholder="Ex: (11) 98765-4321" />
-            </div>
-
-            <div class="form-group">
-                <label for="modal-celular">Celular</label>
-                <input id="modal-celular" type="text" placeholder="Ex: (11) 98765-4321" />
-            </div>
-
-            <div class="form-group">
-                <label for="modal-cep">CEP</label>
-                <input id="modal-cep" type="text" placeholder="Ex: 12345-678" />
-            </div>
-
-            <div class="form-group">
-                <label for="modal-endereco">Endereço</label>
-                <input id="modal-endereco" type="text" placeholder="Ex: Rua das Flores, 123" />
-            </div>
-
-            <div class="form-group">
-                <label for="modal-numeros">Números</label>
-                <input id="modal-numeros" type="text" placeholder="Ex: 12345" />
-            </div>
-
-            <div class="form-group">
-                <label for="modal-complemento">Complemento</label>
-                <input id="modal-complemento" type="text" placeholder="Ex: Apt 101" />
-            </div>
-
-            <div class="form-group">
-                <label for="modal-bairro">Bairro</label>
-                <input id="modal-bairro" type="text" placeholder="Ex: Centro" />
-            </div>
-
-            <div class="form-group">
-                <label for="modal-cidade">Cidade</label>
-                <input id="modal-cidade" type="text" placeholder="Ex: São Paulo" />
-            </div>
-
-             <div class="form-group">
-                <label for="modal-id_estado">Estado</label>
-                <select id="modal-id_estado">
-                    <option value="">Selecione</option>
-                    <% estadoList.forEach(function (e) { %>
-                        <option value="<%= e.id %>"><%= e.text %></option>
-                    <% }) %>
-                </select>
-            </div>
-        </section>
-
-        <section class="config-card">
-            <h3>Dados profissionais</h3>    
-            <div class="form-group">
-                <label for="modal-matricula">Matrícula</label>
-                <input id="modal-matricula" type="text" placeholder="Ex: 123456" />
-            </div>
-            <div class="form-group">
-                <label for="modal-registro_profissional">Registro Profissional</label>
-                <input id="modal-registro_profissional" type="text" placeholder="Ex: 123456" />
-            </div>
-            <div class="form-group">
-                <label for="modal-data_admissao">Data de Admissão</label>
-                <input id="modal-data_admissao" type="date" />
-            </div>
-            <div class="form-group">
-              <label for="modal-idFormacao">Formação</label>
-              <select id="modal-idFormacao">
-                    <option value="">Selecione</option>
-                    <% formacaoCatalogo.forEach(function (f) { %>
-                        <option value="<%= f.id %>"><%= f.text %></option>
-                    <% }) %>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="modal-area_formacao">Área de Formação</label>
-                <input id="modal-area_formacao" type="text" placeholder="Ex: Matemática" />
-            </div>
-            <div class="form-group">
-                <label for="modal-id_disciplina">Disciplina</label>
-                <select id="modal-id_disciplina">
-                    <option value="">Selecione</option>
-                    <% disciplinasCatalogo.forEach(function (d) { %>
-                        <option value="<%= d.id %>"><%= d.text %></option>
-                    <% }) %>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="modal-carga_horaria">Carga Horária</label>
-                <input id="modal-carga_horaria" type="text" placeholder="Ex: 40h" />
-            </div>
-            <div class="form-group">
-                <label for="modal-id_status">Status *</label>
-                <select id="modal-id_status">
-                    <option value="1">Ativo</option>
-                    <option value="0">Inativo</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="modal-observacoes">Observações</label>
-                <textarea id="modal-observacoes" placeholder="Ex: Professor dedicado e experiente"></textarea>
-            </div>
-        </section>
-
-        <div class="actions">
-          <button type="button" class="btn-secondary" onclick="closeProfessorModal()">Cancelar</button>
-          <button type="button" class="btn-primary" onclick="saveProfessorModal()">Salvar</button>
-        </div>
-      </div>
-    `;
-    modal.addEventListener('click', function (e) { if (e.target === modal) closeProfessorModal(); });
-    document.body.appendChild(modal);
-    return modal;
-  }
-
-  function openProfessorModal(index) {
-    const modal = getOrCreateProfessorModal();
-
-    ModalHelper.openModal(modal, 'professores', PROFESSOR_FIELDS, index, { id_status: '1' });
-
-    setTimeout(() => { const nameInput = modal.querySelector('#modal-nome'); if (nameInput) nameInput.focus(); }, 10);
-  }
-
-  function closeProfessorModal() {
-    const modal = document.getElementById('professor-modal');
-    if (!modal) return;
-    modal.classList.remove('open');
-  }
-
-  function saveProfessorModal() {
-    const modal = document.getElementById('professor-modal');
-    if (!modal) return;
-
-    const values = ModalHelper.collectModalValues('professor-modal', PROFESSOR_FIELDS);
-    if (!values.nome) { modal.querySelector('#modal-nome').focus(); return; }
-
-    const idx = parseInt(modal.querySelector('#modal-index').value, 10);
-
-    const displayValues = Object.assign({}, values, {
-      status_label: values.id_status === '0' ? 'Inativo' : 'Ativo',
-      disciplina_nome: PROFESSOR_DISCIPLINAS[values.id_disciplina] || ''
-    });
-
-    const displayMap = [
-      { field: 'nome', cls: 'professores-nome' },
-      { field: 'disciplina_nome', cls: 'professores-disciplina' },
-      { field: 'email', cls: 'professores-email' },
-      { field: 'status_label', cls: 'professores-status' }
-    ];
-
-    ModalHelper.applyValuesToRow('professores', PROFESSOR_FIELDS, displayMap, idx, displayValues, 'openProfessorModal', '/professores/excluir');
-    ModalHelper.reindex('professores', PROFESSOR_FIELDS, 'openProfessorModal');
-    closeProfessorModal();
-
-    const professoresForm = document.getElementById('professores-form');
-          if (professoresForm) {
-              professoresForm.submit();
-          }
-  }
-
-  function excluirProfessor(id) { ModalHelper.submitDelete(`/professores/excluir/${id}`); }
-
-  function removeProfessorRow(btn) { ModalHelper.removeRow(btn, 'professores', PROFESSOR_FIELDS, 'openProfessorModal'); }
-
-  function reindexProfessor() { ModalHelper.reindex('professores', PROFESSOR_FIELDS, 'openProfessorModal'); }
-
-
+  window.PROFESSOR_DISCIPLINAS = <%- JSON.stringify(disciplinasCatalogo.reduce(function (acc, d) { acc[d.id] = d.text; return acc; }, {})) %>;
 </script>
+<script src="/javascript/professores.js"></script>

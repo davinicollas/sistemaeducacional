@@ -5,6 +5,7 @@ const disciplinas = require("../model/disciplinas");
 const formacoes = require("../model/formacoes");
 const { exportarExcel, upload } = require("../utils/excel");
 const ExcelJS = require("exceljs");
+const bcrypt = require("bcrypt");
 async function index(req, res) {
   try {
     const filtros = { busca: req.query.busca || "" };
@@ -16,33 +17,50 @@ async function index(req, res) {
       : "1=1";
     const page = parseInt(req.query.page, 10) || 1;
     const pageSize = parseInt(req.query.pageSize, 10) || 10;
-    const list = await model.getProfessores(
+    const professoresList = await model.getProfessores(
       where,
       params,
       pageSize,
       (page - 1) * pageSize,
     );
+
+    // get total count for pagination
+    const [countRows] = await db.query(
+      `SELECT COUNT(*) AS total FROM professores p WHERE p.excluido < 1 ${where ? "AND " + where : ""}`,
+      params,
+    );
+    const totalItems =
+      countRows && countRows[0] && countRows[0].total
+        ? parseInt(countRows[0].total, 10)
+        : 0;
+
+    const statusProfessorList = await model.getStatusProfessor(where, params);
+    const estado = await estados.getEstados();
+    const disciplinasList = await disciplinas.getDisciplinas();
+    const formacaoList = await formacoes.getFormacoes();
+
     res.render("professores", {
-      professores: { professores: list },
-      estado: await estados.getEstados(),
-      disciplinasList: await disciplinas.getDisciplinas(),
-      formacaoList: await formacoes.getFormacoes(),
-      statusProfessor: await model.getStatusProfessor(where, params),
+      professoresList: professoresList,
+      estado: estado,
+      disciplinasCatalogo: disciplinasList,
+      formacaoList: formacaoList,
+      statusProfessorList: statusProfessorList,
       filtros,
       pagination: {
         page,
         pageSize,
-        totalItems: list.length,
-        totalPages: Math.max(1, Math.ceil(list.length / pageSize)),
+        totalItems,
+        totalPages: Math.max(1, Math.ceil(totalItems / pageSize)),
       },
     });
   } catch (e) {
     console.error(e);
     res.render("professores", {
-      professores: { professores: [] },
+      professoresList: { professores: [] },
       estado: [],
       disciplinasList: [],
       formacaoList: [],
+      statusProfessorList: [],
       erro: "Erro ao carregar professores",
     });
   }
@@ -81,6 +99,7 @@ async function save(req, res) {
       "matricula",
       "registro_profissional",
       "data_admissao",
+      "senha",
       "idFormacao",
       "area_formacao",
       "observacoes",
@@ -122,12 +141,10 @@ async function exportExcel(req, res) {
 async function importExcel(req, res) {
   try {
     if (!req.file)
-      return res
-        .status(400)
-        .json({
-          sucesso: false,
-          mensagem: "Nenhum arquivo Excel foi enviado.",
-        });
+      return res.status(400).json({
+        sucesso: false,
+        mensagem: "Nenhum arquivo Excel foi enviado.",
+      });
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(req.file.buffer);
     const sheet = workbook.worksheets[0];
@@ -148,4 +165,47 @@ async function importExcel(req, res) {
   }
 }
 
-module.exports = { index, remove, save, exportExcel, importExcel, upload };
+async function setSenha(req, res) {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const senha = String(req.body.senha || "");
+    const confirmar = String(req.body.confirmar || "");
+
+    if (!id)
+      return res.status(400).json({ sucesso: false, mensagem: "ID inválido." });
+    if (senha.length < 8)
+      return res.status(400).json({
+        sucesso: false,
+        mensagem: "A senha deve ter pelo menos 8 caracteres.",
+      });
+    if (senha !== confirmar)
+      return res.status(400).json({
+        sucesso: false,
+        mensagem: "Senha e confirmação não conferem.",
+      });
+
+    const hash = await bcrypt.hash(senha, 10);
+
+    await db.query("UPDATE professores SET senha = ? WHERE id = ?", [hash, id]);
+
+    return res.json({
+      sucesso: true,
+      mensagem: "Senha atualizada com sucesso.",
+    });
+  } catch (e) {
+    console.error(e);
+    return res
+      .status(500)
+      .json({ sucesso: false, mensagem: "Erro ao atualizar senha." });
+  }
+}
+
+module.exports = {
+  index,
+  remove,
+  save,
+  exportExcel,
+  importExcel,
+  upload,
+  setSenha,
+};

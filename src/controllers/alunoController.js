@@ -4,6 +4,7 @@ const estadoModel = require("../model/estados");
 const tipoDocumentoModel = require("../model/tiposDocumentos");
 const { exportarExcel, upload } = require("../utils/excel");
 const ExcelJS = require("exceljs");
+const bcrypt = require("bcrypt");
 async function index(req, res) {
   try {
     const filtros = { busca: req.query.busca || "" };
@@ -21,6 +22,16 @@ async function index(req, res) {
       pageSize,
       (page - 1) * pageSize,
     );
+
+    // total count for pagination
+    const [countRows] = await db.query(
+      `SELECT COUNT(*) AS total FROM alunos a WHERE a.excluido < 1 ${where ? "AND " + where : ""}`,
+      params,
+    );
+    const totalItems =
+      countRows && countRows[0] && countRows[0].total
+        ? parseInt(countRows[0].total, 10)
+        : 0;
     const estado = await estadoModel.getEstados();
     const tiposDocumentos = await tipoDocumentoModel.getTiposDocumentos();
     const statusAluno = await alunosModel.getStatusAluno(where, params);
@@ -38,8 +49,8 @@ async function index(req, res) {
     const pagination = {
       page,
       pageSize,
-      totalItems: alunosList.length,
-      totalPages: Math.max(1, Math.ceil(alunosList.length / pageSize)),
+      totalItems,
+      totalPages: Math.max(1, Math.ceil(totalItems / pageSize)),
     };
 
     res.render("alunos", {
@@ -86,6 +97,7 @@ async function save(req, res) {
         "cpf",
         "rg",
         "matricula",
+        "email",
         "data_nascimento",
         "sexo",
         "nacionalidade",
@@ -99,6 +111,7 @@ async function save(req, res) {
         "certidao_nascimento",
         "numero_certidao",
         "observacoes",
+        "senha",
         "id_status",
       ];
       const values = fields.map((f) => item[f] || null);
@@ -160,4 +173,48 @@ async function importExcel(req, res) {
       .json({ sucesso: false, mensagem: "Erro ao importar alunos." });
   }
 }
-module.exports = { index, remove, save, exportExcel, importExcel, upload };
+
+async function setSenha(req, res) {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const senha = String(req.body.senha || "");
+    const confirmar = String(req.body.confirmar || "");
+
+    if (!id)
+      return res.status(400).json({ sucesso: false, mensagem: "ID inválido." });
+    if (senha.length < 8)
+      return res.status(400).json({
+        sucesso: false,
+        mensagem: "A senha deve ter pelo menos 8 caracteres.",
+      });
+    if (senha !== confirmar)
+      return res.status(400).json({
+        sucesso: false,
+        mensagem: "Senha e confirmação não conferem.",
+      });
+
+    const hash = await bcrypt.hash(senha, 10);
+
+    await db.query("UPDATE alunos SET senha = ? WHERE id = ?", [hash, id]);
+
+    return res.json({
+      sucesso: true,
+      mensagem: "Senha atualizada com sucesso.",
+    });
+  } catch (e) {
+    console.error(e);
+    return res
+      .status(500)
+      .json({ sucesso: false, mensagem: "Erro ao atualizar senha." });
+  }
+}
+
+module.exports = {
+  index,
+  remove,
+  save,
+  exportExcel,
+  importExcel,
+  upload,
+  setSenha,
+};

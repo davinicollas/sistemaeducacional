@@ -20,6 +20,9 @@
 
             <!-- Main Content -->
             <div class="main-content">
+
+                <%- include('partials/filtros', { action: '/alunos', filtros, pageSizes: [10,25,50] }) %>
+
                 <section class="config-card">
                     <div style="text-align: right;">
                         <button type="button" class="btn-primary series-new-btn" onclick="openAlunosModal(null)">+ Novo Aluno</button>
@@ -84,6 +87,7 @@
                                             <td><span class="alunos-matricula">
                                                     <%= s.matricula || '' %>
                                                 </span></td>
+
                                             <td><span class="alunos-status">
                                                     <%= s.id_status ? 'Ativo' : 'Inativo' %>
                                                 </span></td>
@@ -166,6 +170,7 @@
                                                     value="<%= s.id_estado || '' %>" />
                                                 <input type="hidden" data-field="email" name="alunos[<%= idx %>][email]"
                                                     value="<%= s.email || '' %>" />
+                                                <input type="hidden" data-field="has_senha" name="alunos[<%= idx %>][has_senha]" value="<%= s.has_senha ? 1 : '' %>" />
                                                 <input type="hidden" data-field="telefone"
                                                     name="alunos[<%= idx %>][telefone]"
                                                     value="<%= s.telefone || '' %>" />
