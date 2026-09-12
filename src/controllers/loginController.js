@@ -18,6 +18,9 @@ async function login(req, res) {
       id: usuario.id,
       nome: usuario.nome,
       email: usuario.email,
+      tipo_usuario: usuario.tipo_usuario || null,
+      id_aluno: usuario.id_aluno || null,
+      id_professor: usuario.id_professor || null,
     };
     return res.redirect("/dashboard");
   } catch (error) {

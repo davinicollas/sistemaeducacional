@@ -19,6 +19,113 @@ async function getUsuarioPorId(id) {
   return usuario[0];
 }
 
+async function getByAlunoId(id_aluno) {
+  const [rows] = await db.query(
+    "SELECT * FROM usuarios WHERE id_aluno = ? AND excluido = 0 LIMIT 1",
+    [id_aluno],
+  );
+  return rows[0];
+}
+
+async function getByProfessorId(id_professor) {
+  const [rows] = await db.query(
+    "SELECT * FROM usuarios WHERE id_professor = ? AND excluido = 0 LIMIT 1",
+    [id_professor],
+  );
+  return rows[0];
+}
+
+async function createUsuario({
+  email,
+  senha,
+  tipo_usuario = "ALUNO",
+  id_aluno = null,
+  id_professor = null,
+  nome = null,
+}) {
+  const [result] = await db.query(
+    "INSERT INTO usuarios (email, senha, tipo_usuario, id_aluno, id_professor, nome) VALUES (?, ?, ?, ?, ?, ?)",
+    [email, senha, tipo_usuario, id_aluno, id_professor, nome],
+  );
+  return getUsuarioPorId(result.insertId);
+}
+
+async function updateSenhaById(id, hashedSenha) {
+  await db.query(
+    "UPDATE usuarios SET senha = ?, atualizado_em = CURRENT_TIMESTAMP WHERE id = ?",
+    [hashedSenha, id],
+  );
+}
+
+async function createOrUpdateForAluno(id_aluno, email, hashedSenha) {
+  // try find by id_aluno
+  let u = await getByAlunoId(id_aluno);
+  if (u) {
+    await updateSenhaById(u.id, hashedSenha);
+    if (!u.email && email) {
+      await db.query("UPDATE usuarios SET email = ? WHERE id = ?", [
+        email,
+        u.id,
+      ]);
+    }
+    return getUsuarioPorId(u.id);
+  }
+
+  // try find by email
+  if (email) {
+    const exist = await getUsuario(email);
+    if (exist) {
+      // attach aluno id
+      await db.query(
+        "UPDATE usuarios SET id_aluno = ?, tipo_usuario = 'ALUNO' WHERE id = ?",
+        [id_aluno, exist.id],
+      );
+      await updateSenhaById(exist.id, hashedSenha);
+      return getUsuarioPorId(exist.id);
+    }
+  }
+
+  // create new
+  return createUsuario({
+    email,
+    senha: hashedSenha,
+    tipo_usuario: "ALUNO",
+    id_aluno,
+  });
+}
+
+async function createOrUpdateForProfessor(id_professor, email, hashedSenha) {
+  let u = await getByProfessorId(id_professor);
+  if (u) {
+    await updateSenhaById(u.id, hashedSenha);
+    if (!u.email && email)
+      await db.query("UPDATE usuarios SET email = ? WHERE id = ?", [
+        email,
+        u.id,
+      ]);
+    return getUsuarioPorId(u.id);
+  }
+
+  if (email) {
+    const exist = await getUsuario(email);
+    if (exist) {
+      await db.query(
+        "UPDATE usuarios SET id_professor = ?, tipo_usuario = 'PROFESSOR' WHERE id = ?",
+        [id_professor, exist.id],
+      );
+      await updateSenhaById(exist.id, hashedSenha);
+      return getUsuarioPorId(exist.id);
+    }
+  }
+
+  return createUsuario({
+    email,
+    senha: hashedSenha,
+    tipo_usuario: "PROFESSOR",
+    id_professor,
+  });
+}
+
 function construirAtualizacaoPerfil({ nome, email, telefone, avatar, senha }) {
   const campos = [];
   const valores = [];
@@ -57,5 +164,11 @@ function construirAtualizacaoPerfil({ nome, email, telefone, avatar, senha }) {
 module.exports = {
   getUsuario,
   getUsuarioPorId,
+  getByAlunoId,
+  getByProfessorId,
+  createUsuario,
+  updateSenhaById,
+  createOrUpdateForAluno,
+  createOrUpdateForProfessor,
   construirAtualizacaoPerfil,
 };

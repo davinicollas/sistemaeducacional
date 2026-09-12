@@ -5,6 +5,7 @@ const tipoDocumentoModel = require("../model/tiposDocumentos");
 const { exportarExcel, upload } = require("../utils/excel");
 const ExcelJS = require("exceljs");
 const bcrypt = require("bcrypt");
+const Usuario = require("../model/usuario");
 async function index(req, res) {
   try {
     const filtros = { busca: req.query.busca || "" };
@@ -111,7 +112,6 @@ async function save(req, res) {
         "certidao_nascimento",
         "numero_certidao",
         "observacoes",
-        "senha",
         "id_status",
       ];
       const values = fields.map((f) => item[f] || null);
@@ -195,7 +195,27 @@ async function setSenha(req, res) {
 
     const hash = await bcrypt.hash(senha, 10);
 
-    await db.query("UPDATE alunos SET senha = ? WHERE id = ?", [hash, id]);
+    // try update or create usuario linked to this aluno
+    const existing = await Usuario.getByAlunoId(id);
+    if (existing) {
+      await Usuario.updateSenhaById(existing.id, hash);
+    } else {
+      // need aluno email to create usuario (email is NOT NULL in usuarios table)
+      const [rows] = await db.query("SELECT email FROM alunos WHERE id = ?", [
+        id,
+      ]);
+      const aluno = rows && rows[0];
+      const email = aluno ? aluno.email : null;
+      if (!email)
+        return res
+          .status(400)
+          .json({
+            sucesso: false,
+            mensagem:
+              "Aluno não possui e-mail. Defina um e-mail antes de criar acesso.",
+          });
+      await Usuario.createOrUpdateForAluno(id, email, hash);
+    }
 
     return res.json({
       sucesso: true,

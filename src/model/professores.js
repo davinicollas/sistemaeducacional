@@ -35,9 +35,10 @@ async function getProfessores(where = "", params = [], pageSize, offset) {
             p.observacoes,
             p.excluido,
             d.text AS disciplina_nome,
-            (p.senha IS NOT NULL AND p.senha <> '') AS has_senha
-         FROM professores p
-         LEFT JOIN params_disciplina d ON d.id = p.id_disciplina
+            (u.senha IS NOT NULL AND u.senha <> '') AS has_senha
+          FROM professores p
+          LEFT JOIN usuarios u ON u.id_professor = p.id AND u.excluido < 1
+          LEFT JOIN params_disciplina d ON d.id = p.id_disciplina
          WHERE p.excluido < 1 ${whereSql}
          ORDER BY p.nome ASC
          LIMIT ? OFFSET ?`,

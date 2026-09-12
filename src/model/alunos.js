@@ -32,10 +32,11 @@ async function getAlunos(where = "", params = [], pageSize, offset) {
             a.id_status,
             a.excluido,
             TIMESTAMPDIFF(YEAR, a.data_nascimento, CURDATE()) AS idade,
-            (a.senha IS NOT NULL AND a.senha <> '') AS has_senha
-         FROM alunos a
-         LEFT JOIN params_estados pe ON a.id_estado_nascimento = pe.id
-         LEFT JOIN params_tipos_documentos ptd ON a.id_tipo_documento = ptd.id
+            (u.senha IS NOT NULL AND u.senha <> '') AS has_senha
+          FROM alunos a
+          LEFT JOIN usuarios u ON u.id_aluno = a.id AND u.excluido < 1
+          LEFT JOIN params_estados pe ON a.id_estado_nascimento = pe.id
+          LEFT JOIN params_tipos_documentos ptd ON a.id_tipo_documento = ptd.id
          WHERE a.excluido < 1 ${whereSql}
          ORDER BY a.nome ASC
          LIMIT ? OFFSET ?`,

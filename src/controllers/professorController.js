@@ -6,6 +6,7 @@ const formacoes = require("../model/formacoes");
 const { exportarExcel, upload } = require("../utils/excel");
 const ExcelJS = require("exceljs");
 const bcrypt = require("bcrypt");
+const Usuario = require("../model/usuario");
 async function index(req, res) {
   try {
     const filtros = { busca: req.query.busca || "" };
@@ -99,7 +100,6 @@ async function save(req, res) {
       "matricula",
       "registro_profissional",
       "data_admissao",
-      "senha",
       "idFormacao",
       "area_formacao",
       "observacoes",
@@ -186,7 +186,27 @@ async function setSenha(req, res) {
 
     const hash = await bcrypt.hash(senha, 10);
 
-    await db.query("UPDATE professores SET senha = ? WHERE id = ?", [hash, id]);
+    // update or create usuario linked to professor
+    const existing = await Usuario.getByProfessorId(id);
+    if (existing) {
+      await Usuario.updateSenhaById(existing.id, hash);
+    } else {
+      const [rows] = await db.query(
+        "SELECT email FROM professores WHERE id = ?",
+        [id],
+      );
+      const prof = rows && rows[0];
+      const email = prof ? prof.email : null;
+      if (!email)
+        return res
+          .status(400)
+          .json({
+            sucesso: false,
+            mensagem:
+              "Professor não possui e-mail. Defina um e-mail antes de criar acesso.",
+          });
+      await Usuario.createOrUpdateForProfessor(id, email, hash);
+    }
 
     return res.json({
       sucesso: true,
