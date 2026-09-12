@@ -81,7 +81,36 @@ app.use(
 );
 app.use((req, res, next) => {
   res.locals.usuario = req.session.usuario || null;
+  res.locals.permissoes = req.session.permissoes || {};
   res.locals.isTabbed = req.query && req.query.tabbed === "1";
+  // Helper disponível nas views para checar permissões
+  res.locals.hasPermission = (resource, action) => {
+    const perms = req.session?.permissoes || {};
+    const r = resource || "";
+    const a = action || "";
+    const candidates = [
+      `${r}.${a}`,
+      `${r}_${a}`,
+      `${a}.${r}`,
+      `${a}_${r}`,
+      `${r} ${a}`,
+      `${a} ${r}`,
+      a,
+      r,
+    ];
+
+    for (const cand of candidates) {
+      if (!cand) continue;
+      const val = perms[cand];
+      if (!val) continue;
+      if (action === "visualizar") {
+        if (val === "view" || val === "full") return true;
+      } else {
+        if (val === "full") return true;
+      }
+    }
+    return false;
+  };
   next();
 });
 app.use(csrfProtection);
@@ -114,6 +143,9 @@ app.use(authMid);
 app.get("/dashboard", (req, res) => {
   res.render("dashboard");
 });
+app.get("/acesso-negado", (req, res) => {
+  res.status(403).render("acessoNegado");
+});
 app.use(configuracoes);
 app.use(estados);
 app.use(usuarioPermissoes);
@@ -136,6 +168,8 @@ app.use(formacoes);
 app.use(alunos);
 app.use(turmas);
 app.use(frequencia);
+
+// Debug route removed in production-ready build
 
 app.use((error, req, res, next) => {
   console.error(error);

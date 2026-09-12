@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const Usuario = require("../model/usuario");
+const permissaoModel = require("../model/usuarioPermissoes");
 
 function index(req, res) {
   res.render("login");
@@ -22,6 +23,110 @@ async function login(req, res) {
       id_aluno: usuario.id_aluno || null,
       id_professor: usuario.id_professor || null,
     };
+    // Carrega permissões do papel do usuário e armazena na sessão
+    try {
+      const matrix = await permissaoModel.getMatrix();
+      const roleName = usuario.tipo_usuario || null;
+
+      function slugRole(s) {
+        return String(s || "")
+          .normalize("NFD")
+          .replace(/\p{Diacritic}/gu, "")
+          .replace(/[^a-zA-Z0-9]/g, "")
+          .trim()
+          .toLowerCase();
+      }
+
+      // Mapeamento entre `tipo_usuario` (enum) e nomes de papel no DB
+      const roleNameMap = {
+        ADMIN: "Administradores",
+        PROFESSOR: "Professores",
+        ALUNO: "Alunos",
+      };
+
+      let rolePerms = {};
+      if (matrix && roleName) {
+        const mapped = roleNameMap[roleName] || roleName;
+        if (matrix[mapped]) {
+          rolePerms = matrix[mapped];
+        } else {
+          const target = slugRole(mapped);
+          for (const k of Object.keys(matrix)) {
+            if (slugRole(k) === target) {
+              rolePerms = matrix[k];
+              break;
+            }
+          }
+        }
+      }
+      // Normaliza permissões: cria chaves canônicas além do nome original
+      const permissoes = {};
+
+      function slug(s) {
+        return String(s || "")
+          .normalize("NFD")
+          .replace(/\p{Diacritic}/gu, "")
+          .replace(/[^a-zA-Z0-9 ]/g, "")
+          .trim()
+          .toLowerCase();
+      }
+
+      function addPerm(key, access) {
+        if (!key) return;
+        // prefer 'full' | 'view' | 'none'
+        const v = access === "view" ? "view" : access ? "full" : "none";
+        permissoes[key] = v;
+      }
+
+      for (const [permName, val] of Object.entries(rolePerms)) {
+        const access = val === "view" ? "view" : val ? "full" : "none";
+        // chave original (nome da permissão no DB)
+        if (permName) addPerm(permName, access);
+
+        const s = slug(permName);
+        // heurísticas: 'ver alunos', 'criar alunos', 'editar alunos', 'excluir alunos'
+        const mVer = s.match(/^ver\s+(.+)$/);
+        const mCriar = s.match(/^(criar|adicionar|novo)s?\s+(.+)$/);
+        const mEditar = s.match(/^(editar|alterar)\s+(.+)$/);
+        const mExcluir = s.match(/^(excluir|remover)\s+(.+)$/);
+
+        if (mVer) {
+          const resource = mVer[1].replace(/\s+/g, "_");
+          addPerm(`${resource}.visualizar`, access);
+          addPerm(`${resource}_visualizar`, access);
+          addPerm(`${resource}`, access);
+          addPerm(`visualizar.${resource}`, access);
+        } else if (mCriar) {
+          const resource = (mCriar[2] || mCriar[1]).replace(/\s+/g, "_");
+          addPerm(`${resource}.inserir`, access);
+          addPerm(`${resource}_inserir`, access);
+          addPerm(`${resource}`, access);
+          addPerm(`inserir.${resource}`, access);
+        } else if (mEditar) {
+          const resource = mEditar[2].replace(/\s+/g, "_");
+          addPerm(`${resource}.editar`, access);
+          addPerm(`${resource}_editar`, access);
+          addPerm(`${resource}`, access);
+          addPerm(`editar.${resource}`, access);
+        } else if (mExcluir) {
+          const resource = mExcluir[2].replace(/\s+/g, "_");
+          addPerm(`${resource}.excluir`, access);
+          addPerm(`${resource}_excluir`, access);
+          addPerm(`${resource}`, access);
+          addPerm(`excluir.${resource}`, access);
+        } else if (s) {
+          // fallback: use slug as resource with visualizar
+          const resource = s.replace(/\s+/g, "_");
+          addPerm(`${resource}.visualizar`, access);
+          addPerm(`${resource}`, access);
+        }
+      }
+
+      req.session.permissoes = permissoes;
+    } catch (err) {
+      console.error("Erro ao carregar permissões:", err);
+      req.session.permissoes = {};
+    }
     return res.redirect("/dashboard");
   } catch (error) {
     console.error(error);

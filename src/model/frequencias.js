@@ -2,7 +2,18 @@ const db = require("../../database/mysql");
 
 const STATUS_VALIDOS = ["presente", "falta", "falta_justificada"];
 
-async function getTurmasPorAnoLetivo(idAnoLetivo) {
+async function getTurmasPorAnoLetivo(idAnoLetivo, idProfessor = null) {
+  if (idProfessor) {
+    const [rows] = await db.query(
+      `SELECT t.id, t.text, t.sigla
+         FROM turmas t
+         JOIN turma_professores tp ON tp.id_turma = t.id AND tp.excluido = 0
+        WHERE t.excluido < 1 AND t.id_ano_letivo = ? AND tp.id_professor = ?
+        ORDER BY t.text`,
+      [idAnoLetivo, idProfessor],
+    );
+    return rows;
+  }
   const [rows] = await db.query(
     `SELECT id, text, sigla FROM turmas
       WHERE excluido < 1 AND id_ano_letivo = ?
@@ -12,11 +23,84 @@ async function getTurmasPorAnoLetivo(idAnoLetivo) {
   return rows;
 }
 
-async function getDisciplinasAtivas() {
+async function getDisciplinasAtivas(idProfessor = null) {
+  if (idProfessor) {
+    const [rowsP] = await db.query(
+      `SELECT id_disciplina FROM professores WHERE id = ? AND excluido < 1 LIMIT 1`,
+      [idProfessor],
+    );
+    const idDisc = rowsP[0]?.id_disciplina || null;
+    if (!idDisc) return [];
+    const [rows] = await db.query(
+      `SELECT id, text, sigla FROM params_disciplina WHERE excluido < 1 AND idStatus = 1 AND id = ? ORDER BY text`,
+      [idDisc],
+    );
+    return rows;
+  }
   const [rows] = await db.query(
     "SELECT id, text, sigla FROM params_disciplina WHERE excluido < 1 AND idStatus = 1 ORDER BY text",
   );
   return rows;
+}
+
+async function turmaPertenceAoProfessor(idTurma, idProfessor) {
+  if (!idProfessor) return false;
+  const [rows] = await db.query(
+    `SELECT 1 FROM turma_professores WHERE id_turma = ? AND id_professor = ? AND excluido = 0 LIMIT 1`,
+    [idTurma, idProfessor],
+  );
+  return rows.length > 0;
+}
+
+async function disciplinaPertenceAoProfessor(idDisciplina, idProfessor) {
+  if (!idProfessor || !idDisciplina) return false;
+  const [rows] = await db.query(
+    `SELECT 1 FROM professores WHERE id = ? AND id_disciplina = ? AND excluido < 1 LIMIT 1`,
+    [idProfessor, idDisciplina],
+  );
+  return rows.length > 0;
+}
+
+async function getTurmasDoAlunoPorAno(idAnoLetivo, idAluno) {
+  if (!idAluno) return [];
+  const [rows] = await db.query(
+    `SELECT t.id, t.text, t.sigla
+       FROM turma_alunos ta
+       JOIN turmas t ON t.id = ta.id_turma
+      WHERE ta.id_aluno = ? AND ta.excluido = 0 AND t.id_ano_letivo = ? AND t.excluido < 1
+      ORDER BY t.text`,
+    [idAluno, idAnoLetivo],
+  );
+  return rows;
+}
+
+async function getDisciplinasParaAluno(idAluno) {
+  if (!idAluno) return [];
+  const [rows] = await db.query(
+    `SELECT DISTINCT d.id, d.text, d.sigla
+       FROM turma_alunos ta
+       JOIN turma_professores tp ON tp.id_turma = ta.id_turma AND tp.excluido = 0
+       JOIN professores p ON p.id = tp.id_professor AND p.excluido < 1
+       JOIN params_disciplina d ON d.id = p.id_disciplina AND d.excluido < 1 AND d.idStatus = 1
+      WHERE ta.id_aluno = ? AND ta.excluido = 0
+      ORDER BY d.text`,
+    [idAluno],
+  );
+  return rows;
+}
+
+async function disciplinaPertenceAoAluno(idDisciplina, idAluno) {
+  if (!idAluno || !idDisciplina) return false;
+  const [rows] = await db.query(
+    `SELECT 1
+       FROM turma_alunos ta
+       JOIN turma_professores tp ON tp.id_turma = ta.id_turma AND tp.excluido = 0
+       JOIN professores p ON p.id = tp.id_professor AND p.excluido < 1
+      WHERE ta.id_aluno = ? AND ta.excluido = 0 AND p.id_disciplina = ?
+      LIMIT 1`,
+    [idAluno, idDisciplina],
+  );
+  return rows.length > 0;
 }
 
 async function getAlunosDaTurma(idTurma) {
@@ -178,6 +262,11 @@ module.exports = {
   alunoPertenceATurma,
   turmaExiste,
   disciplinaExiste,
+  turmaPertenceAoProfessor,
+  disciplinaPertenceAoProfessor,
+  getTurmasDoAlunoPorAno,
+  getDisciplinasParaAluno,
+  disciplinaPertenceAoAluno,
   getFrequenciaRegistro,
   getHistorico,
   salvarFrequencias,

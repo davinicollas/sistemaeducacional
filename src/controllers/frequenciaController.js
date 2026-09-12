@@ -20,9 +20,15 @@ function dataValida(valor) {
 
 async function index(req, res) {
   try {
+    const usuario = req.session.usuario || {};
+    const professorId = usuario.id_professor || null;
+    const alunoId = usuario.id_aluno || null;
+    const disciplinasPromise = alunoId
+      ? frequenciasModel.getDisciplinasParaAluno(alunoId)
+      : frequenciasModel.getDisciplinasAtivas(professorId);
     const [anoLetivo, disciplinas] = await Promise.all([
       anoLetivoModel.getAnosLetivos(),
-      frequenciasModel.getDisciplinasAtivas(),
+      disciplinasPromise,
     ]);
     res.render("frequencia", {
       anoLetivo,
@@ -47,7 +53,12 @@ async function turmasPorAno(req, res) {
       .status(400)
       .json({ sucesso: false, mensagem: "Ano letivo inválido." });
   try {
-    const turmas = await frequenciasModel.getTurmasPorAnoLetivo(idAnoLetivo);
+    const usuario = req.session.usuario || {};
+    const professorId = usuario.id_professor || null;
+    const alunoId = usuario.id_aluno || null;
+    const turmas = alunoId
+      ? await frequenciasModel.getTurmasDoAlunoPorAno(idAnoLetivo, alunoId)
+      : await frequenciasModel.getTurmasPorAnoLetivo(idAnoLetivo, professorId);
     res.json({ sucesso: true, turmas });
   } catch (error) {
     console.error(error);
@@ -105,6 +116,45 @@ async function registro(req, res) {
       return res
         .status(404)
         .json({ sucesso: false, mensagem: "Turma não encontrada." });
+    // Se o usuário for professor, verifique que a turma/disciplina pertencem a ele
+    const usuario = req.session.usuario || {};
+    const professorId = usuario.id_professor || null;
+    const alunoId = usuario.id_aluno || null;
+    if (professorId) {
+      if (
+        !(await frequenciasModel.turmaPertenceAoProfessor(idTurma, professorId))
+      )
+        return res
+          .status(403)
+          .json({ sucesso: false, mensagem: "Acesso negado à turma." });
+      if (
+        idDisciplina &&
+        !(await frequenciasModel.disciplinaPertenceAoProfessor(
+          idDisciplina,
+          professorId,
+        ))
+      )
+        return res
+          .status(403)
+          .json({ sucesso: false, mensagem: "Acesso negado à disciplina." });
+    }
+    // Se o usuário for aluno, verifique que a turma/disciplina pertencem a ele
+    if (alunoId) {
+      if (!(await frequenciasModel.alunoPertenceATurma(alunoId, idTurma)))
+        return res
+          .status(403)
+          .json({ sucesso: false, mensagem: "Acesso negado à turma." });
+      if (
+        idDisciplina &&
+        !(await frequenciasModel.disciplinaPertenceAoAluno(
+          idDisciplina,
+          alunoId,
+        ))
+      )
+        return res
+          .status(403)
+          .json({ sucesso: false, mensagem: "Acesso negado à disciplina." });
+    }
     if (!(await frequenciasModel.disciplinaExiste(idDisciplina)))
       return res
         .status(404)
@@ -168,6 +218,48 @@ async function salvar(req, res) {
       return res
         .status(404)
         .json({ sucesso: false, mensagem: "Turma não encontrada." });
+    // Se o usuário for professor, verifique que a turma/disciplina pertencem a ele
+    const usuario2 = req.session.usuario || {};
+    const professorId2 = usuario2.id_professor || null;
+    const alunoId2 = usuario2.id_aluno || null;
+    if (professorId2) {
+      if (
+        !(await frequenciasModel.turmaPertenceAoProfessor(
+          idTurma,
+          professorId2,
+        ))
+      )
+        return res
+          .status(403)
+          .json({ sucesso: false, mensagem: "Acesso negado à turma." });
+      if (
+        idDisciplina &&
+        !(await frequenciasModel.disciplinaPertenceAoProfessor(
+          idDisciplina,
+          professorId2,
+        ))
+      )
+        return res
+          .status(403)
+          .json({ sucesso: false, mensagem: "Acesso negado à disciplina." });
+    }
+    // Se o usuário for aluno, verifique que a turma/disciplina pertencem a ele
+    if (alunoId2) {
+      if (!(await frequenciasModel.alunoPertenceATurma(alunoId2, idTurma)))
+        return res
+          .status(403)
+          .json({ sucesso: false, mensagem: "Acesso negado à turma." });
+      if (
+        idDisciplina &&
+        !(await frequenciasModel.disciplinaPertenceAoAluno(
+          idDisciplina,
+          alunoId2,
+        ))
+      )
+        return res
+          .status(403)
+          .json({ sucesso: false, mensagem: "Acesso negado à disciplina." });
+    }
     if (!(await frequenciasModel.disciplinaExiste(idDisciplina)))
       return res
         .status(404)

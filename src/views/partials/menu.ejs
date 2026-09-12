@@ -12,40 +12,61 @@
             <div class="nav-section-label">Acadêmico</div>
 
             <div class="sidebar-submenu">
+                <% const showAcad = hasPermission('calendario','visualizar') || hasPermission('alunos','visualizar') || hasPermission('professores','visualizar') || hasPermission('turmas','visualizar') || hasPermission('disciplinas','visualizar') || hasPermission('notas','visualizar') || hasPermission('frequencia','visualizar') || hasPermission('financeiro','visualizar') || hasPermission('relatorios','visualizar'); %>
+                <% if (showAcad) { %>
                 <button type="button" class="submenu-toggle" onclick="toggleSubmenu(this)" aria-expanded="false"
                     aria-controls="submenu-parametros">
                     <i class="bi bi-sliders"></i> Acadêmico <i class="bi bi-chevron-down submenu-caret"
                         aria-hidden="true"></i>
-                </button>   
+                </button>
                 <ul class="submenu-items" id="submenu-parametros" hidden>
+                    <% if (hasPermission('calendario','visualizar')) { %>
                     <li><a href="/calendario" class="nav-item" data-title="Agenda">
                         <i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Agenda
                     </a></li>
+                    <% } %>
+                    <% if (hasPermission('alunos','visualizar')) { %>
                     <li><a href="/alunos" class="nav-item" data-title="Alunos">
                         <i class="fa-solid fa-user-graduate" aria-hidden="true"></i> Alunos
                     </a></li>
+                    <% } %>
+                    <% if (hasPermission('professores','visualizar')) { %>
                     <li><a href="/professores" class="nav-item" data-title="Professores">
                         <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> Professores
                     </a></li>
+                    <% } %>
+                    <% if (hasPermission('turmas','visualizar')) { %>
                     <li><a href="/turmas" class="nav-item" data-title="Turmas">
                         <i class="fa-solid fa-users-rectangle" aria-hidden="true"></i> Turmas
                     </a></li>
+                    <% } %>
+                    <% if (hasPermission('disciplinas','visualizar')) { %>
                     <li><a href="/disciplinas" class="nav-item" data-title="Disciplinas">
                         <i class="fa-solid fa-book" aria-hidden="true"></i> Disciplinas
                     </a></li>
+                    <% } %>
+                    <% if (hasPermission('notas','visualizar')) { %>
                     <li><a href="/notas" class="nav-item" data-title="Notas">
                         <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Notas
                     </a></li>
+                    <% } %>
+                    <% if (hasPermission('frequencia','visualizar')) { %>
                     <li><a href="/frequencia" class="nav-item" data-title="Frequência">
                         <i class="fa-solid fa-clipboard-user" aria-hidden="true"></i> Frequência
                     </a></li>
+                    <% } %>
+                    <% if (hasPermission('financeiro','visualizar')) { %>
                     <li><a href="/financeiro" class="nav-item" data-title="Financeiro">
                         <i class="fa-solid fa-wallet" aria-hidden="true"></i> Financeiro
                     </a></li>
+                    <% } %>
+                    <% if (hasPermission('relatorios','visualizar')) { %>
                     <li><a href="/relatorios" class="nav-item" data-title="Relatórios">
                         <i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Relatórios
                     </a></li>
+                    <% } %>
                 </ul>
+                <% } %>
             </div>
             <div class="nav-divider"></div>
             <div class="sidebar-submenu">
@@ -55,10 +76,18 @@
                         aria-hidden="true"></i>
                 </button>
                 <ul class="submenu-items" id="submenu-parametros" hidden>
+                    <% if (hasPermission('estados','visualizar')) { %>
                     <li><a href="/estados" class="nav-item" data-title="Estados"><i class="bi bi-grid-3x3-gap"></i> Estados</a></li>
+                    <% } %>
+                    <% if (hasPermission('tiposdocumentos','visualizar')) { %>
                     <li><a href="/TiposDocumentos" class="nav-item" data-title="Tipos de Documentos"><i class="bi bi-grid-3x3-gap"></i> Tipos de Documentos</a></li>
+                    <% } %>
+                    <% if (hasPermission('statusdocumentos','visualizar')) { %>
                     <li><a href="/statusDocumentos" class="nav-item" data-title="Status de Documentos"><i class="bi bi-grid-3x3-gap"></i> Status de Documentos</a></li>
+                    <% } %>
+                    <% if (hasPermission('formacoes','visualizar')) { %>
                     <li><a href="/formacoes" class="nav-item" data-title="Formação"><i class="bi bi-grid-3x3-gap"></i> Formação</a></li>
+                    <% } %>
                 </ul>
             </div>
             <!-- CONFIGURAÇÕES ACADÊMICAS -->
@@ -67,12 +96,24 @@
                     <i class="bi bi-mortarboard"></i>Configurações Acadêmicas<i class="bi bi-chevron-down submenu-caret" aria-hidden="true"></i>
                 </button>
                 <ul class="submenu-items" id="submenu-config-academica" hidden>
+                    <% if (hasPermission('series','visualizar')) { %>
                     <li><a href="/series" class="nav-item" data-title="Séries"><i class="bi bi-journal-bookmark"></i>Séries</a></li>
+                    <% } %>
+                    <% if (hasPermission('anosletivos','visualizar')) { %>
                     <li><a href="/anos-letivos" class="nav-item" data-title="Anos Letivos"><i class="bi bi-calendar3"></i> Anos Letivos</a></li>
+                    <% } %>
+                    <% if (hasPermission('periodos','visualizar')) { %>
                     <li><a href="/periodos" class="nav-item" data-title="Períodos / Bimestres"> <i class="bi bi-calendar-range"></i>Períodos / Bimestres</a></li>
+                    <% } %>
+                    <% if (hasPermission('turnos','visualizar')) { %>
                     <li><a href="/turnos" class="nav-item" data-title="Turnos"><i class="bi bi-clock"></i> Turnos</a></li>
+                    <% } %>
+                    <% if (hasPermission('salas','visualizar')) { %>
                     <li><a href="/salas" class="nav-item" data-title="Salas"><i class="bi bi-door-open"></i> Salas</a></li>
+                    <% } %>
+                    <% if (hasPermission('tipos-avaliacao','visualizar')) { %>
                     <li><a href="/tipos-avaliacao" class="nav-item" data-title="Tipos de Avaliação"><i class="bi bi-clipboard-check"></i> Tipos de Avaliação</a></li>
+                    <% } %>
                 </ul>
             </div>
 
@@ -83,13 +124,27 @@
                     <i class="bi bi-sliders"></i>Configurações<i class="bi bi-chevron-down submenu-caret" aria-hidden="true"></i>
                 </button>
                 <ul class="submenu-items" id="submenu-configuracoes" hidden>
+                    <% if (hasPermission('configuracoes','visualizar')) { %>
                     <li> <a href="/configuracoes" class="nav-item" data-title="Permissões"><i class="bi bi-grid-3x3-gap"></i>Permissões</a></li>
+                    <% } %>
+                    <% if (hasPermission('usuariospermissoes','visualizar')) { %>
                     <li><a href="/usuariosPermissoes" class="nav-item" data-title="Usuários e Permissões"><i class="fa-solid fa-user-shield"></i>Usuários e Permissões</a></li>
+                    <% } %>
+                    <% if (hasPermission('aparencia','visualizar')) { %>
                     <li><a href="/aparencia" class="nav-item" data-title="Aparência"><i class="bi bi-palette"></i>Aparência</a></li>
+                    <% } %>
+                    <% if (hasPermission('configuracao_notas','visualizar')) { %>
                     <li><a href="/configuracao_notas" class="nav-item" data-title="Configuração de Notas"><i class="bi bi-file-earmark-text"></i>Configuração de Notas</a></li>
+                    <% } %>
+                    <% if (hasPermission('documentos','visualizar')) { %>
                     <li><a href="/documentos" class="nav-item" data-title="Documentos"><i class="bi bi-folder2-open"></i>Documentos</a></li>
+                    <% } %>
+                    <% if (hasPermission('financeiro','visualizar')) { %>
                     <li><a href="/financeiro" class="nav-item" data-title="Financeiro"><i class="bi bi-currency-dollar"></i>Financeiro</a></li>
+                    <% } %>
+                    <% if (hasPermission('notificacoes','visualizar')) { %>
                     <li><a href="/notificacoes" class="nav-item" data-title="Notificações"><i class="bi bi-bell"></i>Notificações</a></li>
+                    <% } %>
                 </ul>
             </div>
         </nav>
