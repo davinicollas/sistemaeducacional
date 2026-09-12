@@ -19,7 +19,9 @@ async function login(req, res) {
       id: usuario.id,
       nome: usuario.nome,
       email: usuario.email,
-      tipo_usuario: usuario.tipo_usuario || null,
+      tipo_usuario: usuario.tipo_usuario
+        ? String(usuario.tipo_usuario).trim()
+        : null,
       id_aluno: usuario.id_aluno || null,
       id_professor: usuario.id_professor || null,
     };
@@ -42,11 +44,15 @@ async function login(req, res) {
         ADMIN: "Administradores",
         PROFESSOR: "Professores",
         ALUNO: "Alunos",
+        ALL: "ALL",
       };
 
       let rolePerms = {};
-      if (matrix && roleName) {
-        const mapped = roleNameMap[roleName] || roleName;
+      const roleNameUpper = roleName
+        ? String(roleName).trim().toUpperCase()
+        : "";
+      if (matrix && roleNameUpper) {
+        const mapped = roleNameMap[roleNameUpper] || roleNameUpper;
         if (matrix[mapped]) {
           rolePerms = matrix[mapped];
         } else {
@@ -59,6 +65,7 @@ async function login(req, res) {
           }
         }
       }
+
       // Normaliza permissões: cria chaves canônicas além do nome original
       const permissoes = {};
 
@@ -78,47 +85,59 @@ async function login(req, res) {
         permissoes[key] = v;
       }
 
-      for (const [permName, val] of Object.entries(rolePerms)) {
-        const access = val === "view" ? "view" : val ? "full" : "none";
-        // chave original (nome da permissão no DB)
-        if (permName) addPerm(permName, access);
+      const mappedForAll = roleNameMap[roleNameUpper] || roleNameUpper || "";
+      if (
+        String(mappedForAll).toUpperCase() === "ALL" ||
+        roleNameUpper === "ALL"
+      ) {
+        // Atribui todas as permissões como 'full' quando tipo_usuario === 'ALL'
+        const allPermRows = await permissaoModel.getPermissions();
+        for (const p of allPermRows) {
+          addPerm(p.name, true);
+        }
+      } else {
+        for (const [permName, val] of Object.entries(rolePerms)) {
+          const access = val === "view" ? "view" : val ? "full" : "none";
+          // chave original (nome da permissão no DB)
+          if (permName) addPerm(permName, access);
 
-        const s = slug(permName);
-        // heurísticas: 'ver alunos', 'criar alunos', 'editar alunos', 'excluir alunos'
-        const mVer = s.match(/^ver\s+(.+)$/);
-        const mCriar = s.match(/^(criar|adicionar|novo)s?\s+(.+)$/);
-        const mEditar = s.match(/^(editar|alterar)\s+(.+)$/);
-        const mExcluir = s.match(/^(excluir|remover)\s+(.+)$/);
+          const s = slug(permName);
+          // heurísticas: 'ver alunos', 'criar alunos', 'editar alunos', 'excluir alunos'
+          const mVer = s.match(/^ver\s+(.+)$/);
+          const mCriar = s.match(/^(criar|adicionar|novo)s?\s+(.+)$/);
+          const mEditar = s.match(/^(editar|alterar)\s+(.+)$/);
+          const mExcluir = s.match(/^(excluir|remover)\s+(.+)$/);
 
-        if (mVer) {
-          const resource = mVer[1].replace(/\s+/g, "_");
-          addPerm(`${resource}.visualizar`, access);
-          addPerm(`${resource}_visualizar`, access);
-          addPerm(`${resource}`, access);
-          addPerm(`visualizar.${resource}`, access);
-        } else if (mCriar) {
-          const resource = (mCriar[2] || mCriar[1]).replace(/\s+/g, "_");
-          addPerm(`${resource}.inserir`, access);
-          addPerm(`${resource}_inserir`, access);
-          addPerm(`${resource}`, access);
-          addPerm(`inserir.${resource}`, access);
-        } else if (mEditar) {
-          const resource = mEditar[2].replace(/\s+/g, "_");
-          addPerm(`${resource}.editar`, access);
-          addPerm(`${resource}_editar`, access);
-          addPerm(`${resource}`, access);
-          addPerm(`editar.${resource}`, access);
-        } else if (mExcluir) {
-          const resource = mExcluir[2].replace(/\s+/g, "_");
-          addPerm(`${resource}.excluir`, access);
-          addPerm(`${resource}_excluir`, access);
-          addPerm(`${resource}`, access);
-          addPerm(`excluir.${resource}`, access);
-        } else if (s) {
-          // fallback: use slug as resource with visualizar
-          const resource = s.replace(/\s+/g, "_");
-          addPerm(`${resource}.visualizar`, access);
-          addPerm(`${resource}`, access);
+          if (mVer) {
+            const resource = mVer[1].replace(/\s+/g, "_");
+            addPerm(`${resource}.visualizar`, access);
+            addPerm(`${resource}_visualizar`, access);
+            addPerm(`${resource}`, access);
+            addPerm(`visualizar.${resource}`, access);
+          } else if (mCriar) {
+            const resource = (mCriar[2] || mCriar[1]).replace(/\s+/g, "_");
+            addPerm(`${resource}.inserir`, access);
+            addPerm(`${resource}_inserir`, access);
+            addPerm(`${resource}`, access);
+            addPerm(`inserir.${resource}`, access);
+          } else if (mEditar) {
+            const resource = mEditar[2].replace(/\s+/g, "_");
+            addPerm(`${resource}.editar`, access);
+            addPerm(`${resource}_editar`, access);
+            addPerm(`${resource}`, access);
+            addPerm(`editar.${resource}`, access);
+          } else if (mExcluir) {
+            const resource = mExcluir[2].replace(/\s+/g, "_");
+            addPerm(`${resource}.excluir`, access);
+            addPerm(`${resource}_excluir`, access);
+            addPerm(`${resource}`, access);
+            addPerm(`excluir.${resource}`, access);
+          } else if (s) {
+            // fallback: use slug as resource with visualizar
+            const resource = s.replace(/\s+/g, "_");
+            addPerm(`${resource}.visualizar`, access);
+            addPerm(`${resource}`, access);
+          }
         }
       }
 

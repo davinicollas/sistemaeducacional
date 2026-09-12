@@ -86,6 +86,12 @@ app.use((req, res, next) => {
   // Helper disponível nas views para checar permissões
   res.locals.hasPermission = (resource, action) => {
     const perms = req.session?.permissoes || {};
+    const usuario = req.session?.usuario || {};
+    const tipoUsuario = String(usuario.tipo_usuario || "")
+      .trim()
+      .toUpperCase();
+    // Usuário com tipo 'ALL' vê todos os menus/recursos independentemente de permissões
+    if (tipoUsuario === "ALL") return true;
     const r = resource || "";
     const a = action || "";
     const candidates = [

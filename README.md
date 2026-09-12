@@ -398,6 +398,48 @@ Planejado:
 - [ ] Receitas
 - [ ] Despesas
 - [ ] Mensalidades
+
+---
+
+## 🔐 Autorização e Permissões (atualizações recentes)
+
+Resumo das mudanças recentes relacionadas ao controle de acesso e à tela de frequência:
+
+- Sistema de permissões baseado em papéis e permissões armazenadas no banco (`roles`, `permissions`, `role_permissions`).
+- Ao realizar login, o sistema carrega a matriz de permissões do papel e cria chaves canônicas em `req.session.permissoes` (ex.: `alunos.visualizar`, `notas.visualizar`).
+- Middleware `requirePermission(resource, action)` disponível para proteger rotas no servidor.
+- Helper para views EJS: `res.locals.hasPermission(resource, action)` — use-o em `src/views/partials/menu.ejs` para mostrar/ocultar itens.
+- Suporte para superusuário: quando `usuario.tipo_usuario` é `ALL` (insensível a maiúsculas/minúsculas, spaces são ignorados), o usuário vê todos os menus e recebe todas as permissões como `full`.
+- Tela de Frequência: - Professores: agora veem apenas turmas e disciplinas às quais estão vinculados. - Alunos: agora veem apenas sua turma e as disciplinas relacionadas. - Validações no backend impedem que professores/alunos acessem/gravem frequência de turmas/disciplinas alheias (retorna 403 quando não autorizado).
+
+Observações de segurança e operações de depuração:
+
+- A rota de debug que expunha session/permissões foi removida (e só foi reativada temporariamente durante troubleshooting).
+- Logs temporários que imprimiam permissões foram removidos para evitar vazamento de dados sensíveis.
+
+Como testar localmente:
+
+1. Reinicie a aplicação (ou o container) e faça login com um usuário professor e com um usuário aluno para verificar comportamentos distintos:
+
+```bash
+npm start
+```
+
+ou com Docker Compose:
+
+```bash
+docker compose -f container/docker-compose.yml up --build
+```
+
+2. Login como professor: abra `/frequencia` e verifique que as listas de turmas/disciplinas estão filtradas para o professor.
+3. Login como aluno: abra `/frequencia` e verifique que aparece apenas a turma do aluno e disciplinas relacionadas.
+4. Para criar um superusuário teste, defina `tipo_usuario` como `ALL` (no registro do usuário) — ao logar verá todos os menus.
+
+Próximos passos recomendados:
+
+- Aplicar `requirePermission` em todas as rotas sensíveis que ainda não foram protegidas.
+- Adicionar testes automatizados que validem os filtros de `frequencia` e as verificações de autorização.
+
 - [ ] Pagamentos
 - [ ] Inadimplência
 - [ ] Relatórios financeiros
