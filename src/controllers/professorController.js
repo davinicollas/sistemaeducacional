@@ -114,7 +114,7 @@ async function save(req, res) {
         );
       else
         await db.query(
-          `INSERT INTO professores (${fields.join(",")}) VALUES (${fields.map(() => "?").join(",")})`,
+          `INSERT INTO professores (${fields.join(",")}) VALUES (${fields.map(() => "?").join(",")}) RETURNING id`,
           values,
         );
     }
@@ -152,7 +152,10 @@ async function importExcel(req, res) {
     for (const row of sheet.getRows(2, Math.max(sheet.rowCount - 1, 0)) || []) {
       const nome = String(row.getCell(1).value || "").trim();
       if (nome) {
-        await db.query("INSERT INTO professores (nome) VALUES (?)", [nome]);
+        await db.query(
+          "INSERT INTO professores (nome) VALUES (?) RETURNING id",
+          [nome],
+        );
         importados++;
       }
     }
@@ -198,13 +201,11 @@ async function setSenha(req, res) {
       const prof = rows && rows[0];
       const email = prof ? prof.email : null;
       if (!email)
-        return res
-          .status(400)
-          .json({
-            sucesso: false,
-            mensagem:
-              "Professor não possui e-mail. Defina um e-mail antes de criar acesso.",
-          });
+        return res.status(400).json({
+          sucesso: false,
+          mensagem:
+            "Professor não possui e-mail. Defina um e-mail antes de criar acesso.",
+        });
       await Usuario.createOrUpdateForProfessor(id, email, hash);
     }
 

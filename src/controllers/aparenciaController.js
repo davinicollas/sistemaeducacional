@@ -29,7 +29,7 @@ async function save(req, res) {
       );
     else
       await db.query(
-        `INSERT INTO sistema_aparencia (${fields.join(",")}) VALUES (?,?,?) ON DUPLICATE KEY UPDATE ${fields.map((field) => `${field}=VALUES(${field})`).join(",")}`,
+        `INSERT INTO sistema_aparencia (${fields.join(",")}) VALUES (?,?,?) RETURNING id`,
         values,
       );
   } catch (e) {

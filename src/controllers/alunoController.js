@@ -122,7 +122,7 @@ async function save(req, res) {
         );
       else
         await db.query(
-          `INSERT INTO alunos (${fields.join(",")}) VALUES (${fields.map(() => "?").join(",")})`,
+          `INSERT INTO alunos (${fields.join(",")}) VALUES (${fields.map(() => "?").join(",")}) RETURNING id`,
           values,
         );
     }
@@ -159,7 +159,7 @@ async function importExcel(req, res) {
     let importados = 0;
     sheet.eachRow(async (row, n) => {
       if (n > 1 && row.getCell(1).value) {
-        await db.query("INSERT INTO alunos (nome) VALUES (?)", [
+        await db.query("INSERT INTO alunos (nome) VALUES (?) RETURNING id", [
           String(row.getCell(1).value).trim(),
         ]);
         importados++;
@@ -207,13 +207,11 @@ async function setSenha(req, res) {
       const aluno = rows && rows[0];
       const email = aluno ? aluno.email : null;
       if (!email)
-        return res
-          .status(400)
-          .json({
-            sucesso: false,
-            mensagem:
-              "Aluno não possui e-mail. Defina um e-mail antes de criar acesso.",
-          });
+        return res.status(400).json({
+          sucesso: false,
+          mensagem:
+            "Aluno não possui e-mail. Defina um e-mail antes de criar acesso.",
+        });
       await Usuario.createOrUpdateForAluno(id, email, hash);
     }
 

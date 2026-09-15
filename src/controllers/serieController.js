@@ -71,7 +71,7 @@ async function save(req, res) {
         );
       else
         await db.query(
-          `INSERT INTO params_series (${fields.join(", ")}) VALUES (${fields.map(() => "?").join(", ")})`,
+          `INSERT INTO params_series (${fields.join(", ")}) VALUES (${fields.map(() => "?").join(", ")}) RETURNING id`,
           values,
         );
     }
@@ -83,12 +83,10 @@ async function save(req, res) {
 async function importExcel(req, res) {
   try {
     if (!req.file)
-      return res
-        .status(400)
-        .json({
-          sucesso: false,
-          mensagem: "Nenhum arquivo Excel foi enviado.",
-        });
+      return res.status(400).json({
+        sucesso: false,
+        mensagem: "Nenhum arquivo Excel foi enviado.",
+      });
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(req.file.buffer);
     const sheet = workbook.worksheets[0];
@@ -97,7 +95,7 @@ async function importExcel(req, res) {
       const nome = String(row.getCell(1).value || "").trim();
       if (nome) {
         await db.query(
-          "INSERT INTO params_series (nome, abreviacao) VALUES (?, ?)",
+          "INSERT INTO params_series (nome, abreviacao) VALUES (?, ?) RETURNING id",
           [nome, row.getCell(2).value || ""],
         );
         importados++;

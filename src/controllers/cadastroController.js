@@ -7,6 +7,14 @@ function index(req, res) {
   res.render("cadastro", { erro: null });
 }
 async function save(req, res) {
+  console.log("cadastro request", req.method, req.path);
+  try {
+    console.log("cadastro body preview:", {
+      nome: req.body.nome,
+      email: req.body.email,
+      termos: req.body.termos,
+    });
+  } catch (e) {}
   const nome = String(req.body.nome || "").trim();
   const email = String(req.body.email || "")
     .trim()
@@ -23,17 +31,18 @@ async function save(req, res) {
       });
     if (await Usuario.getUsuario(email))
       return res.render("cadastro", { erro: "E-mail já cadastrado." });
-    await db.query(
-      "INSERT INTO usuarios (nome, email, senha, telefone, data_nascimento, termos) VALUES (?, ?, ?, ?, ?, ?)",
+    const [insertResult] = await db.query(
+      "INSERT INTO usuarios (nome, email, senha, telefone, data_nascimento, termos) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
       [
         nome,
         email,
         await bcrypt.hash(senha, 10),
         telefone,
         dataNascimento,
-        req.body.termo === "on",
+        req.body.termos === "on" ? 1 : 0,
       ],
     );
+    console.log("cadastro insert result:", insertResult);
     const usuario = await Usuario.getUsuario(email);
     await new Promise((resolve, reject) => {
       req.session.regenerate((error) => (error ? reject(error) : resolve()));
@@ -42,6 +51,7 @@ async function save(req, res) {
       id: usuario.id,
       nome: usuario.nome,
       email: usuario.email,
+      id_tipo_usuario: usuario.id_tipo_usuario || null,
     };
     res.redirect("/dashboard");
   } catch (error) {

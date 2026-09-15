@@ -18,7 +18,7 @@ async function getTurmaDetalhe(idTurma) {
 async function getAlunosDaTurma(idTurma) {
   const [rows] = await db.query(
     `SELECT a.id, a.nome, a.nome_social, a.matricula, a.data_nascimento,
-            TIMESTAMPDIFF(YEAR, a.data_nascimento, COALESCE(aly.data_inicio, MAKEDATE(aly.ano_letivo, 1))) AS idade,
+            date_part('year', age(COALESCE(aly.data_inicio, make_date(aly.ano_letivo, 1)), a.data_nascimento)) AS idade,
             a.id_status
        FROM turma_alunos ta
        JOIN alunos a ON a.id = ta.id_aluno
@@ -46,9 +46,9 @@ async function getProfessoresDaTurma(idTurma) {
 async function getAlunosElegiveis(idTurma) {
   const [rows] = await db.query(
     `SELECT a.id, a.nome, a.nome_social, a.matricula, a.data_nascimento,
-            TIMESTAMPDIFF(YEAR, a.data_nascimento, COALESCE(aly.data_inicio, MAKEDATE(aly.ano_letivo, 1))) AS idade,
+            date_part('year', age(COALESCE(aly.data_inicio, make_date(aly.ano_letivo, 1)), a.data_nascimento)) AS idade,
             a.id_status, s.idade_minima, s.idade_maxima,
-            COALESCE(aly.data_inicio, MAKEDATE(aly.ano_letivo, 1)) AS data_referencia
+            COALESCE(aly.data_inicio, make_date(aly.ano_letivo, 1)) AS data_referencia
        FROM alunos a
        JOIN turmas t ON t.id = ? AND t.excluido < 1
        JOIN params_series s ON s.id = t.id_serie AND s.excluido < 1
@@ -56,8 +56,8 @@ async function getAlunosElegiveis(idTurma) {
       WHERE a.excluido < 1
         AND a.id_status = 1
         AND a.data_nascimento IS NOT NULL
-        AND (s.idade_minima IS NULL OR TIMESTAMPDIFF(YEAR, a.data_nascimento, COALESCE(aly.data_inicio, MAKEDATE(aly.ano_letivo, 1))) >= s.idade_minima)
-        AND (s.idade_maxima IS NULL OR TIMESTAMPDIFF(YEAR, a.data_nascimento, COALESCE(aly.data_inicio, MAKEDATE(aly.ano_letivo, 1))) <= s.idade_maxima)
+        AND (s.idade_minima IS NULL OR date_part('year', age(COALESCE(aly.data_inicio, make_date(aly.ano_letivo, 1)), a.data_nascimento)) >= s.idade_minima)
+        AND (s.idade_maxima IS NULL OR date_part('year', age(COALESCE(aly.data_inicio, make_date(aly.ano_letivo, 1)), a.data_nascimento)) <= s.idade_maxima)
         AND NOT EXISTS (SELECT 1 FROM turma_alunos ta WHERE ta.id_aluno = a.id AND ta.id_turma = t.id AND ta.excluido = 0)
         AND NOT EXISTS (SELECT 1 FROM turma_alunos ta JOIN turmas outra ON outra.id = ta.id_turma WHERE ta.id_aluno = a.id AND ta.excluido = 0 AND outra.excluido < 1 AND outra.id_ano_letivo = t.id_ano_letivo)
       ORDER BY a.nome`,
@@ -89,8 +89,8 @@ async function vincularAluno(idTurma, idAluno) {
          JOIN params_series s ON s.id = t.id_serie AND s.excluido < 1
          LEFT JOIN params_anos_letivos aly ON aly.id = t.id_ano_letivo
         WHERE a.id = ? AND a.excluido < 1 AND a.id_status = 1 AND a.data_nascimento IS NOT NULL
-          AND (s.idade_minima IS NULL OR TIMESTAMPDIFF(YEAR, a.data_nascimento, COALESCE(aly.data_inicio, MAKEDATE(aly.ano_letivo, 1))) >= s.idade_minima)
-          AND (s.idade_maxima IS NULL OR TIMESTAMPDIFF(YEAR, a.data_nascimento, COALESCE(aly.data_inicio, MAKEDATE(aly.ano_letivo, 1))) <= s.idade_maxima)
+            AND (s.idade_minima IS NULL OR date_part('year', age(COALESCE(aly.data_inicio, make_date(aly.ano_letivo, 1)), a.data_nascimento)) >= s.idade_minima)
+            AND (s.idade_maxima IS NULL OR date_part('year', age(COALESCE(aly.data_inicio, make_date(aly.ano_letivo, 1)), a.data_nascimento)) <= s.idade_maxima)
           AND NOT EXISTS (SELECT 1 FROM turma_alunos ta JOIN turmas outra ON outra.id = ta.id_turma WHERE ta.id_aluno = a.id AND ta.excluido = 0 AND outra.excluido < 1 AND outra.id_ano_letivo = t.id_ano_letivo)`,
       [idTurma, idAluno],
     );
@@ -107,8 +107,9 @@ async function vincularAluno(idTurma, idAluno) {
     )
       throw new Error("A capacidade da turma foi atingida.");
     await connection.query(
-      `INSERT INTO turma_alunos (id_turma, id_aluno, excluido) VALUES (?, ?, 0)
-       ON DUPLICATE KEY UPDATE excluido = 0, atualizado_em = CURRENT_TIMESTAMP`,
+      `INSERT INTO turma_alunos (id_turma, id_aluno, excluido)
+         VALUES (?, ?, 0)
+         ON CONFLICT (id_turma, id_aluno) DO UPDATE SET excluido = 0, atualizado_em = CURRENT_TIMESTAMP RETURNING id`,
       [idTurma, idAluno],
     );
     await connection.commit();
@@ -121,14 +122,19 @@ async function vincularAluno(idTurma, idAluno) {
 }
 
 async function vincularProfessor(idTurma, idProfessor) {
-  const [result] = await db.query(
+  const [prof] = await db.query(
+    `SELECT id FROM professores WHERE id = ? AND id_status = 1 AND excluido < 1 LIMIT 1`,
+    [idProfessor],
+  );
+  if (!prof || !prof[0])
+    throw new Error("Professor não está ativo ou não foi encontrado.");
+
+  await db.query(
     `INSERT INTO turma_professores (id_turma, id_professor, excluido)
-     SELECT ?, id, 0 FROM professores WHERE id = ? AND id_status = 1 AND excluido < 1
-     ON DUPLICATE KEY UPDATE excluido = 0, atualizado_em = CURRENT_TIMESTAMP`,
+       VALUES (?, ?, 0)
+       ON CONFLICT (id_turma, id_professor) DO UPDATE SET excluido = 0, atualizado_em = CURRENT_TIMESTAMP RETURNING id`,
     [idTurma, idProfessor],
   );
-  if (!result.affectedRows)
-    throw new Error("Professor não está ativo ou não foi encontrado.");
 }
 
 async function removerAluno(idTurma, idAluno) {

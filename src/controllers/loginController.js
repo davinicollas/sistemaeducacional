@@ -19,8 +19,8 @@ async function login(req, res) {
       id: usuario.id,
       nome: usuario.nome,
       email: usuario.email,
-      tipo_usuario: usuario.tipo_usuario
-        ? String(usuario.tipo_usuario).trim()
+      id_tipo_usuario: usuario.id_tipo_usuario
+        ? String(usuario.id_tipo_usuario).trim()
         : null,
       id_aluno: usuario.id_aluno || null,
       id_professor: usuario.id_professor || null,
@@ -28,7 +28,24 @@ async function login(req, res) {
     // Carrega permissões do papel do usuário e armazena na sessão
     try {
       const matrix = await permissaoModel.getMatrix();
-      const roleName = usuario.tipo_usuario || null;
+      // Prefer mapping by numeric id (1=ADMIN,2=PROFESSOR,3=ALUNO,4=ALL)
+      const roleId = usuario.id_tipo_usuario ? Number(usuario.id_tipo_usuario) : null;
+      const roleIdMap = {
+        1: "Administradores",
+        2: "Professores",
+        3: "Alunos",
+        4: "ALL",
+      };
+      let roleName = roleIdMap[roleId] || null;
+      if (!roleName) {
+        try {
+          const roles = await permissaoModel.getRoles();
+          const found = roles.find((r) => Number(r.id) === roleId || String(r.name).toLowerCase() === String(usuario.id_tipo_usuario).toLowerCase());
+          roleName = found ? found.name : null;
+        } catch (err) {
+          roleName = null;
+        }
+      }
 
       function slugRole(s) {
         return String(s || "")

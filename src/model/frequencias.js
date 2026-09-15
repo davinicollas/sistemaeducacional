@@ -145,7 +145,7 @@ async function getFrequenciaRegistro(idTurma, idDisciplina, data) {
     `SELECT id, id_aluno, status, observacao, atualizado_em
        FROM frequencias
       WHERE id_turma = ? AND data = ?
-        AND (id_disciplina <=> ?)`,
+        AND (id_disciplina IS NOT DISTINCT FROM ?)`,
     [idTurma, data, idDisciplina || null],
   );
   const mapa = {};
@@ -188,7 +188,7 @@ async function salvarFrequencias({
 
       const [existentes] = await connection.query(
         `SELECT id, status, observacao FROM frequencias
-          WHERE id_aluno = ? AND id_turma = ? AND data = ? AND (id_disciplina <=> ?)
+          WHERE id_aluno = ? AND id_turma = ? AND data = ? AND (id_disciplina IS NOT DISTINCT FROM ?)
           FOR UPDATE`,
         [idAluno, idTurma, data, idDisciplina || null],
       );
@@ -197,7 +197,7 @@ async function salvarFrequencias({
       if (!existente) {
         await connection.query(
           `INSERT INTO frequencias (id_aluno, id_turma, id_disciplina, data, status, observacao)
-           VALUES (?, ?, ?, ?, ?, ?)`,
+           VALUES (?, ?, ?, ?, ?, ?) RETURNING id`,
           [
             idAluno,
             idTurma,
@@ -224,7 +224,7 @@ async function salvarFrequencias({
         await connection.query(
           `INSERT INTO frequencias_historico
              (id_frequencia, id_aluno, id_turma, id_disciplina, data, status_anterior, status_novo, motivo, id_usuario)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`,
           [
             existente.id,
             idAluno,

@@ -27,7 +27,7 @@ async function save(req, res) {
     const titulo = String(req.body.titulo || "").trim();
     if (!titulo) return res.redirect("/calendario");
     await db.query(
-      "INSERT INTO eventos_calendario (titulo, tipo, data_inicio, data_fim, descricao) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO eventos_calendario (titulo, tipo, data_inicio, data_fim, descricao) VALUES (?, ?, ?, ?, ?) RETURNING id",
       [
         titulo,
         String(req.body.tipo || "evento").trim(),

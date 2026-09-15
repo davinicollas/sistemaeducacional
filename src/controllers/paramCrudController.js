@@ -62,7 +62,7 @@ function createParamController({
             );
           } else {
             await db.query(
-              `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`,
+              `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")}) RETURNING id`,
               params,
             );
           }

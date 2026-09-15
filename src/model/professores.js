@@ -51,8 +51,8 @@ async function getProfessores(where = "", params = [], pageSize, offset) {
 async function getStatusProfessor(where = "", params = []) {
   const whereSql = where ? `AND ${where}` : "";
   const [rows] = await db.query(
-    `SELECT SUM(p.id_status = 1) AS total_ativos,
-                SUM(p.id_status = 0) AS total_desativados
+    `SELECT COUNT(*) FILTER (WHERE p.id_status = 1) AS total_ativos,
+        COUNT(*) FILTER (WHERE p.id_status = 0) AS total_desativados
          FROM professores p
          WHERE p.excluido < 1 ${whereSql}`,
     [...params],

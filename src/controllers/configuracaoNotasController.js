@@ -31,7 +31,7 @@ async function save(req, res) {
       );
     else
       await db.query(
-        `INSERT INTO configuracao_notas (${fields.join(",")}) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE ${fields.map((field) => `${field}=VALUES(${field})`).join(",")}`,
+        `INSERT INTO configuracao_notas (${fields.join(",")}) VALUES (?,?,?,?,?) RETURNING id`,
         values,
       );
   } catch (e) {

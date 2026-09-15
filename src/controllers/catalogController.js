@@ -118,7 +118,7 @@ function createCatalogController({
           await db.query(
             `INSERT INTO ${table}
              (${columnNames})
-             VALUES (${placeholders})`,
+             VALUES (${placeholders}) RETURNING id`,
             values,
           );
         }

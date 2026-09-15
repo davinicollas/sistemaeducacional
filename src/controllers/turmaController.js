@@ -172,7 +172,7 @@ async function save(req, res) {
         );
       else
         await db.query(
-          "INSERT INTO turmas (text, sigla, id_ano_letivo, id_serie, id_turno, id_salas, id_status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO turmas (text, sigla, id_ano_letivo, id_serie, id_turno, id_salas, id_status) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id",
           params,
         );
     }
@@ -239,7 +239,7 @@ async function importExcel(req, res) {
     });
     for (const params of inserts) {
       await db.query(
-        "INSERT INTO turmas (text, sigla, id_ano_letivo, id_serie, id_turno, id_salas, id_status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO turmas (text, sigla, id_ano_letivo, id_serie, id_turno, id_salas, id_status) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id",
         params,
       );
       importados++;

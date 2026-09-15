@@ -38,16 +38,17 @@ async function getByProfessorId(id_professor) {
 async function createUsuario({
   email,
   senha,
-  tipo_usuario = "ALUNO",
+  id_tipo_usuario = 3,
   id_aluno = null,
   id_professor = null,
   nome = null,
 }) {
   const [result] = await db.query(
-    "INSERT INTO usuarios (email, senha, tipo_usuario, id_aluno, id_professor, nome) VALUES (?, ?, ?, ?, ?, ?)",
-    [email, senha, tipo_usuario, id_aluno, id_professor, nome],
+    "INSERT INTO usuarios (email, senha, id_tipo_usuario, id_aluno, id_professor, nome) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
+    [email, senha, id_tipo_usuario, id_aluno, id_professor, nome],
   );
-  return getUsuarioPorId(result.insertId);
+  const insertedId = result?.[0]?.id || null;
+  return getUsuarioPorId(insertedId);
 }
 
 async function updateSenhaById(id, hashedSenha) {
@@ -77,7 +78,7 @@ async function createOrUpdateForAluno(id_aluno, email, hashedSenha) {
     if (exist) {
       // attach aluno id
       await db.query(
-        "UPDATE usuarios SET id_aluno = ?, tipo_usuario = 'ALUNO' WHERE id = ?",
+        "UPDATE usuarios SET id_aluno = ?, id_tipo_usuario = 3 WHERE id = ?",
         [id_aluno, exist.id],
       );
       await updateSenhaById(exist.id, hashedSenha);
@@ -89,7 +90,7 @@ async function createOrUpdateForAluno(id_aluno, email, hashedSenha) {
   return createUsuario({
     email,
     senha: hashedSenha,
-    tipo_usuario: "ALUNO",
+    id_tipo_usuario: 3,
     id_aluno,
   });
 }
@@ -110,7 +111,7 @@ async function createOrUpdateForProfessor(id_professor, email, hashedSenha) {
     const exist = await getUsuario(email);
     if (exist) {
       await db.query(
-        "UPDATE usuarios SET id_professor = ?, tipo_usuario = 'PROFESSOR' WHERE id = ?",
+        "UPDATE usuarios SET id_professor = ?, id_tipo_usuario = 2 WHERE id = ?",
         [id_professor, exist.id],
       );
       await updateSenhaById(exist.id, hashedSenha);
@@ -121,7 +122,7 @@ async function createOrUpdateForProfessor(id_professor, email, hashedSenha) {
   return createUsuario({
     email,
     senha: hashedSenha,
-    tipo_usuario: "PROFESSOR",
+    id_tipo_usuario: 2,
     id_professor,
   });
 }

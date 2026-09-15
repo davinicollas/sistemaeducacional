@@ -47,7 +47,10 @@ async function save(req, res) {
           item.id,
         ]);
       else
-        await db.query("INSERT INTO params_formacao (text) VALUES (?)", [text]);
+        await db.query(
+          "INSERT INTO params_formacao (text) VALUES (?) RETURNING id",
+          [text],
+        );
     }
   } catch (e) {
     console.error(e);

@@ -47,7 +47,9 @@ async function create(table, req, res, label) {
       return renderPage(res, {
         erro: `${label[0].toUpperCase() + label.slice(1)} já existente.`,
       });
-    await db.query(`INSERT INTO ${table} (name) VALUES (?)`, [name]);
+    await db.query(`INSERT INTO ${table} (name) VALUES (?) RETURNING id`, [
+      name,
+    ]);
     res.redirect("/usuariosPermissoes");
   } catch (error) {
     console.error(error);

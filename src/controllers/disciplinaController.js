@@ -70,7 +70,7 @@ async function save(req, res) {
         );
       else
         await db.query(
-          "INSERT INTO params_disciplina (sigla, carga_horaria, idStatus, text, descricao) VALUES (?, ?, ?, ?, ?)",
+          "INSERT INTO params_disciplina (sigla, carga_horaria, idStatus, text, descricao) VALUES (?, ?, ?, ?, ?) RETURNING id",
           params,
         );
     }

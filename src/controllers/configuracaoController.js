@@ -43,7 +43,9 @@ async function save(req, res) {
   try {
     const values = fields.map((field) => req.body[field] || null);
     await db.query(
-      `INSERT INTO configuracoes (${fields.join(",")}) VALUES (${fields.map(() => "?").join(",")}) ON DUPLICATE KEY UPDATE ${fields.map((field) => `${field}=VALUES(${field})`).join(",")}`,
+      `INSERT INTO configuracoes (${fields.join(",")}) VALUES (${fields.map(() => "?").join(",")}) ON CONFLICT (email) DO UPDATE SET ${fields
+        .map((field) => `${field} = EXCLUDED.${field}`)
+        .join(",")} RETURNING id`,
       values,
     );
   } catch (e) {

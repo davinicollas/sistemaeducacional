@@ -57,7 +57,7 @@ async function save(req, res) {
       );
     else
       await db.query(
-        `INSERT INTO documentos (${fields.join(",")}) VALUES (${fields.map(() => "?").join(",")})`,
+        `INSERT INTO documentos (${fields.join(",")}) VALUES (${fields.map(() => "?").join(",")}) RETURNING id`,
         values,
       );
   } catch (e) {
