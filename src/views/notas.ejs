@@ -1,0 +1,111 @@
+<%- include('partials/header') %>
+<%- include('partials/menu') %>
+<%- include('partials/css') %>
+<%- include('partials/javascript', { javascript: ['notas'] }) %>
+
+<main class="main-content">
+  <section class="config-card">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+      <div>
+        <h1 class="page-title mb-1"><i class="bi bi-journal-text me-2"></i>Notas</h1>
+        <p class="text-muted mb-0">Registre e consulte as notas dos alunos por turma, disciplina e período.</p>
+      </div>
+    </div>
+
+    <% if (typeof erro !== 'undefined' && erro) { %>
+      <div class="alert alert-warning" role="alert"><i class="bi bi-exclamation-triangle me-2"></i><%= erro %></div>
+    <% } %>
+
+    <div id="notas-alerta" class="alert d-none" role="alert"></div>
+
+    <form class="card border-0 shadow-sm mb-4" id="notas-filtros" onsubmit="return false;">
+      <div class="card-body row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label" for="filtro-ano-letivo">Ano Letivo</label>
+          <select id="filtro-ano-letivo" class="form-select">
+            <option value="">Selecione</option>
+            <% (anoLetivo || []).forEach(function (item) { %>
+              <option value="<%= item.id %>"><%= item.ano_letivo || item.text %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="filtro-turma">Turma</label>
+          <select id="filtro-turma" class="form-select" disabled>
+            <option value="">Selecione o ano letivo</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="filtro-disciplina">Disciplina</label>
+          <select id="filtro-disciplina" class="form-select">
+            <option value="">Geral / Não se aplica</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="filtro-periodo">Período/Bimestre</label>
+          <select id="filtro-periodo" class="form-select">
+            <option value="">Selecione</option>
+            <% (periodos || []).forEach(function (p) { %>
+              <option value="<%= p.id %>"><%= p.nome || p.text %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+    </form>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center gap-3">
+        <h2 class="h5 mb-0">Notas</h2>
+        <div>
+          <button type="button" class="btn btn-primary" id="btn-salvar-notas" disabled>
+            <i class="bi bi-save me-1"></i>Salvar notas
+          </button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" id="notas-table">
+          <thead>
+            <tr id="notas-head">
+              <th>Aluno</th>
+              <!-- avaliações serão inseridas dinamicamente -->
+              <th>Média</th>
+              <th>Situação</th>
+              <th style="width:60px"></th>
+            </tr>
+          </thead>
+          <tbody id="notas-tbody">
+            <tr id="notas-vazio">
+              <td colspan="6" class="text-center text-muted py-4">Selecione a turma, a disciplina e o período para carregar os alunos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Modal motivo alteração -->
+<div class="modal fade" id="modalMotivoAlteracaoNotas" tabindex="-1" aria-labelledby="modalMotivoAlteracaoNotasLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title h5" id="modalMotivoAlteracaoNotasLabel">Alterar nota</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <p>Esta nota já foi registrada.</p>
+        <label class="form-label" for="motivo-alteracao-nota">Informe o motivo da alteração *</label>
+        <textarea class="form-control" id="motivo-alteracao-nota" rows="3" required></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" id="btn-cancelar-motivo-nota" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btn-confirmar-motivo-nota" disabled>Confirmar alteração</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.NOTAS_TIPOS_AVALIACAO = <%- JSON.stringify(tiposAvaliacao || []) %>;
+  window.NOTAS_USUARIO = <%- JSON.stringify(usuario || {}) %>;
+</script>

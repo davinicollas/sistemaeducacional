@@ -33,6 +33,7 @@ const formacoes = require("./routes/formacoes");
 const alunos = require("./routes/alunos");
 const turmas = require("./routes/turmas");
 const frequencia = require("./routes/frequencia");
+const notas = require("./routes/notas");
 
 // Middlewares
 const authMid = require("./middleware/auth");
@@ -77,6 +78,9 @@ app.use(
 
 // Arquivos estáticos
 app.use(express.static(path.join(__dirname, "..", "public")));
+
+// Health check: confirma que o servidor está no ar
+app.get("/ping", (req, res) => res.send("pong"));
 
 let sessionMiddlewareInitialized = false;
 
@@ -166,6 +170,7 @@ async function initSessionStoreAndMiddleware() {
  * Registra as rotas e middlewares da aplicação
  */
 function registerRoutes() {
+  console.log("Registrando rotas...");
   /*
    * Variáveis disponíveis nas views EJS
    */
@@ -192,6 +197,10 @@ function registerRoutes() {
       // `id_tipo_usuario` is stored as an integer in the session
       const tipoUsuario = usuarioSessao.id_tipo_usuario || null;
 
+      // Administradores possuem acesso a todos os recursos, inclusive aos
+      // que ainda não tenham uma permissão cadastrada no banco.
+      if (Number(tipoUsuario) === 1) return true;
+
       const r = resource || "";
       const a = action || "";
 
@@ -206,29 +215,44 @@ function registerRoutes() {
         r,
       ];
 
-      for (const cand of candidates) {
+      // Normalized forms: remove diacritics, non-alnum -> space, spaces -> underscore
+      function normalizeKey(s) {
+        return String(s || "")
+          .normalize("NFD")
+          .replace(/\p{Diacritic}/gu, "")
+          .replace(/[^a-zA-Z0-9 ]/g, " ")
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "_");
+      }
+
+      const rNorm = normalizeKey(r);
+      const aNorm = normalizeKey(a);
+
+      const normalizedCandidates = [
+        `${rNorm}.${aNorm}`,
+        `${rNorm}_${aNorm}`,
+        `${aNorm}.${rNorm}`,
+        `${aNorm}_${rNorm}`,
+        `${rNorm} ${aNorm}`,
+        `${aNorm} ${rNorm}`,
+        aNorm,
+        rNorm,
+      ];
+
+      const allCandidates = candidates.concat(normalizedCandidates);
+
+      for (const cand of allCandidates) {
         if (!cand) continue;
 
         const val = perms[cand];
 
         if (!val) continue;
 
-        /*
-         * Visualizar aceita:
-         * view
-         * full
-         */
         if (action === "visualizar") {
-          if (val === "view" || val === "full") {
-            return true;
-          }
+          if (val === "view" || val === "full") return true;
         } else {
-          /*
-           * Outras ações precisam de full
-           */
-          if (val === "full") {
-            return true;
-          }
+          if (val === "full") return true;
         }
       }
 
@@ -289,6 +313,13 @@ function registerRoutes() {
 
   app.use(login);
 
+  // Rota de depuração pública: mostra usuário e permissões (não exige login)
+  app.get("/debug-perms-public", (req, res) => {
+    const usuario = req.session?.usuario || null;
+    const permissoes = req.session?.permissoes || {};
+    return res.json({ usuario, permissoes });
+  });
+
   /*
    * Autenticação
    */
@@ -299,6 +330,15 @@ function registerRoutes() {
    */
   app.get("/dashboard", (req, res) => {
     res.render("dashboard");
+  });
+
+  // Rota de depuração: mostra usuário e permissões na sessão (remover em produção)
+  app.get("/debug-perms", (req, res) => {
+    const usuario = req.session?.usuario || null;
+    const permissoes = req.session?.permissoes || {};
+    if (!usuario)
+      return res.status(401).json({ error: "Usuário não autenticado." });
+    return res.json({ usuario, permissoes });
   });
 
   /*
@@ -357,6 +397,7 @@ function registerRoutes() {
   app.use(turmas);
 
   app.use(frequencia);
+  app.use(notas);
 
   /*
    * Error handler

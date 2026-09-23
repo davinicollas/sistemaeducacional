@@ -28,19 +28,28 @@ async function login(req, res) {
     // Carrega permissões do papel do usuário e armazena na sessão
     try {
       const matrix = await permissaoModel.getMatrix();
-      // Prefer mapping by numeric id (1=ADMIN,2=PROFESSOR,3=ALUNO,4=ALL)
-      const roleId = usuario.id_tipo_usuario ? Number(usuario.id_tipo_usuario) : null;
+      // Prefer mapping by numeric id (1=Administradores,2=Professores,3=Alunos,4=Responsáveis,5=Secretaria,6=Coordenacao)
+      const roleId = usuario.id_tipo_usuario
+        ? Number(usuario.id_tipo_usuario)
+        : null;
       const roleIdMap = {
         1: "Administradores",
         2: "Professores",
         3: "Alunos",
-        4: "ALL",
+        4: "Responsáveis",
+        5: "Secretaria",
+        6: "Coordenacao",
       };
       let roleName = roleIdMap[roleId] || null;
       if (!roleName) {
         try {
           const roles = await permissaoModel.getRoles();
-          const found = roles.find((r) => Number(r.id) === roleId || String(r.name).toLowerCase() === String(usuario.id_tipo_usuario).toLowerCase());
+          const found = roles.find(
+            (r) =>
+              Number(r.id) === roleId ||
+              String(r.name).toLowerCase() ===
+                String(usuario.id_tipo_usuario).toLowerCase(),
+          );
           roleName = found ? found.name : null;
         } catch (err) {
           roleName = null;
@@ -61,7 +70,6 @@ async function login(req, res) {
         ADMIN: "Administradores",
         PROFESSOR: "Professores",
         ALUNO: "Alunos",
-        ALL: "ALL",
       };
 
       let rolePerms = {};
@@ -104,13 +112,53 @@ async function login(req, res) {
 
       const mappedForAll = roleNameMap[roleNameUpper] || roleNameUpper || "";
       if (
-        String(mappedForAll).toUpperCase() === "ALL" ||
-        roleNameUpper === "ALL"
+        roleId === 1 ||
+        String(mappedForAll).toUpperCase() === "ADMINISTRADORES" ||
+        roleNameUpper === "Administradores"
       ) {
-        // Atribui todas as permissões como 'full' quando tipo_usuario === 'ALL'
+        // Administradores (id=1) ou papel 'ALL' recebem todas as permissões
+        // Normaliza as chaves (mesma heurística usada para papéis específicos)
         const allPermRows = await permissaoModel.getPermissions();
         for (const p of allPermRows) {
-          addPerm(p.name, true);
+          const permName = p.name;
+          const access = "full";
+          if (permName) addPerm(permName, access);
+
+          const s = slug(permName);
+          const mVer = s.match(/^ver\s+(.+)$/);
+          const mCriar = s.match(/^(criar|adicionar|novo)s?\s+(.+)$/);
+          const mEditar = s.match(/^(editar|alterar)\s+(.+)$/);
+          const mExcluir = s.match(/^(excluir|remover)\s+(.+)$/);
+
+          if (mVer) {
+            const resource = mVer[1].replace(/\s+/g, "_");
+            addPerm(`${resource}.visualizar`, access);
+            addPerm(`${resource}_visualizar`, access);
+            addPerm(`${resource}`, access);
+            addPerm(`visualizar.${resource}`, access);
+          } else if (mCriar) {
+            const resource = (mCriar[2] || mCriar[1]).replace(/\s+/g, "_");
+            addPerm(`${resource}.inserir`, access);
+            addPerm(`${resource}_inserir`, access);
+            addPerm(`${resource}`, access);
+            addPerm(`inserir.${resource}`, access);
+          } else if (mEditar) {
+            const resource = mEditar[2].replace(/\s+/g, "_");
+            addPerm(`${resource}.editar`, access);
+            addPerm(`${resource}_editar`, access);
+            addPerm(`${resource}`, access);
+            addPerm(`editar.${resource}`, access);
+          } else if (mExcluir) {
+            const resource = mExcluir[2].replace(/\s+/g, "_");
+            addPerm(`${resource}.excluir`, access);
+            addPerm(`${resource}_excluir`, access);
+            addPerm(`${resource}`, access);
+            addPerm(`excluir.${resource}`, access);
+          } else if (s) {
+            const resource = s.replace(/\s+/g, "_");
+            addPerm(`${resource}.visualizar`, access);
+            addPerm(`${resource}`, access);
+          }
         }
       } else {
         for (const [permName, val] of Object.entries(rolePerms)) {

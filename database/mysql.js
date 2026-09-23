@@ -16,7 +16,9 @@ function convertPlaceholders(sql) {
 
 function makePool(dbName) {
   return new Pool({
-    host: process.env.DB_HOST || "postgres",
+    // Use environment DB_HOST when provided; default to localhost for
+    // local development (Docker compose uses 'postgres' hostname).
+    host: process.env.DB_HOST || "localhost",
     user: process.env.DB_USER || process.env.POSTGRES_USER || "postgres",
     password:
       process.env.DB_PASSWORD || process.env.POSTGRES_PASSWORD || "root",
@@ -59,6 +61,12 @@ async function init() {
     process.env.DB_NAME || process.env.POSTGRES_DB || "sistema_educacional";
   await ensureDatabaseExists(dbName);
   pool = makePool(dbName);
+  // Evita que erros em clients ociosos provoquem crash do processo.
+  // Pool emite 'error' quando um client ligado ao pool recebe um erro
+  // fora do contexto de uma query ativa (ex: conexão abortada pelo servidor).
+  pool.on("error", (err) => {
+    console.error("Postgres pool error:", err);
+  });
   inited = true;
 }
 
