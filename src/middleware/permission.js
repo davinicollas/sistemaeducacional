@@ -27,6 +27,10 @@ function requirePermission(resource, action) {
       return res.redirect("/login");
     }
 
+    if (Number(req.session.usuario.id_tipo_usuario) === 1) {
+      return next();
+    }
+
     const permissoes = req.session.permissoes || {};
     const candidates = buildCandidates(resource, action);
 

@@ -73,9 +73,17 @@ async function init() {
 async function query(sql, params = []) {
   if (!inited) await init();
   const convertedSql = convertPlaceholders(sql);
-  const res = await pool.query(convertedSql, params);
-  // return in mysql2 style: [rows, fields]
-  return [res.rows, res.fields];
+  try {
+    const res = await pool.query(convertedSql, params);
+    return [res.rows, res.fields];
+  } catch (err) {
+    // Log the failing SQL in development to help debugging
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Failed query:", convertedSql);
+      console.error("Params:", params);
+    }
+    throw err;
+  }
 }
 
 async function getConnection() {
